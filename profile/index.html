@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="robots" content="noindex">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link href="http://fonts.cdnfonts.com/css/whitney-2" rel="stylesheet" /> -->
+    <title>Discord Profile Card</title>
+    <script src="https://kit.fontawesome.com/19746ffdef.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="./assets/css/activity.css">
+	<link rel="stylesheet" href="./assets/css/style.css" />
+	<script src="./assets/javascripts/lanyard.js"></script>
+	<script src="./assets/javascripts/activity.js"></script>
+	<!--J query-->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
+
+  </head>
+  <body>
+    <div class="loader" id="loading-screen">
+      <div class="square-1 square"></div>
+      <div class="square-2 square"></div>
+    </div>
+
+    <div class="card-container" id="main-content" style="display:none;">
+      <!-- First Card -->
+      <div class="card nitro-card">
+        <div class="card-header" id="discorduser.banner">
+          <div
+            style="background: url('./assets/img/banner.gif')"
+            class="banner-img"
+          ></div>
+        </div>
+        <div class="card-body">
+          <div class="profile-header">
+					  <div id="discorduser.avatarlink"></div>
+            <div class="status-container">
+              <div id="discorduser.desktop"></div>
+              <div id="discorduser.mobile"></div>
+              <div id="discorduser.web"></div>
+              <div id="discorduser.spotify"></div>
+            </div>
+            <div class="badges-container" id="badge-containor"></div>
+          </div>
+          <div class="profile-body">
+            <div class="username" id="discorduser.name">
+              Loading...<div class="badge"><i class="fa-solid fa-check"></i> System</div>
+            </div>
+            <div class="handle" id="discorduser.handle"></div>
+            <div class="card-status">
+					<span id="discorduser.emoji"></span><span id="discorduser.status"></span>
+					<hr>
+				</div>
+        <div class="detailobjects">
+            <hr />
+            <div class="btn-container">
+              <a href="https://discord.gg/UAaRzNz87W" target="_blank" class="btn mr-10"
+                >Join Discord</a
+              >
+              <a
+                href="https://botuu.jharajat.com.np/"
+                target="_blank"
+                class="btn btn-small"
+              >
+                <img src="./assets/img/botu.png" alt="" />
+              </a>
+            </div>
+            <div class="basic-infos">
+              <div class="category-title">About Me</div>
+              <p id="discorduser.aboutme"></p>
+            </div>
+            <div id="spotify-playback" class="roles">
+              
+            </div>
+            
+            <!--<div class="roles">
+              <iframe id="discordprofileinside" src="https://spotify-fetcher.secretrajatrepl.repl.co" style="width:100%; height:120px; border:0px;" title="Spotify"></iframe>
+    
+              </div>-->
+            <div class="roles">
+              <div class="category-title">Activity</div>
+              <div id="activitycard">
+                <div id="activities" width="100%"></div>
+              </div>
+            </div>
+            <div class="basic-infos">
+              <div class="category-title">Member Since</div>
+              <p><i class="fa-solid fa-cake-candles"></i> Feb 23, 2003<i style="color:#00000000" class="fa-brands fa-discord"></i><i class="fa-brands fa-discord"></i> Jan 13, 2018<i style="color:#00000000" class="fa-brands fa-discord"></i><i class="fa-solid fa-code"></i> Nov 11, 2018</p>
+            </div>
+            <div class="roles">
+              <div class="category-title">Roles</div>
+              <div id="role-list" class="roles-list"></div>
+            </div>
+            <div class="note">
+              <div class="category-title">Note</div>
+              <textarea placeholder="Click for add a note"></textarea>
+            </div>
+        
+            <div class="message">
+              <div id="messagebox"></div>
+              <form class="send-message" onsubmit="sendLinkTreePrivMsg();return false">
+                <input type="text" autocomplete="off" name="content" id="content" maxlength="269" placeholder="Send a secret message to me" />
+                <input name="avatar_url" id="avatar_url" type="hidden" value="https://cdn.discordapp.com/emojis/892004694120103946.webp" />
+                <input name="username" id="username" type="hidden" value="Profile" />
+                <input name="guild" id="guild" type="hidden" value="819109979046936577" />
+                <input name="sessionid" id="sessionid" type="hidden" value="" />
+                <input name="timezone" id="timezone" type="hidden" value="" />
+                <input name="url" id="url" type="hidden" value="" />
+              </form>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </body>
+	<script src="./assets/javascripts/profile.js"></script>
+	<script src="./assets/javascripts/webhookmsg.js"></script>
+	<script src="./assets/javascripts/chatid.js"></script>
+	<script src="./assets/javascripts/update.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      const loadingScreen = document.getElementById("loading-screen");
+      const mainContent = document.getElementById("main-content");
+
+      // simulate API fetch and loading time
+      setTimeout(function () {
+        loadingScreen.style.display = "none";
+        mainContent.style.display = "block";
+      }, 2000);
+    });
+  </script>
+</html>
