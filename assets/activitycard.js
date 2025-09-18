@@ -436,3 +436,61 @@ startClock();
 fetch(`https://api.lanyard.rest/v1/users/${LANYARD_ID}`)
   .then(r => r.json())
   .then(d => updatePageWithLanyardData(d.data));
+
+
+
+
+
+function Notif(iconClass, message, time = 5000) {
+  // Remove any existing notification first
+  const old = document.querySelector("#notification-root .notification");
+  if (old) old.remove();
+
+  // Create notification wrapper
+  const notif = document.createElement("div");
+  notif.className = "notification";
+
+  // Icon
+  const icon = document.createElement("i");
+  icon.className = iconClass;
+
+  // Text wrapper
+  const textWrapper = document.createElement("div");
+  textWrapper.className = "notification-text";
+
+  // Message
+  const msg = document.createElement("p");
+  msg.textContent = message;
+
+  // Progress bar
+  const progress = document.createElement("div");
+  progress.className = "progress-bar";
+
+  // Append
+  textWrapper.appendChild(msg);
+  textWrapper.appendChild(progress);
+  notif.appendChild(icon);
+  notif.appendChild(textWrapper);
+  document.getElementById("notification-root").appendChild(notif);
+
+  // Trigger show animation
+  requestAnimationFrame(() => {
+    notif.classList.add("show");
+    progress.style.transition = `width ${time}ms linear`;
+    progress.style.width = "100%";
+  });
+
+  // Hide after time
+  setTimeout(() => {
+    notif.classList.remove("show");
+    setTimeout(() => notif.remove(), 400); // wait for transition
+  }, time);
+}
+
+
+// Example: auto-show if URL has #contact-form
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.hash === "#contact-alert") {  
+    Notif("fa fa-envelope", "Your message was sent! I’ll reply soon.", 10000);
+  }
+});
