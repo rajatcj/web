@@ -34,6 +34,18 @@
 </head>
 <body>
 
+  <!-- Alert overlay (hidden by default) -->
+<div id="custom-alert" class="notification">
+  <i class="fa fa-envelope"></i>
+  <div class="notification-text">
+    <p>Your message was sent!</p>
+    <div class="progress-bar"></div>
+  </div>
+</div>
+
+
+
+
     <aside class="sidebar" id="sidebar">
         <nav class="nav">
             <div class="nav-logo">
@@ -445,6 +457,37 @@ fetch(`https://api.github.com/users/${USERNAME}/events/public?per_page=1`)
   });
 </script>
 
+<script>
+  function showNotification() {
+  const notif = document.getElementById("custom-alert");
+  const progress = notif.querySelector(".progress-bar");
+
+  // Reset
+  notif.classList.remove("show");
+  progress.style.width = "0";
+
+  // Small timeout to trigger CSS transition
+  setTimeout(() => {
+    notif.classList.add("show");
+    progress.style.width = "100%";
+  }, 10);
+
+  // Hide after 5 seconds
+  setTimeout(() => {
+    notif.classList.remove("show");
+    // Reset for next notification
+    setTimeout(() => { progress.style.width = "0"; }, 400);
+  }, 10000);
+}
+
+// Example: auto-show if URL has #contact-form
+document.addEventListener("DOMContentLoaded", () => {
+  if (window.location.hash === "#contact-alert") {
+    showNotification();
+  }
+});
+
+</script>
 
 </body>
 </html>

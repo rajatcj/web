@@ -217,7 +217,7 @@ emailForm.appendChild(accessKey);
 const redirectform = document.createElement('input');
 redirectform.type = "hidden";
 redirectform.name = "redirect";
-redirectform.value = "https://rajatcj.com/#contact-form";
+redirectform.value = "https://rajatcj.com/#contact-alert";
 emailForm.appendChild(redirectform);
 
 
@@ -285,6 +285,7 @@ emailCard.appendChild(emailForm);
 
 // Append email card to container
 container.appendChild(emailCard);
+
 
 }
 
