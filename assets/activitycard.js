@@ -491,6 +491,6 @@ function Notif(iconClass, message, time = 5000) {
 // Example: auto-show if URL has #contact-form
 document.addEventListener("DOMContentLoaded", () => {
   if (window.location.hash === "#contact-alert") {  
-    Notif("fa fa-envelope", "Your message was sent! I’ll reply soon.", 10000);
+    Notif("fa fa-envelope", "Your message was sent!", 10000);
   }
 });
