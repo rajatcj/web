@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Daily Mantra Flow</title>
+<style>
+:root{--bg:#071018;--card:#0f1720;--muted:#9aa4b2;--accent:#6ee7b7;--accent-2:#6ed3ef}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;background:linear-gradient(180deg,#03060a,#071018);color:#e6eef6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:18px auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.clock{display:flex;flex-direction:column}
+.time{font-size:20px;font-weight:700}
+.day{color:var(--muted);font-size:13px}
+select{background:var(--card);color:#e6eef6;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);font-weight:600}
+.card{background:var(--card);padding:16px;border-radius:14px;box-shadow:0 8px 24px rgba(2,6,23,0.6);margin-top:14px}
+.main{display:grid;grid-template-columns:1fr 340px;gap:14px}
+.player{display:flex;flex-direction:column;gap:10px}
+.panel{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+.title{font-weight:700;font-size:18px}
+.sub{color:var(--muted);font-size:13px}
+.mantra-name{font-weight:800;font-size:22px}
+.mantra-full{color:var(--muted);font-size:14px;margin-top:6px}
+.controls{display:flex;gap:8px;margin-top:8px}
+button{border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;padding:10px 14px;border-radius:10px;font-weight:600;cursor:pointer}
+button.primary{background:var(--accent);color:#022;border:none}
+.big-count{font-size:40px;font-weight:900}
+.progress{height:8px;background:rgba(255,255,255,0.03);border-radius:999px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-2),var(--accent));transition:width .2s}
+.next-wrap{display:flex;justify-content:center;margin-top:12px}
+.next-wrap button{min-width:160px}
+.list{display:flex;flex-direction:column;gap:10px}
+.item{padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.item .name{font-weight:700}
+.item .meta{color:var(--muted);font-size:13px}
+@media (max-width:880px){ .main{grid-template-columns:1fr} .right-col{order:2} }
+button, .item{touch-action:manipulation}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="clock">
+      <div class="time" id="time">--:--:--</div>
+      <div class="day" id="day">Loading...</div>
+    </div>
+    <div>
+      <label for="daySelect">Simulate Day: </label>
+      <select id="daySelect">
+        <option value="sun">Sunday</option>
+        <option value="mon">Monday</option>
+        <option value="tue">Tuesday</option>
+        <option value="wed">Wednesday</option>
+        <option value="thu">Thursday</option>
+        <option value="fri">Friday</option>
+        <option value="sat">Saturday</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="main">
+    <div>
+      <div class="card player">
+        <div class="panel">
+          <div class="title">Today's Flow</div>
+          <div class="sub">Select day to simulate different day from top right dropbox.</div>
+          <div class="list" id="todayList"></div>
+        </div>
+
+        <div class="panel" aria-live="polite" id="activePanel">
+          <div class="mantra-name" id="activeName">Ready?</div>
+          <div class="mantra-full" id="activeFull">You can review the list before starting.</div>
+          <div id="activityArea" style="margin-top:12px"></div>
+          <div class="next-wrap">
+            <button id="startFlow" class="primary.">Start</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="sub">Progress</div>
+            <div class="sub" id="progressText">0/0</div>
+          </div>
+          <div class="progress" style="margin-top:8px"><i id="bar" style="width:0%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="card">
+        <div class="title">Today's List</div>
+        <div class="sub" style="margin-top:6px">Daily Mantra's For Today</div>
+        <div class="list" id="listSidebar" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MANTRAS = [
+  {id:'sai', name:'Sai Baba', type:'activity', full:'Om Shri Sai Nathaya Namah'},
+  {id:'gayatri', name:'Gayatri', type:'chant', full:'Om Bhur Bhuvah Svah — Tat Savitur Varenyam...', count:{default:3, sat:11}},
+  {id:'shiv', name:'Shiva', type:'chant', full:'Om Namah Shivaya', count:{default:11, mon:108}},
+  {id:'shani', name:'Saturn / Shani', type:'chant', full:'Om Sham Shanicharaya Namah', count:{default:11, sat:21}},
+  {id:'budha', name:'Budha / Mercury', type:'chant', full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
+  {id:'gita', name:'Gita', type:'activity', full:'Read Bhagavad Gita shloka + meaning', fetch:true},
+  {id:'hare', name:'Hare Krishna', type:'chant', full:'Hare Krishna Hare Krishna / Hare Rama Hare Rama', count:{default:216, base108:108}, isHare:true},
+  {id:'chandra', name:'Chandra', type:'chant', full:'Om Chandraya Namah', count:{default:21}, days:['mon']},
+  {id:'gan', name:'Ganapati', type:'chant', full:'Om Gan Ganapataye Namah', count:{default:21}, days:['tue']},
+  {id:'rahu', name:'Rahu', type:'chant', full:'Om Rahave Namah', count:{default:11}, days:['wed','sat']},
+  {id:'brihaspati', name:'Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:21}, days:['thu']}
+];
+let GITA_SHLOKA = null;
+async function loadGita(){
+  try{
+    // Free API simulation; replace with actual Gita API
+    const res = await fetch('https://api.sampleapis.com/quotes/quotes');
+    const data = await res.json();
+    GITA_SHLOKA = data[0];
+  }catch(e){
+    GITA_SHLOKA={shloka:'कर्मण्येवाधिकारस्ते', trans:'Karmanye vadhikaraste ma phaleshu kadachana', meaning:'You have a right to perform your duty, not to the fruits.'};
+  }
+}
+loadGita();
+
+const TZ='Asia/Kathmandu';
+function nowKTM(){ return new Date(new Date().toLocaleString('en-US',{timeZone:TZ})); }
+function weekdayKey(d){ return ['sun','mon','tue','wed','thu','fri','sat'][d.getDay()]; }
+const timeEl=document.getElementById('time'), dayEl=document.getElementById('day');
+const todayList=document.getElementById('todayList'), listSidebar=document.getElementById('listSidebar');
+const activeName=document.getElementById('activeName'), activeFull=document.getElementById('activeFull');
+const activityArea=document.getElementById('activityArea'), startFlow=document.getElementById('startFlow');
+const progressText=document.getElementById('progressText'), bar=document.getElementById('bar');
+let todays=[], idx=0, session={currentMantra:null,count:0,goal:0};
+
+function refreshClock(){ 
+  const d=nowKTM(); 
+  timeEl.textContent=d.toLocaleTimeString('en-US',{hour12:false,timeZone:TZ}); 
+  dayEl.textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',year:'numeric',timeZone:TZ}); 
+}
+setInterval(refreshClock,1000); refreshClock();
+
+function buildTodays(key){ 
+  const d=nowKTM(); 
+  const weekday=key||weekdayKey(d); 
+  todays=MANTRAS.filter(m=>!m.days||m.days.includes(weekday)||m.days.includes('daily')); 
+  renderSidebar(weekday);
+}
+
+function effectiveCount(m,key){ 
+  if(!m.count) return null; 
+  if(typeof m.count==='number') return m.count; 
+  if(typeof m.count==='object'){ 
+    if(key&&m.count[key]!==undefined)return m.count[key]; 
+    return m.count.default||null;
+  } 
+  return null;
+}
+
+function renderSidebar(weekday){ 
+  listSidebar.innerHTML=''; 
+  todays.forEach((m,i)=>{ 
+    const div=document.createElement('div'); 
+    div.className='item'; 
+    const cnt=effectiveCount(m,weekday); 
+    div.innerHTML=`<div class="name">${m.name}</div><div class="meta">${m.type==='chant'?'Chant '+cnt:'Activity'}</div>`; 
+    listSidebar.appendChild(div);
+  });
+}
+
+function showActive(){
+  const m=todays[idx]; 
+  if(!m)return; 
+  activeName.textContent=m.name; 
+  activeFull.textContent=m.full||''; 
+  activityArea.innerHTML=''; 
+  session.count=session.goal=0;
+
+  if(m.type==='activity'){
+    if(m.fetch && GITA_SHLOKA){
+      activityArea.innerHTML=`<div class="sub" style="font-weight:700">${GITA_SHLOKA.shloka}</div><div class="sub" style="margin-top:8px">${GITA_SHLOKA.trans}</div><div style="margin-top:8px">${GITA_SHLOKA.meaning}</div>`;
+    }
+    advanceButton();
+  }
+  else if(m.type==='chant'){
+    let cnt = effectiveCount(m,weekdayKey(nowKTM()));
+    session.currentMantra=m; session.count=0; session.goal=cnt;
+
+    if(m.isHare){
+      activityArea.innerHTML='';
+      const preBtn=document.createElement('button'); 
+      preBtn.textContent='Start Prefix Mantra'; preBtn.className='primary';
+      preBtn.onclick=()=>{ 
+        const preDiv=document.createElement('div');
+        preDiv.className='sub'; preDiv.textContent='Prefix: Jai Shree Krishna, Chaitanya Prabhu Nityananda...'; 
+        activityArea.appendChild(preDiv);
+        preBtn.remove();
+        showHareCounter(m);
+      };
+      activityArea.appendChild(preBtn);
+    } else showCounter(m);
+  }
+  highlightSidebar(); updateCounterUI(); updateProgress();
+}
+
+function showHareCounter(m){
+  const counterDiv=document.createElement('div'); counterDiv.style.display='flex'; counterDiv.style.flexDirection='column'; counterDiv.style.gap='8px';
+  const big=document.createElement('div'); big.className='big-count'; big.id='bigCount'; big.textContent='0';
+  const sub=document.createElement('div'); sub.className='sub'; sub.id='counterText'; sub.textContent=`0/${session.goal}`;
+  counterDiv.appendChild(big); counterDiv.appendChild(sub);
+  const btn=document.createElement('button'); btn.textContent='+1'; btn.onclick=()=>{
+    session.count++; if(session.count>=session.goal){
+      session.count=session.goal; btn.textContent='Next'; btn.onclick=()=>{ 
+        const suf=document.createElement('div'); suf.className='sub'; suf.style.marginTop='8px';
+        suf.textContent='Suffix: Jai Shree Krishna, Chaitanya Prabhu Nityananda (End)';
+        counterDiv.appendChild(suf); btn.textContent='Next'; btn.onclick=advance;
+      };
+    }
+    updateCounterUI(); updateProgress();
+  };
+  counterDiv.appendChild(btn); activityArea.appendChild(counterDiv);
+}
+
+function showCounter(m){
+  const counterDiv=document.createElement('div'); counterDiv.style.display='flex'; counterDiv.style.flexDirection='column'; counterDiv.style.gap='8px';
+  const big=document.createElement('div'); big.className='big-count'; big.id='bigCount'; big.textContent='0';
+  const sub=document.createElement('div'); sub.className='sub'; sub.id='counterText'; sub.textContent=`0/${session.goal}`;
+  counterDiv.appendChild(big); counterDiv.appendChild(sub);
+  const btn=document.createElement('button'); btn.textContent='+1'; btn.onclick=()=>{
+    session.count++; if(session.count>=session.goal){ session.count=session.goal; btn.textContent='Next'; btn.onclick=advance;}
+    updateCounterUI(); updateProgress();
+  };
+  counterDiv.appendChild(btn); activityArea.appendChild(counterDiv);
+}
+
+function updateCounterUI(){ 
+  const bc=document.getElementById('bigCount'), ct=document.getElementById('counterText'); 
+  if(bc) bc.textContent=session.count; 
+  if(ct) ct.textContent=`${session.count}/${session.goal}`;
+}
+function updateProgress(){ 
+  const pct=session.goal?Math.round((session.count/session.goal)*100):0; 
+  bar.style.width=pct+'%'; progressText.textContent=`${session.count}/${session.goal}`;
+}
+function advance(){ idx++; if(idx>=todays.length){ activeName.textContent='All done for today'; activeFull.textContent='Well done.'; activityArea.innerHTML='<button class="primary" onclick="location.reload()">Start over</button>'; progressText.textContent='Done'; bar.style.width='100%'; return; } showActive(); updateCounterUI(); updateProgress();}
+function highlightSidebar(){ Array.from(listSidebar.children).forEach((el,i)=>{ el.style.background=(i===idx)?'rgba(110,231,183,0.04)':'transparent'; });}
+function advanceButton(){ const btn=document.createElement('button'); btn.className='primary'; btn.textContent='Next'; btn.onclick=advance; activityArea.appendChild(btn);}
+startFlow.onclick=()=>{ showActive(); startFlow.style.display='none'; };
+document.getElementById('daySelect').addEventListener('change',e=>{ buildTodays(e.target.value); idx=0; showActive(); });
+buildTodays(weekdayKey(nowKTM()));
+</script>
+</body>
+</html>
