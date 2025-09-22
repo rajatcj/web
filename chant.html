@@ -17,7 +17,7 @@ select{background:var(--card);color:#e6eef6;padding:6px 12px;border-radius:8px;b
 .card{background:var(--card);padding:16px;border-radius:14px;box-shadow:0 8px 24px rgba(2,6,23,0.6);margin-top:14px}
 .main{display:grid;grid-template-columns:1fr 340px;gap:14px}
 .player{display:flex;flex-direction:column;gap:10px}
-.panel{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+.panel{padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);position:relative}
 .title{font-weight:700;font-size:18px}
 .sub{color:var(--muted);font-size:13px}
 .mantra-name{font-weight:800;font-size:22px}
@@ -31,9 +31,10 @@ button.primary{background:var(--accent);color:#022;border:none}
 .next-wrap{display:flex;justify-content:center;margin-top:12px}
 .next-wrap button{min-width:160px}
 .list{display:flex;flex-direction:column;gap:10px}
-.item{padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
+.item{padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .item .name{font-weight:700}
 .item .meta{color:var(--muted);font-size:13px}
+.skip-btn{position:absolute;top:14px;right:14px;cursor:pointer}
 @media (max-width:880px){ .main{grid-template-columns:1fr} .right-col{order:2} }
 button, .item{touch-action:manipulation}
 </style>
@@ -72,8 +73,9 @@ button, .item{touch-action:manipulation}
           <div class="mantra-name" id="activeName">Ready?</div>
           <div class="mantra-full" id="activeFull">You can review the list before starting.</div>
           <div id="activityArea" style="margin-top:12px"></div>
+          <button class="skip-btn" id="skipBtn">Skip</button>
           <div class="next-wrap">
-            <button id="startFlow" class="primary.">Start</button>
+            <button id="startFlow" class="primary">Start</button>
           </div>
         </div>
 
@@ -100,21 +102,20 @@ button, .item{touch-action:manipulation}
 <script>
 const MANTRAS = [
   {id:'sai', name:'Sai Baba', type:'activity', full:'Om Shri Sai Nathaya Namah'},
-  {id:'gayatri', name:'Gayatri', type:'chant', full:'Om Bhur Bhuvah Svah — Tat Savitur Varenyam...', count:{default:3, sat:11}},
+  {id:'gayatri', name:'Gayatri', type:'chant', full:'Om Bhur Bhuva Swaha.. Tat Savitur Varenyam.. Bhargo Devasya Dheemahi.. Dhiyo Yo Nah Prachodayat..', count:{default:3, sat:11}},
   {id:'shiv', name:'Shiva', type:'chant', full:'Om Namah Shivaya', count:{default:11, mon:108}},
   {id:'shani', name:'Saturn / Shani', type:'chant', full:'Om Sham Shanicharaya Namah', count:{default:11, sat:21}},
-  {id:'budha', name:'Budha / Mercury', type:'chant', full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
-  {id:'gita', name:'Gita', type:'activity', full:'Read Bhagavad Gita shloka + meaning', fetch:true},
-  {id:'hare', name:'Hare Krishna', type:'chant', full:'Hare Krishna Hare Krishna / Hare Rama Hare Rama', count:{default:216, base108:108}, isHare:true},
-  {id:'chandra', name:'Chandra', type:'chant', full:'Om Chandraya Namah', count:{default:21}, days:['mon']},
-  {id:'gan', name:'Ganapati', type:'chant', full:'Om Gan Ganapataye Namah', count:{default:21}, days:['tue']},
+  {id:'budha', name:'Mercury / Budha', type:'chant', full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
+  {id:'gita', name:'Bhagavad Gita', type:'activity', full:'Read Bhagavad Gita shloka + meaning', fetch:true},
+  {id:'hare', name:'Hare Krishna', type:'chant', full:'Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare.. Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare', count:{default:216, base108:108}, isHare:true},
+  {id:'chandra', name:'Moon / Chandra', type:'chant', full:'Om Chandraya Namah', count:{default:21}, days:['mon']},
+  {id:'gan', name:'Ganesh', type:'chant', full:'Om Gan Ganapataye Namah', count:{default:21}, days:['tue']},
   {id:'rahu', name:'Rahu', type:'chant', full:'Om Rahave Namah', count:{default:11}, days:['wed','sat']},
-  {id:'brihaspati', name:'Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:21}, days:['thu']}
+  {id:'brihaspati', name:'Jupiter / Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:21}, days:['thu']}
 ];
 let GITA_SHLOKA = null;
 async function loadGita(){
   try{
-    // Free API simulation; replace with actual Gita API
     const res = await fetch('https://api.sampleapis.com/quotes/quotes');
     const data = await res.json();
     GITA_SHLOKA = data[0];
@@ -132,6 +133,7 @@ const todayList=document.getElementById('todayList'), listSidebar=document.getEl
 const activeName=document.getElementById('activeName'), activeFull=document.getElementById('activeFull');
 const activityArea=document.getElementById('activityArea'), startFlow=document.getElementById('startFlow');
 const progressText=document.getElementById('progressText'), bar=document.getElementById('bar');
+const skipBtn=document.getElementById('skipBtn');
 let todays=[], idx=0, session={currentMantra:null,count:0,goal:0};
 
 function refreshClock(){ 
@@ -164,7 +166,8 @@ function renderSidebar(weekday){
     const div=document.createElement('div'); 
     div.className='item'; 
     const cnt=effectiveCount(m,weekday); 
-    div.innerHTML=`<div class="name">${m.name}</div><div class="meta">${m.type==='chant'?'Chant '+cnt:'Activity'}</div>`; 
+    div.innerHTML=`<div class="name">${m.name}</div><div class="meta" id="meta-${m.id}">${m.type==='chant'?'Chant '+cnt:'Activity'}</div>`; 
+    div.onclick=()=>{ idx=i; showActive(); };
     listSidebar.appendChild(div);
   });
 }
@@ -177,11 +180,15 @@ function showActive(){
   activityArea.innerHTML=''; 
   session.count=session.goal=0;
 
+  skipBtn.style.display='block';
+  skipBtn.onclick=()=>{ advance(); };
+
   if(m.type==='activity'){
     if(m.fetch && GITA_SHLOKA){
       activityArea.innerHTML=`<div class="sub" style="font-weight:700">${GITA_SHLOKA.shloka}</div><div class="sub" style="margin-top:8px">${GITA_SHLOKA.trans}</div><div style="margin-top:8px">${GITA_SHLOKA.meaning}</div>`;
     }
     advanceButton();
+    updateSidebarStatus(m.id);
   }
   else if(m.type==='chant'){
     let cnt = effectiveCount(m,weekdayKey(nowKTM()));
@@ -189,19 +196,30 @@ function showActive(){
 
     if(m.isHare){
       activityArea.innerHTML='';
-      const preBtn=document.createElement('button'); 
-      preBtn.textContent='Start Prefix Mantra'; preBtn.className='primary';
-      preBtn.onclick=()=>{ 
-        const preDiv=document.createElement('div');
-        preDiv.className='sub'; preDiv.textContent='Prefix: Jai Shree Krishna, Chaitanya Prabhu Nityananda...'; 
-        activityArea.appendChild(preDiv);
-        preBtn.remove();
-        showHareCounter(m);
-      };
-      activityArea.appendChild(preBtn);
+      const choiceDiv=document.createElement('div');
+      choiceDiv.style.display='flex';
+      choiceDiv.style.gap='10px';
+      const b108=document.createElement('button'); b108.textContent='108'; b108.className='primary';
+      const b216=document.createElement('button'); b216.textContent='216'; b216.className='primary';
+      [b108,b216].forEach(btn=>{
+        btn.onclick=()=>{
+          session.goal=btn.textContent==='108'?108:216;
+          choiceDiv.remove();
+          const pre=document.createElement('div'); pre.className='sub'; pre.textContent='Prefix: Jai Shree Krishna, Chaitanya Prabhu Nityananda...';
+          activityArea.appendChild(pre);
+          showHareCounter(m);
+        };
+      });
+      choiceDiv.appendChild(b108); choiceDiv.appendChild(b216);
+      activityArea.appendChild(choiceDiv);
     } else showCounter(m);
   }
   highlightSidebar(); updateCounterUI(); updateProgress();
+}
+
+function updateSidebarStatus(id){
+  const meta=document.getElementById(`meta-${id}`);
+  if(meta) meta.textContent=session.count>=session.goal?'Complete':`${session.count}/${session.goal}`;
 }
 
 function showHareCounter(m){
@@ -217,7 +235,7 @@ function showHareCounter(m){
         counterDiv.appendChild(suf); btn.textContent='Next'; btn.onclick=advance;
       };
     }
-    updateCounterUI(); updateProgress();
+    updateCounterUI(); updateProgress(); updateSidebarStatus(m.id);
   };
   counterDiv.appendChild(btn); activityArea.appendChild(counterDiv);
 }
@@ -229,7 +247,7 @@ function showCounter(m){
   counterDiv.appendChild(big); counterDiv.appendChild(sub);
   const btn=document.createElement('button'); btn.textContent='+1'; btn.onclick=()=>{
     session.count++; if(session.count>=session.goal){ session.count=session.goal; btn.textContent='Next'; btn.onclick=advance;}
-    updateCounterUI(); updateProgress();
+    updateCounterUI(); updateProgress(); updateSidebarStatus(m.id);
   };
   counterDiv.appendChild(btn); activityArea.appendChild(counterDiv);
 }
