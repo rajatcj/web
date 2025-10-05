@@ -116,41 +116,97 @@ function renderActivities(activities) {
     textWrapper.style.textAlign = 'left';
 
     const activitytype = document.createElement('div');
-    activitytype.className = 'label';
+    activitytype.className = 'activitytitle';
     activitytype.style.fontSize = 'x-small';
     activitytype.textContent = 'Current Activity';
     textWrapper.appendChild(activitytype);
 
     const label = document.createElement('div');
-    label.className = 'label';
-    label.style.color = '#3b82f6';
+    label.className = 'activityname';
     label.textContent = act.name || 'Activity';
     textWrapper.appendChild(label);
 
     if (act.details) {
       const details = document.createElement('div');
-      details.className = 'big';
+      details.className = 'activitydetail';
       details.textContent = act.details;
       textWrapper.appendChild(details);
     }
 
     if (act.state) {
       const state = document.createElement('div');
-      state.className = 'small';
+      state.className = 'activitystatus';
       state.textContent = act.state;
       textWrapper.appendChild(state);
     }
 
-    if (act.timestamps && act.timestamps.start) {
-      const elapsedSec = Math.floor((Date.now() - act.timestamps.start) / 1000);
-      const hours = Math.floor(elapsedSec / 3600);
-      const mins = Math.floor((elapsedSec % 3600) / 60);
-      const secs = elapsedSec % 60;
-      const elapsed = document.createElement('div');
-      elapsed.className = 'small';
-      elapsed.textContent = `Elapsed: ${hours}h ${mins}m ${secs}s`;
-      textWrapper.appendChild(elapsed);
+if (act.timestamps && act.timestamps.start) {
+
+  
+  const elapsedWrapper = document.createElement('div');
+
+    // Progress bar elements (only if end exists)
+  let progressBar, progressContainer;
+  if (act.timestamps.end) {
+    progressContainer = document.createElement('div');
+    progressContainer.className = 'activity-progress-container';
+
+    progressBar = document.createElement('div');
+    progressBar.className = 'activity-progress-bar';
+
+    progressContainer.appendChild(progressBar);
+    elapsedWrapper.appendChild(progressContainer);
+  }
+
+  elapsedWrapper.className = 'activitytime';
+  textWrapper.appendChild(elapsedWrapper);
+
+  const elapsedText = document.createElement('div');
+  elapsedText.className = 'activity-elapsed-text';
+  elapsedWrapper.appendChild(elapsedText);
+
+  // Helper: format ms to mm:ss or hh:mm:ss
+  const formatMS = (ms) => {
+    const totalSec = Math.floor(ms / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    const pad = (n) => String(n).padStart(2, '0');
+    if (h > 0) return `${h}:${pad(m)}:${pad(s)}`;
+    else return `${pad(m)}:${pad(s)}`;
+  };
+
+
+
+  // Update function
+  const updateProgress = () => {
+    const now = Date.now();
+    const start = act.timestamps.start;
+    const end = act.timestamps.end || null;
+
+    const elapsed = now - start;
+    if (end) {
+      const total = end - start;
+      const percent = Math.min((elapsed / total) * 100, 100);
+      progressBar.style.width = `${percent}%`;
+      elapsedText.textContent = `${formatMS(elapsed)} / ${formatMS(total)}`;
+    } else {
+      elapsedText.textContent = `${formatMS(elapsed)} elapsed`;
     }
+  };
+
+  // Initial update
+  updateProgress();
+
+  // Live update every second
+  const interval = setInterval(() => {
+    updateProgress();
+    if (act.timestamps.end && Date.now() > act.timestamps.end) {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
 
     row.appendChild(textWrapper);
 

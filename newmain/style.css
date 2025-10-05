@@ -708,3 +708,59 @@ textarea.input { padding: 0.8rem 1.2rem; min-height: 140px; border-radius: .5rem
   background: rgba(0,123,255,0.85); /* slightly lighter shade */
 }
 
+
+
+
+.botuu-section {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.botucircle {
+    width: 300px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    background-image: url('./assets/botuhappy.png'); /* happy at load */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-top: 33%;
+}
+
+.eye-white-container {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.eye-white {
+    flex: 0 0 25%; /* fixed width */
+    aspect-ratio: 1 / 1.2;
+    border-radius: 50%;
+    background: #fff;
+    position: relative;
+}
+
+.eye-ball {
+    width: 70%;
+    aspect-ratio: 1.1 / 1;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #7f9ef8;
+    transition: transform 0.08s linear;
+}
+
+.hidden-eyes {
+    display: none !important;
+}
+
+.mouse-capture {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
