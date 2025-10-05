@@ -17,7 +17,7 @@
     }
 
     function showNormal() {
-        botFace.style.backgroundImage = "url('./assets/botublank.png')";
+        botFace.style.backgroundImage = "none";
         eyes.forEach(eye => eye.classList.remove('hidden-eyes'));
     }
 
