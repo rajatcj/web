@@ -1,4 +1,113 @@
 // Toggling Skill Tabs
+(function() {
+    if (window.innerWidth < 1024) return; // PC only
+
+    const botFace = document.getElementById("bot-face");
+    const eyes = botFace.querySelectorAll(".eye-white");
+    const balls = botFace.querySelectorAll(".eye-ball");
+    const capture = document.querySelector(".mouse-capture");
+
+    let cursorOutside = true; // initial load → happy
+    let cursorHovering = false;
+    let inactivityTimer = null;
+
+    function showHappy() {
+        botFace.style.backgroundImage = "url('./assets/botuhappy.png')";
+        eyes.forEach(eye => eye.classList.add('hidden-eyes'));
+    }
+
+    function showNormal() {
+        botFace.style.backgroundImage = "url('./assets/botublank.png')";
+        eyes.forEach(eye => eye.classList.remove('hidden-eyes'));
+    }
+
+    function updateBackground() {
+        if (cursorOutside || cursorHovering) {
+            showHappy();
+        } else {
+            showNormal();
+        }
+    }
+
+    function resetInactivityTimer() {
+        if (inactivityTimer) clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+            showHappy();
+        }, 2000); // 2s inactivity
+    }
+
+    function moveEyes(e) {
+        cursorOutside = (e.clientX < 0 || e.clientY < 0 ||
+                         e.clientX > window.innerWidth || e.clientY > window.innerHeight);
+        updateBackground();
+        resetInactivityTimer();
+
+        if (eyes[0].classList.contains('hidden-eyes')) return; // hide pupils when happy
+
+        balls.forEach((ball, i) => {
+            const eye = eyes[i];
+            const rect = eye.getBoundingClientRect();
+
+            const eyeCenterX = rect.left + rect.width / 2;
+            const eyeCenterY = rect.top + rect.height / 2;
+
+            const dx = e.clientX - eyeCenterX;
+            const dy = e.clientY - eyeCenterY;
+
+            const maxMove = rect.width / 4;
+            const distance = Math.min(Math.hypot(dx, dy), maxMove);
+            const angle = Math.atan2(dy, dx);
+
+            const offsetX = Math.cos(angle) * distance;
+            const offsetY = Math.sin(angle) * distance;
+
+            ball.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
+        });
+    }
+
+    // Hovering bot face → happy instantly
+    botFace.addEventListener("mouseenter", () => {
+        cursorHovering = true;
+        showHappy();
+    });
+    botFace.addEventListener("mouseleave", () => {
+        cursorHovering = false;
+        updateBackground();
+    });
+
+    // Track cursor
+    document.addEventListener("mousemove", moveEyes);
+    capture.addEventListener("mousemove", moveEyes);
+
+    // Map iframe cursors to main page coordinates
+    document.querySelectorAll("iframe").forEach(iframe => {
+        try {
+            iframe.contentWindow.document.addEventListener("mousemove", e => {
+                const rect = iframe.getBoundingClientRect();
+                const mainX = rect.left + e.clientX;
+                const mainY = rect.top + e.clientY;
+                moveEyes({ clientX: mainX, clientY: mainY });
+            });
+        } catch (err) {}
+    });
+
+    // Reset eyes when leaving window
+    document.addEventListener("mouseleave", () => {
+        balls.forEach(ball => ball.style.transform = "translate(-50%, -50%)");
+        cursorOutside = true;
+        updateBackground();
+    });
+
+    document.addEventListener("mouseenter", () => {
+        cursorOutside = false;
+        updateBackground();
+    });
+
+    // Initial load → happy
+    showHappy();
+})();
+
+
 
 const tabs = document.querySelectorAll('[data-target]');
 const tabContent = document.querySelectorAll('[data-content]');
@@ -169,110 +278,3 @@ if(navClose) {
 
 
 
-(function() {
-    if (window.innerWidth < 1024) return; // PC only
-
-    const botFace = document.getElementById("bot-face");
-    const eyes = botFace.querySelectorAll(".eye-white");
-    const balls = botFace.querySelectorAll(".eye-ball");
-    const capture = document.querySelector(".mouse-capture");
-
-    let cursorOutside = true; // initial load → happy
-    let cursorHovering = false;
-    let inactivityTimer = null;
-
-    function showHappy() {
-        botFace.style.backgroundImage = "url('./assets/botuhappy.png')";
-        eyes.forEach(eye => eye.classList.add('hidden-eyes'));
-    }
-
-    function showNormal() {
-        botFace.style.backgroundImage = "url('./assets/botublank.png')";
-        eyes.forEach(eye => eye.classList.remove('hidden-eyes'));
-    }
-
-    function updateBackground() {
-        if (cursorOutside || cursorHovering) {
-            showHappy();
-        } else {
-            showNormal();
-        }
-    }
-
-    function resetInactivityTimer() {
-        if (inactivityTimer) clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => {
-            showHappy();
-        }, 2000); // 2s inactivity
-    }
-
-    function moveEyes(e) {
-        cursorOutside = (e.clientX < 0 || e.clientY < 0 ||
-                         e.clientX > window.innerWidth || e.clientY > window.innerHeight);
-        updateBackground();
-        resetInactivityTimer();
-
-        if (eyes[0].classList.contains('hidden-eyes')) return; // hide pupils when happy
-
-        balls.forEach((ball, i) => {
-            const eye = eyes[i];
-            const rect = eye.getBoundingClientRect();
-
-            const eyeCenterX = rect.left + rect.width / 2;
-            const eyeCenterY = rect.top + rect.height / 2;
-
-            const dx = e.clientX - eyeCenterX;
-            const dy = e.clientY - eyeCenterY;
-
-            const maxMove = rect.width / 4;
-            const distance = Math.min(Math.hypot(dx, dy), maxMove);
-            const angle = Math.atan2(dy, dx);
-
-            const offsetX = Math.cos(angle) * distance;
-            const offsetY = Math.sin(angle) * distance;
-
-            ball.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`;
-        });
-    }
-
-    // Hovering bot face → happy instantly
-    botFace.addEventListener("mouseenter", () => {
-        cursorHovering = true;
-        showHappy();
-    });
-    botFace.addEventListener("mouseleave", () => {
-        cursorHovering = false;
-        updateBackground();
-    });
-
-    // Track cursor
-    document.addEventListener("mousemove", moveEyes);
-    capture.addEventListener("mousemove", moveEyes);
-
-    // Map iframe cursors to main page coordinates
-    document.querySelectorAll("iframe").forEach(iframe => {
-        try {
-            iframe.contentWindow.document.addEventListener("mousemove", e => {
-                const rect = iframe.getBoundingClientRect();
-                const mainX = rect.left + e.clientX;
-                const mainY = rect.top + e.clientY;
-                moveEyes({ clientX: mainX, clientY: mainY });
-            });
-        } catch (err) {}
-    });
-
-    // Reset eyes when leaving window
-    document.addEventListener("mouseleave", () => {
-        balls.forEach(ball => ball.style.transform = "translate(-50%, -50%)");
-        cursorOutside = true;
-        updateBackground();
-    });
-
-    document.addEventListener("mouseenter", () => {
-        cursorOutside = false;
-        updateBackground();
-    });
-
-    // Initial load → happy
-    showHappy();
-})();

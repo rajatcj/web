@@ -722,7 +722,7 @@ textarea.input { padding: 0.8rem 1.2rem; min-height: 140px; border-radius: .5rem
     width: 300px;
     aspect-ratio: 1 / 1;
     position: relative;
-    background-image: url('./assets/botuhappy.png'); /* happy at load */
+    background-image: url('../assets/botuhappy.png'); /* happy at load */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

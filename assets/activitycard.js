@@ -554,3 +554,53 @@ document.addEventListener("DOMContentLoaded", () => {
     Notif("fa-solid fa-ghost", "From instagram? Drop me a text if you liked this!", 10000);
   } 
 });
+
+
+
+// activity card github
+
+const USERNAME = "rajatcj"; // your GitHub username
+
+
+fetch(`https://api.github.com/users/${USERNAME}/events/public?per_page=1`)
+  .then(res => res.json())
+  .then(events => {
+    if (!events.length) {
+      document.getElementById("github-activity").textContent = "No recent activity found.";
+      document.getElementById("github-date").textContent = "—";
+      return;
+    }
+      
+    const e = events[0];
+    let text = "Did something cool on GitHub 😎";
+
+    switch (e.type) {
+      case "PushEvent":
+        const commit = e.payload.commits[0];
+        text = `📝 Pushed a commit "${commit.message}"`;
+        break;
+      case "PullRequestEvent":
+        text = `🔀 ${e.payload.action} pull request in ${e.repo.name}`;
+        break;
+      case "IssuesEvent":
+        text = `🐛 ${e.payload.action} issue in ${e.repo.name}`;
+        break;
+      case "WatchEvent":
+        text = `⭐ Starred ${e.repo.name}`;
+        break;
+      case "ForkEvent":
+        text = `🍴 Forked ${e.repo.name}`;
+        break;
+      default:
+        text = `📌 ${e.type} in ${e.repo.name}`;
+    }
+
+    const date = new Date(e.created_at).toLocaleString();
+    document.getElementById("github-activity").textContent = text;
+    document.getElementById("github-date").textContent = date;
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("github-activity").textContent = "Error loading activity.";
+    document.getElementById("github-date").textContent = "—";
+  });
