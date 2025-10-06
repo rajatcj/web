@@ -604,10 +604,9 @@ Message Box
 --------------------*/
 .message-box {
   flex: 0 1 40px;
-  border-radius: 9px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.2);
-  margin: 5px;
-  width: calc(100% - 10px);
+  margin: 6px;
   background: var(--title);
   padding: 10px;
   position: relative;
@@ -632,8 +631,8 @@ Message Box
 .message-box .message-submit {
   position: absolute;
   z-index: 1;
-  top: 9px;
-  right: 10px;
+  top: 8px;
+  right: 8px;
   color: #fff;
   border: none;
   background: #ee6464;
@@ -641,7 +640,7 @@ Message Box
   text-transform: uppercase;
   line-height: 1;
   padding: 6px 10px;
-  border-radius: 10px;
+  border-radius: 6px;
   outline: none !important;
   transition: background 0.2s ease;
 }
@@ -771,204 +770,3 @@ Bounce
 
 
 
-.set chatdata [
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "x",
-"co": "null"
-},
-{
-"sf": 0, "id": "sys",
-"co": "(The Older Messages Are Retracted)"
-}
-]
