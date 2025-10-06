@@ -76,7 +76,7 @@
             <input name="guild" id="guild" type="hidden" value="819109979046936577"/>
             <input name="sessionid" id="sessionid" type="hidden" value="${chatid}"/>
             <input name="timezone" id="timezone" type="hidden" value=""/>
-            <input name="url" id="url" type="hidden" value="" />
+            <input name="url" id="url" type="hidden" value="${window.top.location.href}" />
           </form>
         `);
       
@@ -165,6 +165,9 @@
 				if(dataArray[i].id === chatid) {
 					messageElement = document.createElement('div');
 					messageElement.classList.add('message', 'message-personal');
+				} else if(dataArray[i].id === "sys")  {
+					messageElement = document.createElement('div');
+					messageElement.classList.add('message-system');
 				} else {
 					messageElement = document.createElement('div');
 					messageElement.classList.add('message', 'new');
@@ -316,12 +319,19 @@
 		fetch("https://api.lanyard.rest/v1/users/754033245972201612").then(response => response.json()).then(data => {
 			const dataArray = JSON.parse(data.data.kv.chatdata)
 			console.log[dataArray[0]]
-			msgbox.innerHTML = "";
+			msgbox.innerHTML = `<div class="message-system"><div class="messagecontent">To see older messages join discord (Botu's Crewmates) and go to #website-messages, Link on the footer of this page.</div></div>`;
+			
 			for(var i = 0; i < dataArray.length; i++) {
 				let messageElement;
 				if(dataArray[i].id === chatid) {
 					messageElement = document.createElement('div');
 					messageElement.classList.add('message', 'message-personal');
+				} else if(dataArray[i].id === "sys")  {
+					messageElement = document.createElement('div');
+					messageElement.classList.add('message-system');
+				} else if(dataArray[i].id === "x")  {
+					messageElement = document.createElement('div');
+					messageElement.classList.add('message-nodisplay');
 				} else {
 					messageElement = document.createElement('div');
 					messageElement.classList.add('message', 'new');
