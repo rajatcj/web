@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
   <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.min.css">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./styleneo.css">
 </head>
 
 <body>
@@ -69,7 +69,7 @@
         $('.chat').css('border-radius', '0');
         $("#msgsendarea").html(`
           <form class="message-box" onsubmit="sendLinkTreePrivMsg(); return false">
-            <input class="message-input" type="text" autocomplete="off" name="content" id="content" maxlength="269" placeholder="Click the message to reply to them" />
+            <input class="message-input" type="text" autocomplete="off" name="content" id="content" maxlength="269" placeholder="Send anonymous message" />
             <button type="submit" class="message-submit">Send</button>
             <input name="avatar_url" id="avatar_url" type="hidden" value="https://cdn.discordapp.com/emojis/892004694120103946.webp"/>
             <input name="username" id="username" type="hidden" value="Profile"/>
@@ -179,7 +179,7 @@
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -189,9 +189,12 @@
 					if(dataArray[i].reid == chatid) {
 						repliedToElement.classList.add('repliedtomme');
 					}
+					if(dataArray[i].reid === 'Rajat') {
+						repliedToElement.style.background = 'var(--my-message)';
+					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {
@@ -333,7 +336,7 @@
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -343,9 +346,12 @@
 					if(dataArray[i].reid == chatid) {
 						repliedToElement.classList.add('repliedtomme');
 					}
+					if(dataArray[i].reid === 'Rajat') {
+						repliedToElement.style.background = 'var(--my-message)';
+					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {
@@ -495,7 +501,7 @@
 				const avatarElement = document.createElement('figure');
 				avatarElement.classList.add('avatar');
 				const avatarImg = document.createElement('img');
-				avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+				avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 				avatarElement.appendChild(avatarImg);
 				messageElement.appendChild(avatarElement);
 			}
@@ -505,9 +511,12 @@
 				if(dataArray[i].reid == chatid) {
 					repliedToElement.classList.add('repliedtomme');
 				}
+				if(dataArray[i].reid === 'Rajat') {
+						repliedToElement.style.background = 'var(--my-message)';
+					}
 				const repliedToImg = document.createElement('img');
 				repliedToImg.classList.add('repliedtoavatar');
-				repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+				repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 				repliedToElement.appendChild(repliedToImg);
 				let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 					switch (char) {

@@ -164,7 +164,7 @@ function getFormattedTime(timestamp) {
 				const avatarElement = document.createElement('figure');
 				avatarElement.classList.add('avatar');
 				const avatarImg = document.createElement('img');
-				avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+				avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 				avatarElement.appendChild(avatarImg);
 				messageElement.appendChild(avatarElement);
 			}
@@ -176,7 +176,7 @@ function getFormattedTime(timestamp) {
 				}
 				const repliedToImg = document.createElement('img');
 				repliedToImg.classList.add('repliedtoavatar');
-				repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+				repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 				repliedToElement.appendChild(repliedToImg);
 				let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 					switch (char) {
@@ -363,7 +363,7 @@ fetch('https://sendbotu.rajatcj.com.np/ping')
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -375,7 +375,7 @@ fetch('https://sendbotu.rajatcj.com.np/ping')
 					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {
@@ -517,7 +517,7 @@ fetch('https://sendbotu.rajatcj.com.np/ping')
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i].id.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -529,7 +529,7 @@ fetch('https://sendbotu.rajatcj.com.np/ping')
 					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i].reid.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {

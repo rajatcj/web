@@ -149,6 +149,7 @@ function activeWork() {
     linkWork.forEach(l => l.classList.remove('active-work'))
     this.classList.add('active-work')
 }
+
 linkWork.forEach(l => l.addEventListener('click', activeWork));
 
 //Portfolio Popup
