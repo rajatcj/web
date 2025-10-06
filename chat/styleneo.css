@@ -20,6 +20,9 @@ Mixins
   --textbox-bo: #43192d;
   --textbox-text: rgb(0, 0, 0);
   --timestamp: rgb(99, 99, 99);
+  --msg-self: linear-gradient(120deg, #248A52, #257287);
+
+--msg-self-tail: #257287;
 }
 
 [data-theme="dark"] {
@@ -62,6 +65,7 @@ Mixins
   --textbox-bo: #ffad7d;
   --textbox-text: rgb(255, 255, 255);
   --timestamp: rgba(255, 255, 255, .3);
+
 }
 
 [data-theme="discord"] {
@@ -469,7 +473,7 @@ Messages
   float: right;
   color: #fff;
   text-align: left;
-  background: linear-gradient(120deg, #248A52, #257287);
+  background: var(--msg-self);
   border-radius: 10px 10px 0 10px;
 }
 .messages .message.message-personal::before {
@@ -477,7 +481,7 @@ Messages
   right: 0;
   border-right: none;
   border-left: 5px solid transparent;
-  border-top: 4px solid #257287;
+  border-top: 4px solid var(--msg-self-tail);
   bottom: -4px;
 }
 .messages .message:last-child {
