@@ -182,7 +182,7 @@
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -197,7 +197,7 @@
 					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {
@@ -265,7 +265,7 @@
 							document.getElementById('content').focus();
 						}
 						// Set inner HTML of new div element
-						document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
+						document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
 						var chatroom = document.getElementById('messages-content');
 						$messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
 							scrollInertia: 1000,
@@ -275,7 +275,7 @@
 				});
 			}
 			if(sessionStorage.getItem('data-id') != null) {
-				document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + sessionStorage.getItem('data-id') + '' + sessionStorage.getItem('data-id').toString().slice(-6) + '">' + sessionStorage.getItem('data-co').replace(/[<>&'"/\\]/g, function(char) {
+				document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + sessionStorage.getItem('data-id') + '' + sessionStorage.getItem('data-id').toString().slice(-6) + '">' + sessionStorage.getItem('data-co').replace(/[<>&'"/\\]/g, function(char) {
 					switch (char) {
 						case '<':
 							return '{';
@@ -293,10 +293,10 @@
 			} else {
 				document.querySelector("#mebox2").innerHTML = '';
 			}
-			document.querySelector("#mebox").innerHTML = '<div class="message message-personal" style="background: var(--replyingtobg); padding: 6px 0px 7px;"><figure class="avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + chatid + '' + chatid.toString().slice(-6) + '"></figure></div>';
+			document.querySelector("#mebox").innerHTML = '<div class="message message-personal" style="background: var(--replyingtobg); padding: 6px 0px 7px;"><figure class="avatar"><img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + chatid + '' + chatid.toString().slice(-6) + '"></figure></div>';
 			const imagetochange = document.querySelectorAll('img');
 			for(let i = 0; i < imagetochange.length; i++) {
-				imagetochange[i].src = imagetochange[i].src.replace('https://api.dicebear.com/7.x/avataaars/svg?seed=RajatRajat', 'https://dcdn.dstn.to/avatars/754033245972201612');
+				imagetochange[i].src = imagetochange[i].src.replace('https://api.dicebear.com/7.x/bottts-neutral/svg?seed=RajatRajat', 'https://dcdn.dstn.to/avatars/754033245972201612');
 			}
 			var chatroom = document.getElementById('messages-content');
 			if(chatroom.scrollTop < chatroom.scrollHeight - chatroom.clientHeight) {
@@ -319,7 +319,7 @@
 		fetch("https://api.lanyard.rest/v1/users/754033245972201612").then(response => response.json()).then(data => {
 			const dataArray = JSON.parse(data.data.kv.chatdata)
 			console.log[dataArray[0]]
-			msgbox.innerHTML = `<div class="message-system"><div class="messagecontent">To see older messages join discord (Botu's Crewmates) and go to #website-messages, Link on the footer of this page.</div></div>`;
+			msgbox.innerHTML = `<div class="message-system"><div class="messagecontent"><a>The older messages have been retracted!</a><br>Join Discord (Botu's Crewmates) → #website-messages to view them. Link's in the footer!</div></div>`;
 			
 			for(var i = 0; i < dataArray.length; i++) {
 				let messageElement;
@@ -346,7 +346,7 @@
 					const avatarElement = document.createElement('figure');
 					avatarElement.classList.add('avatar');
 					const avatarImg = document.createElement('img');
-					avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
+					avatarImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 					avatarElement.appendChild(avatarImg);
 					messageElement.appendChild(avatarElement);
 				}
@@ -361,7 +361,7 @@
 					}
 					const repliedToImg = document.createElement('img');
 					repliedToImg.classList.add('repliedtoavatar');
-					repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
+					repliedToImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 					repliedToElement.appendChild(repliedToImg);
 					let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 						switch (char) {
@@ -429,7 +429,7 @@
 							document.getElementById('content').focus();
 						}
 						// Set inner HTML of new div element
-						document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
+						document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
 						var chatroom = document.getElementById('messages-content');
 						$messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
 							scrollInertia: 1000,
@@ -439,7 +439,7 @@
 				});
 			};
 			if(sessionStorage.getItem('data-id') != null) {
-				document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + sessionStorage.getItem('data-id') + '' + sessionStorage.getItem('data-id').toString().slice(-6) + '">' + sessionStorage.getItem('data-co').replace(/[<>&'"/\\]/g, function(char) {
+				document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + sessionStorage.getItem('data-id') + '' + sessionStorage.getItem('data-id').toString().slice(-6) + '">' + sessionStorage.getItem('data-co').replace(/[<>&'"/\\]/g, function(char) {
 					switch (char) {
 						case '<':
 							return '{';
@@ -457,10 +457,10 @@
 			} else {
 				document.querySelector("#mebox2").innerHTML = '';
 			}
-			document.querySelector("#mebox").innerHTML = '<div class="message message-personal" style="background: var(--replyingtobg); padding: 6px 0px 7px;"><figure class="avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + chatid + '' + chatid.toString().slice(-6) + '"></figure></div>';
+			document.querySelector("#mebox").innerHTML = '<div class="message message-personal" style="background: var(--replyingtobg); padding: 6px 0px 7px;"><figure class="avatar"><img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + chatid + '' + chatid.toString().slice(-6) + '"></figure></div>';
 			const imagetochange = document.querySelectorAll('img');
 			for(let i = 0; i < imagetochange.length; i++) {
-				imagetochange[i].src = imagetochange[i].src.replace('https://api.dicebear.com/7.x/avataaars/svg?seed=RajatRajat', 'https://dcdn.dstn.to/avatars/754033245972201612');
+				imagetochange[i].src = imagetochange[i].src.replace('https://api.dicebear.com/7.x/bottts-neutral/svg?seed=RajatRajat', 'https://dcdn.dstn.to/avatars/754033245972201612');
 			}
 			var chatroom = document.getElementById('messages-content');
 			setTimeout(() => {
@@ -511,7 +511,7 @@
 				const avatarElement = document.createElement('figure');
 				avatarElement.classList.add('avatar');
 				const avatarImg = document.createElement('img');
-				avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
+				avatarImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].id}` + dataArray[i]?.id?.toString().slice(-6);
 				avatarElement.appendChild(avatarImg);
 				messageElement.appendChild(avatarElement);
 			}
@@ -526,7 +526,7 @@
 					}
 				const repliedToImg = document.createElement('img');
 				repliedToImg.classList.add('repliedtoavatar');
-				repliedToImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
+				repliedToImg.src = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${dataArray[i].reid}` + dataArray[i]?.reid?.toString().slice(-6);
 				repliedToElement.appendChild(repliedToImg);
 				let clickablebutreply = dataArray[i].reco.replace(/[<>&'"/\\]/g, function(char) {
 					switch (char) {
@@ -594,7 +594,7 @@
 						document.getElementById('content').focus();
 					}
 					// Set inner HTML of new div element
-					document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
+					document.querySelector("#mebox2").innerHTML = '<div class="repliedtomsg" onclick="clearBoxAndSessionStorage()" style="margin-left:0%; margin-bottom:0%; width:100%; color:#fff;"><img class="repliedtoavatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + value1 + '' + value1.toString().slice(-6) + '">' + value2 + '</div>';
 					var chatroom = document.getElementById('messages-content');
 					$messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
 						scrollInertia: 1000,
