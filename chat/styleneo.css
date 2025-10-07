@@ -56,7 +56,7 @@ Mixins
   --scrollbar : #ffffff7c;
   --avatar-border : rgba(255, 255, 255, 0.24);
   --my-message : linear-gradient(60deg, #454545be, #ff2424);
-  --repliedtomsg : rgb(112, 112, 112);
+  --repliedtomsg : #454545;
   --linkcolor : #c6a7f8;
   --loadingrotatebg: #000000;
   --loadingtext: #fff;
