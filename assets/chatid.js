@@ -11,10 +11,10 @@ if(typeof(Storage) !== "undefined") {
     var chatid = "NA";
 }
 
-$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href)}&sessionid=${chatid}`)
+$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href).slice(0, 150)}&sessionid=${chatid}`)
 
 // document.getElementById('sessionid').value = chatid;
-// document.getElementById('url').value = encodeURIComponent(window.top.location.href);
+// document.getElementById('url').value = encodeURIComponent(window.top.location.href).slice(0, 150);
 
 
 /*

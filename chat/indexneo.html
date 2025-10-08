@@ -73,7 +73,7 @@
             <button type="submit" class="message-submit">Send</button>
             <input name="sessionid" id="sessionid" type="hidden" value="${chatid}"/>
             <input name="timezone" id="timezone" type="hidden" value=""/>
-            <input name="url" id="url" type="hidden" value="${encodeURIComponent(window.top.location.href)}" />
+            <input name="url" id="url" type="hidden" value="${encodeURIComponent(window.top.location.href).slice(0, 150)}" />
           </form>
         `);
       
@@ -93,7 +93,7 @@
       if (theme) document.documentElement.setAttribute('data-theme', theme);
 
 	
-$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href)}&sessionid=${chatid}`)
+$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href).slice(0, 150)}&sessionid=${chatid}`)
 
 
 	
@@ -463,7 +463,7 @@ $.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponen
 				reid: sessionStorage.getItem('data-id'),
 				reco: sessionStorage.getItem('data-co')
 			}];
-			$.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&sessionid=" + localStorage.getItem("chatid") + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co')  + "&sf=" + snowflake + "&siteurl=" + encodeURIComponent(window.top.location.href))
+			$.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&sessionid=" + localStorage.getItem("chatid") + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co')  + "&sf=" + snowflake + "&siteurl=" + encodeURIComponent(window.top.location.href).slice(0, 150))
      
 			document.getElementById('content').value = "";
 			sessionStorage.removeItem('data-id');

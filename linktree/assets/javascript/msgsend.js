@@ -1,7 +1,7 @@
 function sendLinkTreePrivMsg() {
     if (document.getElementById('content').value != "") {
     const snowflake = Date.now();
-    $.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&guild=" + document.getElementById('guild').value + "&username=" + document.getElementById('username').value + "&avatar_url=" + document.getElementById('avatar_url').value + "&sessionid=" + localStorage.getItem("chatid") + "&timezone=" + document.getElementById('timezone').value + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co')  + "&siteurl=" + encodeURIComponent(window.top.location.href) + "&sf=" + snowflake)
+    $.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&guild=" + document.getElementById('guild').value + "&username=" + document.getElementById('username').value + "&avatar_url=" + document.getElementById('avatar_url').value + "&sessionid=" + localStorage.getItem("chatid") + "&timezone=" + document.getElementById('timezone').value + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co')  + "&siteurl=" + encodeURIComponent(window.top.location.href).slice(0, 150) + "&sf=" + snowflake)
     document.getElementById('content').value = "";
     document.getElementById('content').readOnly = true;
     document.getElementById('content').placeholder = "Wait 5 sec to send again";
