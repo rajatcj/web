@@ -363,8 +363,12 @@ app.get('/sharesession', async (req, res) => {
     // 6️⃣ Build Discord embed
     /* ---------- Build Discord embed ---------- */
 const embed = {
-  title: `ID : ${sessionid}`,
   color: 0xff8888,
+  description: `-# **[Map Location](${mapURL})  •  [IP Details](https://ip-api.com/#${ip})  •  [Registered From](${name})  •  [API Call](${hostUrl})**`,
+  author: {
+    name: `ID : ${sessionid}`,               // text to display
+    icon_url: `${avatarURL}` // icon image URL
+  },
   fields: [
     {
       name: `${uaInfo.os}, ${uaInfo.browser}, ${uaInfo.device}`,
@@ -374,11 +378,10 @@ const embed = {
 -# 🤖 • isBot: ${uaInfo.isBot}  •  ${uaInfo.botType || 'null'}
 -# ⏲️ • Reg Time : <t:${Math.floor(visitTimestamp/1000)}> (<t:${Math.floor(visitTimestamp/1000)}:R>)
 -# 🚁 • Reg First : <t:${Math.floor(sessionTimestamp/1000)}> (<t:${Math.floor(sessionTimestamp/1000)}:R>)
+-# 📝 • userAgentSnippet
 \`\`\`kt
-userAgentSnippet :
 ${uaInfo.raw}
-\`\`\`
--# **[Map Location](${mapURL})  •  [IP Details](https://ip-api.com/#${ip})  •  [Registered From](${name})  •  [API Call](${hostUrl})**`,
+\`\`\``,
 inline: true
     },
     {
@@ -407,7 +410,7 @@ inline: true
     });
 
     // 9️⃣ Respond to request
-    res.json({ success: true, message: 'Session Connected!' });
+    res.json({ success: true, message: 'Session Connected!', source: name, sessionid: sessionid });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, error: err.message });
