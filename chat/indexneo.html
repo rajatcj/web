@@ -71,12 +71,9 @@
           <form class="message-box" onsubmit="sendLinkTreePrivMsg(); return false">
             <input class="message-input" type="text" autocomplete="off" name="content" id="content" maxlength="269" placeholder="Send anonymous message" />
             <button type="submit" class="message-submit">Send</button>
-            <input name="avatar_url" id="avatar_url" type="hidden" value="https://cdn.discordapp.com/emojis/892004694120103946.webp"/>
-            <input name="username" id="username" type="hidden" value="Profile"/>
-            <input name="guild" id="guild" type="hidden" value="819109979046936577"/>
             <input name="sessionid" id="sessionid" type="hidden" value="${chatid}"/>
             <input name="timezone" id="timezone" type="hidden" value=""/>
-            <input name="url" id="url" type="hidden" value="${window.top.location.href}" />
+            <input name="url" id="url" type="hidden" value="${encodeURIComponent(window.top.location.href)}" />
           </form>
         `);
       
@@ -95,32 +92,11 @@
       let theme = params.get('theme') || localStorage.getItem('theme');
       if (theme) document.documentElement.setAttribute('data-theme', theme);
 
-      $.getJSON("https://api.ipify.org?format=json", function (data) {
-        $('#timezone').val(data.ip);
-        let txt = `**🌐 • Registered From: **${window.top.location.href} /newline`;
-        txt += `**💻 • Browser CodeName: **\` ${navigator.appCodeName} \` /newline`;
-        txt += `**💻 • Browser Name: **\` ${navigator.appName} \` /newline`;
-        txt += `**💻 • Browser Version: **\` ${navigator.appVersion} \` /newline`;
-        txt += `**🍪 • Cookies Enabled: **\` ${navigator.cookieEnabled} \` /newline`;
-        txt += `**🌍 • Platform: **\` ${navigator.platform} \` /newline`;
-        txt += `**🔏 • User-agent header: **\` ${navigator.userAgent} \` /newline`;
+	
+$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href)}&sessionid=${chatid}`)
 
-        let OSName = "Unknown OS";
-        if (navigator.userAgent.indexOf("Win") != -1) OSName = "Windows";
-        if (navigator.userAgent.indexOf("Mac") != -1) OSName = "Macintosh";
-        if (navigator.userAgent.indexOf("Linux") != -1) OSName = "Linux";
-        if (navigator.userAgent.indexOf("Android") != -1) OSName = "Android";
-        if (navigator.userAgent.indexOf("like Mac") != -1) OSName = "iOS";
 
-        let browser_version = (function () {
-          let N = navigator.appName, ua = navigator.userAgent, tem;
-          let M = ua.match(/(opera|chrome|safari|firefox|msie)\/?\s*(\.?\d+(\.\d+)*)/i);
-          if (M && (tem = ua.match(/version\/([\.\d]+)/i)) != null) M[2] = tem[1];
-          return M ? [M[1], M[2]] : [N, navigator.appVersion, '-?'];
-        })();
-
-        $.getJSON(`https://sendbotu.rajatcj.com.np/message?content=loading_site_info_fetch&guild=819109979046936577&username=Linktree&avatar_url=https://cdn.discordapp.com/emojis/892004694120103946.webp&sessionid=${chatid}&timezone=${data.ip}&details=${OSName} ${browser_version} thisisabreak ${txt}`);
-      });
+	
 
       setTimeout(() => $('.loading-screen').hide(), 2000);
 
@@ -477,7 +453,7 @@
    
 
 
-			function sendLinkTreePrivMsg() {
+	function sendLinkTreePrivMsg() {
 		if(document.getElementById('content').value != "") {
 			const snowflake = Date.now();
 			const dataArray = [{
@@ -487,7 +463,8 @@
 				reid: sessionStorage.getItem('data-id'),
 				reco: sessionStorage.getItem('data-co')
 			}];
-			$.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&guild=" + document.getElementById('guild').value + "&username=" + document.getElementById('username').value + "&avatar_url=" + document.getElementById('avatar_url').value + "&sessionid=" + document.getElementById('sessionid').value + "&timezone=" + document.getElementById('timezone').value + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co') + "&siteurl=" + document.getElementById('url').value + "&sf=" + snowflake)
+			$.getJSON("https://sendbotu.rajatcj.com.np/message?content=" + document.getElementById('content').value + "&sessionid=" + localStorage.getItem("chatid") + "&reid=" + sessionStorage.getItem('data-id') + "&reco=" + sessionStorage.getItem('data-co')  + "&sf=" + snowflake + "&siteurl=" + encodeURIComponent(window.top.location.href))
+     
 			document.getElementById('content').value = "";
 			sessionStorage.removeItem('data-id');
 			sessionStorage.removeItem('data-co');

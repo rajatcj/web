@@ -10,6 +10,14 @@ if(typeof(Storage) !== "undefined") {
 } else {
     var chatid = "NA";
 }
+
+$.getJSON(`https://sendbotu.rajatcj.com.np/sharesession?name=${encodeURIComponent(window.top.location.href)}&sessionid=${chatid}`)
+
+// document.getElementById('sessionid').value = chatid;
+// document.getElementById('url').value = encodeURIComponent(window.top.location.href);
+
+
+/*
 $.getJSON("https://api.ipify.org?format=json", function(data) {
     document.getElementById('timezone').value = data.ip;
     
@@ -48,3 +56,5 @@ document.getElementById('url').value = window.top.location.href;
 $.getJSON("https://api.ipify.org?format=json", function(data) {
     document.getElementById('timezone').value = data.ip;
 })
+
+*/
