@@ -101,16 +101,13 @@ button, .item{touch-action:manipulation}
 
 <script>
 const MANTRAS = [
-  {id:'sai', name:'Sai Baba', type:'activity', full:'Om Shri Sai Nathaya Namah'},
-  {id:'gayatri', name:'Gayatri', type:'chant', full:'Om Bhur Bhuva Swaha.. Tat Savitur Varenyam.. Bhargo Devasya Dheemahi.. Dhiyo Yo Nah Prachodayat..', count:{default:3, sat:11}},
   {id:'shiv', name:'Shiva', type:'chant', full:'Om Namah Shivaya', count:{default:11, mon:108}},
+  {id:'brihaspati', name:'Jupiter / Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:11, thu:21}},
   {id:'shani', name:'Saturn / Shani', type:'chant', full:'Om Sham Shanicharaya Namah', count:{default:11, sat:21}},
-  {id:'budha', name:'Mercury / Budha', type:'chant', full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
+  {id:'budha', name:'Mercury / Budha', type:'chant', full:'Om Braam Bum Budhaya Namah', count:{default:11, wed:21}},
   {id:'chandra', name:'Moon / Chandra', type:'chant', full:'Om Chandraya Namah', count:{default:21}, days:['mon']},
   {id:'gan', name:'Ganesh', type:'chant', full:'Om Gan Ganapataye Namah', count:{default:21}, days:['tue']},
-  {id:'rahu', name:'Rahu', type:'chant', full:'Om Rahave Namah', count:{default:11}, days:['wed','sat']},
-  {id:'brihaspati', name:'Jupiter / Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:21}, days:['thu']},
-  {id:'gita', name:'Bhagavad Gita', type:'activity', full:'Read Bhagavad Gita shloka + meaning', fetch:true},
+  {id:'chandra', name:'Shukra', type:'chant', full:'Om Shukraya Namah', count:{default:21}, days:['fri']},
   {id:'hare', name:'Hare Krishna', type:'chant', full:'Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare.. Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare', count:{default:216, base108:108}, isHare:true}
 ];
 let GITA_SHLOKA = null;
@@ -205,7 +202,7 @@ function showActive(){
         btn.onclick=()=>{
           session.goal=btn.textContent==='108'?108:216;
           choiceDiv.remove();
-          const pre=document.createElement('div'); pre.className='sub'; pre.textContent='Prefix: Jai Shree Krishna, Chaitanya Prabhu Nityananda...';
+          const pre=document.createElement('div'); pre.className='sub'; pre.textContent='Prefix: Jay śrī-krşņa-caitanya prabhu nityānanda.. śrī-advaita gadādhara śrīvāsādi-gaura-bhakta-vrnda';
           activityArea.appendChild(pre);
           showHareCounter(m);
         };
@@ -231,7 +228,7 @@ function showHareCounter(m){
     session.count++; if(session.count>=session.goal){
       session.count=session.goal; btn.textContent='Next'; btn.onclick=()=>{ 
         const suf=document.createElement('div'); suf.className='sub'; suf.style.marginTop='8px';
-        suf.textContent='Suffix: Jai Shree Krishna, Chaitanya Prabhu Nityananda (End)';
+        suf.textContent='Suffix: Jay śrī-krşņa-caitanya prabhu nityānanda.. śrī-advaita gadādhara śrīvāsādi-gaura-bhakta-vrnda';
         counterDiv.appendChild(suf); btn.textContent='Next'; btn.onclick=advance;
       };
     }
