@@ -12,6 +12,23 @@ const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/142545111502501071
 const LOCATIONIQ_KEY = 'pk.ea66b5c820719f0423a68e2030a9ac3e'; // Replace with your key
 
 
+const DETAIL_WEBHOOK_URL = "https://discord.com/api/webhooks/1425451115025010718/M7nOrEG34hHFyPHGeOVRLGJtNmsSxZCslZElhcm4Ys1o8dbhx4PjUlgkNW5xa7g3Hr0L";  // where full embed goes
+const EVENT_WEBHOOK_URL = "https://discord.com/api/webhooks/1425785885563162656/8PgrtvesWSJ7KUMi0rKCEp3DKrwTuk_Q_nT2SBDIBrBh_NrEaIpYLcDiYOgZcLzPu_rC";   // where events go
+const YOUR_SERVER_ID = "819109979046936577";
+const DETAIL_CHANNEL_ID = "1425451069063823401";
+// File to store logged sessions persistently
+// index.js (CommonJS style)
+
+const fs = require('fs');
+const path = require('path');
+const EventEmitter = require('events');
+
+
+app.use(express.json());
+
+
+const LOG_FILE = path.join(__dirname, 'sessionLogs.json');
+
 //----------------------------UPTIMER----------------------------
 const port = 3000;
 app.listen(port, () => console.log(`Bot running on http://localhost:${port}`)); 
@@ -483,7 +500,7 @@ app.get('/sharesession', async (req, res) => {
     /* ---------- Build Discord embed ---------- */
 const embed = {
   color: 0xff8888,
-  description: `-# **[Google Maps](https://www.google.com/maps?q=${lat},${lon})  •  [IP Details](https://ip-api.com/#${ip})  •  [Registered From](${name})
+  description: `-# **[Google Maps](https://www.google.com/maps?q=${lat},${lon})  •  [IP Details](https://ip-api.com/#${ip})  •  [Registered From](${name})**
 -# **Flags:** ${flagsText} `,
   author: {
     name: `ID : ${sessionid}`,               // text to display
@@ -495,7 +512,7 @@ const embed = {
       value:
 `-# 🌏 **• Registered From :** ${name}
 -# 📱 **• isMobile :** ${uaInfo.isMobile}
--# 🤖 **• isBot : \` ${uaInfo.isBot} \`  •  \` ${uaInfo.botType || 'null'} \`
+-# 🤖 **• isBot :** \` ${uaInfo.isBot} \`  •  \` ${uaInfo.botType || 'null'} \`
 -# ⏲️ **• Reg Time :** <t:${Math.floor(visitTimestamp/1000)}> (<t:${Math.floor(visitTimestamp/1000)}:R>)
 -# 🚁 **• Reg First :** <t:${Math.floor(sessionTimestamp/1000)}> (<t:${Math.floor(sessionTimestamp/1000)}:R>)
 -# 📝 **• userAgentSnippet :**
@@ -506,7 +523,7 @@ inline: false
     },
 {
   name: `${ip} • ${apiinfo.city || 'Unknown'}, ${apiinfo.country || 'Unknown'}`,
-  value: `-# 🌍 • Continent:**  \` ${apiinfo.continent || 'Unknown'} (${apiinfo.continentCode || '-'}) \`
+  value: `-# 🌍 **• Continent:**  \` ${apiinfo.continent || 'Unknown'} (${apiinfo.continentCode || '-'}) \`
 -# 🏙️ **• Region:** \` ${apiinfo.regionName || 'Unknown'} (${apiinfo.region || '-'}) \`
 -# 📫 **• ZIP:**  \`${apiinfo.zip || '-'} \`
 -# 📌 **• Coordinates:** \` ${apiinfo.lat || '-'}, ${apiinfo.lon || '-'} \`
@@ -727,3 +744,270 @@ app.get('/message', (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ---------------- HELPERS ----------------
+function getClientIp(req) {
+  const xff = req.headers['x-forwarded-for'];
+  if (xff) return xff.split(',')[0].trim();
+  return req.connection.remoteAddress || req.socket.remoteAddress || req.ip;
+}
+
+function parseXForwardedFor(header) {
+  return header ? header.split(',').map(ip => ip.trim()) : [];
+}
+function parseUserAgent(ua) {
+  ua = ua || "";
+  const lowerUA = ua.toLowerCase();
+
+  // ----- OS Detection -----
+  let os = "Unknown";
+  if (/windows nt 10/i.test(ua)) os = "Windows 10";
+  else if (/windows nt 6.3/i.test(ua)) os = "Windows 8.1";
+  else if (/windows nt 6.2/i.test(ua)) os = "Windows 8";
+  else if (/windows nt 6.1/i.test(ua)) os = "Windows 7";
+  else if (/windows nt 6.0/i.test(ua)) os = "Windows Vista";
+  else if (/windows nt 5.1/i.test(ua)) os = "Windows XP";
+  else if (/mac os x/i.test(ua)) os = "Mac OS X";
+  else if (/android/i.test(ua)) os = "Android";
+  else if (/iphone|ipad|ipod/i.test(ua)) os = "iOS";
+  else if (/linux/i.test(ua)) os = "Linux";
+  else if (/cros/i.test(ua)) os = "Chrome OS";
+
+  // ----- Browser Detection -----
+  let browser = "Unknown";
+  if (/edg\//i.test(ua)) browser = "Microsoft Edge";
+  else if (/chrome/i.test(ua)) browser = "Chrome";
+  else if (/firefox/i.test(ua)) browser = "Firefox";
+  else if (/safari/i.test(ua) && !/chrome/i.test(ua)) browser = "Safari";
+  else if (/opr\//i.test(ua)) browser = "Opera";
+  else if (/msie|trident/i.test(ua)) browser = "Internet Explorer";
+
+  // ----- Device Type -----
+  let device = "Desktop";
+  if (/mobile/i.test(ua)) device = "Mobile";
+  else if (/tablet|ipad/i.test(ua)) device = "Tablet";
+  else if (/smart-tv|tv/i.test(ua)) device = "Smart TV";
+  else if (/bot|crawl|spider/i.test(ua)) device = "Bot";
+
+  // ----- Bot Detection -----
+  const isBot = /bot|crawl|spider|slurp|mediapartners/i.test(lowerUA);
+  const botType = isBot ? "Bot" : null;
+
+  return {
+    raw: ua,
+    os,
+    browser,
+    device,
+    platformInfo: {
+      os,
+      browser,
+      device,
+      userAgentSnippet: ua
+    },
+    isMobile: /mobile/i.test(ua),
+    isTablet: /tablet|ipad/i.test(ua),
+    isBot,
+    botType
+  };
+}
+
+
+
+function fetchIpApi(ip) {
+  return new Promise((resolve, reject) => {
+    const target = `http://ip-api.com/json/${ip}?fields=66846719`;
+    http.get(target, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        try {
+          const data = JSON.parse(raw);
+          resolve(data);
+        } catch (e) {
+          reject(new Error('Invalid JSON from ip-api: ' + e.message));
+        }
+      });
+    }).on('error', (err) => {
+      reject(err);
+    });
+  });
+}
+
+function readLogs() {
+  try {
+    return JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
+function writeLogs(logs) {
+  fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null, 2));
+}
+
+// ---------------- ROUTE ----------------
+app.get('/sharesessionv2', async (req, res) => {
+  try {
+    const { name, sessionid, event: action, logdetail } = req.query;
+    if (!name || !sessionid) return res.status(400).send('Missing name or sessionid');
+
+    const ip = getClientIp(req);
+    const ips = parseXForwardedFor(req.headers['x-forwarded-for'] || '');
+    const ua = req.get('User-Agent') || '';
+    const uaInfo = parseUserAgent(ua);
+    const apiinfo = await fetchIpApi(ip);
+
+    const lastSix = sessionid.slice(-6);
+    const avatarURL = `https://api.dicebear.com/7.x/bottts-neutral/png?seed=${sessionid}${lastSix}`;
+    const webhookUsername = `ID : ${sessionid} • ${uaInfo.os}, ${uaInfo.browser}, ${uaInfo.device}`;
+    const webhookUsername2 = `ID : ${sessionid} • ${uaInfo.os}, ${uaInfo.browser}, ${uaInfo.device}`;
+
+    const sessionTimestamp = Number(sessionid);
+    const visitTimestamp = Date.now();
+    const lat = apiinfo.lat || 0;
+    const lon = apiinfo.lon || 0;
+    const mapURL = `https://maps.locationiq.com/v3/staticmap?key=${LOCATIONIQ_KEY}&center=${lat},${lon}&size=500x250&zoom=5&markers=size:tiny|color:red|${lat},${lon}`;
+
+    let flags = [];
+    if (apiinfo.mobile) flags.push("📱 Mobile ip");
+    if (uaInfo.isMobile) flags.push("📱 Mobile sc");
+    if (apiinfo.proxy) flags.push("🖥️ Proxy");
+    if (apiinfo.hosting) flags.push("🌐 Hosting");
+    if (uaInfo.isBot) flags.push(`🤖 ${uaInfo.botType + "bot" || 'Unknown bot'}`);
+    const flagsText = flags.length ? flags.join(", ") : "None";
+
+    // ---------------- MAIN LOG EMBED ----------------
+const embed = {
+  color: 0xff8888,
+  description: `-# **[Google Maps](https://www.google.com/maps?q=${lat},${lon})  •  [IP Details](https://ip-api.com/#${ip})  •  [Registered From](${name})**
+-# **Flags:** ${flagsText} `,
+  author: {
+    name: `ID : ${sessionid}`,               // text to display
+    icon_url: `${avatarURL}` // icon image URL
+  },
+  fields: [
+    {
+      name: `${uaInfo.os}, ${uaInfo.browser}, ${uaInfo.device}`,
+      value:
+`-# 🌏 **• Registered From :** ${name}
+-# ⏲️ **• Reg Time :** <t:${Math.floor(visitTimestamp/1000)}> (<t:${Math.floor(visitTimestamp/1000)}:R>)
+-# 🚁 **• Reg First :** <t:${Math.floor(sessionTimestamp/1000)}> (<t:${Math.floor(sessionTimestamp/1000)}:R>)
+-# 📝 **• userAgentSnippet :**
+\`\`\`kt
+${uaInfo.raw}
+\`\`\``,
+inline: false
+    },
+{
+  name: `${apiinfo.city || 'CityNA'}, ${apiinfo.country || 'CountryNA'} • ${ip} `,
+  value: `-# 🌍 **• Continent:**  \` ${apiinfo.continent || 'Unknown'} (${apiinfo.continentCode || '-'}) \`
+-# 🏙️ **• Region:** \` ${apiinfo.regionName || 'Unknown'} (${apiinfo.region || '-'}) \`
+-# 📫 **• ZIP:**  \`${apiinfo.zip || '-'} \`
+-# 📌 **• Coordinates:** \` ${apiinfo.lat || '-'}, ${apiinfo.lon || '-'} \`
+-# 🕓 **• Timezone:** \` ${apiinfo.timezone || '-'} (UTC${apiinfo.offset ? apiinfo.offset/3600 : '-'})  \`
+-# 💰 **• Currency:** \` ${apiinfo.currency || '-'} \`
+-# 🏢 **• ISP:** \` ${apiinfo.isp || '-'} \`
+-# 🌐 **• AS:** \` ${apiinfo.as || '-'} (${apiinfo.asname || '-'}) \`
+-# 🖥️ **• Reverse DNS:** \` ${apiinfo.reverse} \` `,
+  inline: false
+}
+  ],
+  image: { url: mapURL }
+};
+
+
+
+
+    const logs = readLogs();
+
+    // ---------------- SEND MAIN LOG ONLY ONCE ----------------
+    // if (!logs[sessionid] || logdetail === "true") {
+    //   const payload = { username: webhookUsername, avatar_url: avatarURL, content: `${apiinfo.city || 'Unknown'}, ${apiinfo.country || 'Unknown'}, ${name.replace("https://rajatcj.com", "")}`, embeds: [embed] };
+    //   request.post({ url: DISCORD_WEBHOOK_URL, json: payload }, (err, resp, body) => {
+    //     if (err) console.log('Error sending main embed:', err);
+    //   });
+    //   logs[sessionid] = { embedLink: `https://discord.com/channels/YOUR_SERVER_ID/YOUR_MAIN_CHANNEL_ID` };
+    //   writeLogs(logs);
+    // }
+
+if (!logs[sessionid] || logdetail === "true") {
+  // Send the detailed main embed first
+  const payload = {
+    username: webhookUsername,
+    avatar_url: avatarURL,
+    embeds: [embed]
+  };
+
+  request.post({ url: DISCORD_WEBHOOK_URL + "?wait=true", json: payload }, (err, resp, body) => {
+    if (err) return console.log('Error sending main embed:', err);
+
+    // Extract Discord message link if response contains IDs
+    if (body && body.id && body.channel_id) {
+      const messageLink = `https://discord.com/channels/819109979046936577/${body.channel_id}/${body.id}`;
+
+      // Save to logs file
+      logs[sessionid] = { embedLink: messageLink };
+      writeLogs(logs);
+
+      // Now send the event log
+      const actionText = action || "visited the page";
+      const eventPayload = {
+        username: webhookUsername2,
+        avatar_url: avatarURL,
+        content: `${apiinfo.city || 'Unknown'}, ${apiinfo.country || 'Unknown'} • ${name.replace("https://rajatcj.com", ".")}`,
+        embeds: [{
+  color: 0xff8888,
+  description: `-# **[ID : ${sessionid}](<${messageLink}>)** <t:${Math.floor(visitTimestamp/1000)}> (<t:${Math.floor(visitTimestamp/1000)}:R>)
+-# >>> ${actionText}`
+}]
+      };
+      request.post({ url: EVENT_WEBHOOK_URL, json: eventPayload }, (err) => {
+        if (err) console.log('Error sending event embed:', err);
+      });
+    } else {
+      console.log('No message ID in Discord webhook response.');
+    }
+  });
+
+} else {
+  // already exists — reuse stored message link
+  const messageLink = logs[sessionid].embedLink;
+  const actionText = action || "visited the page";
+
+  const eventPayload = {
+    username: webhookUsername2,
+    avatar_url: avatarURL,
+    content: `${apiinfo.city || 'Unknown'}, ${apiinfo.country || 'Unknown'} • ${name.replace("https://rajatcj.com", ".")}`,
+        embeds: [{
+  color: 0xff8888,
+  description: `-# **[ID : ${sessionid}](<${messageLink}>)** <t:${Math.floor(visitTimestamp/1000)}> (<t:${Math.floor(visitTimestamp/1000)}:R>)
+-# >>> ${actionText}`
+}]
+  };
+  request.post({ url: EVENT_WEBHOOK_URL, json: eventPayload }, (err) => {
+    if (err) console.log('Error sending event embed:', err);
+  });
+}
+
+
+    res.json({ success: true, message: 'Session Connected!', source: name, sessionid });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
