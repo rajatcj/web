@@ -12,7 +12,7 @@ if(typeof(Storage) !== "undefined") {
 }
 
 
-$.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}&event=ref%20${document.referrer}`)
+$.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}&event=ref_${document.referrer}`)
 
 // document.getElementById('sessionid').value = chatid;
 // document.getElementById('url').value = encodeURIComponent(window.top.location.href);
