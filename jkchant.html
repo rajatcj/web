@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+ <script src="https://kit.fontawesome.com/19746ffdef.js" crossorigin="anonymous"></script>
 
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"> </script>
 <title>Daily Mantra Flow</title>
@@ -39,9 +40,213 @@ button.primary{background:var(--accent);color:#022;border:none}
 .skip-btn{position:absolute;top:14px;right:14px;cursor:pointer}
 @media (max-width:880px){ .main{grid-template-columns:1fr} .right-col{order:2} }
 button, .item{touch-action:manipulation}
+
+/* Notification container (hidden by default) */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50px);
+  display: flex;
+  align-items: center;
+  background: var(--skin-color, #007bff);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 50px; /* pill shape */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  font-family: system-ui, sans-serif;
+  opacity: 0;
+  width: max-content;
+  max-width: 80%;
+  pointer-events: none;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  z-index: 99;
+}
+
+/* Show state */
+.notification.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Icon */
+.notification i {
+  margin-right: 12px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+/* Text */
+.notification-text {
+  flex: 1;
+  position: relative;
+}
+
+.notification-text p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Progress line at bottom */
+.notification-text .progress-bar {
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  height: 3px;
+  width: 0;
+  background: rgba(255,255,255,0.8);
+  border-radius: 2px;
+  transition: width 10s linear;
+}
+
+/* Optional: hover slightly lighten */
+
+/* .notification:hover {background: rgba(0,123,255,0.85); } */
+
+
+
+
+
+/* Overlay (always unique ID) */
+  #popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+  }
+
+  /* Common popup box */
+  #popup-overlay .popup-box {
+    background: #111827;
+    color: #e6eef6;
+    border-radius: 16px;
+    padding: 25px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    animation: popupFadeIn 0.25s ease;
+    display: none;
+  }
+
+  #popup-overlay h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+
+  /* Type 1 elements */
+  #popup1-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #popup1-input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #334155;
+    background: #0f172a;
+    color: #e6eef6;
+    border-radius: 8px;
+    outline: none;
+  }
+
+  #popup1-send {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  #popup1-send:hover { background: #2563eb; }
+
+  #popup1-skip {
+    background: #1e293b;
+    color: #e6eef6;
+    padding: 10px;
+    width: 100%;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  #popup1-skip:hover { background: #334155; }
+  #popup1-skip:disabled,
+  #popup2-yes:disabled,
+  #popup2-no:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Type 2 buttons */
+  #popup2-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  #popup2-yes, #popup2-no {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  #popup2-no { background: #ef4444; }
+  #popup2-yes:hover { background: #2563eb; }
+  #popup2-no:hover { background: #dc2626; }
+
+  @keyframes popupFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
 </style>
 </head>
 <body>
+
+  
+  <!-- Alert overlay (hidden by default) -->
+<!-- Container for notifications (append here) -->
+<div id="notification-root"></div>
+
+
+
+   <!-- Place this anywhere in your HTML (e.g., at the end of <body>) -->
+<!-- Add at end of <body> -->
+<div id="popup-overlay" style="display:none;">
+  <!-- Type 1: Reply Popup -->
+  <div id="popup-type1" class="popup-box">
+    <h2 id="popup1-title">Would you like to reply?</h2>
+    <form id="popup1-form">
+      <input type="text" id="popup1-input" placeholder="Type your message..." required>
+      <button type="submit" id="popup1-send">Send</button>
+    </form>
+    <button id="popup1-skip" type="button" disabled>Continue without answering (10s)</button>
+  </div>
+
+  <!-- Type 2: Choice Popup -->
+  <div id="popup-type2" class="popup-box">
+    <h2 id="popup2-text">Do you confirm your choice?</h2>
+    <div id="popup2-buttons">
+      <button id="popup2-yes" disabled>Yes (10s)</button>
+      <button id="popup2-no" disabled>No (10s)</button>
+    </div>
+  </div>
+</div>
+
+
+
 <div class="wrap">
   <header>
     <div class="clock">
@@ -100,6 +305,186 @@ button, .item{touch-action:manipulation}
     </div>
   </div>
 </div>
+
+
+ <!-- Add at end of <body> -->
+<div id="popup-overlay" style="display:none;">
+  <!-- Type 1: Reply Popup -->
+  <div id="popup-type1" class="popup-box">
+    <h2 id="popup1-title">Would you like to reply?</h2>
+    <form id="popup1-form">
+      <input type="text" id="popup1-input" placeholder="Type your message..." required>
+      <button type="submit" id="popup1-send">Send</button>
+    </form>
+    <button id="popup1-skip" type="button" disabled>Continue without answering (5s)</button>
+  </div>
+
+  <!-- Type 2: Choice Popup -->
+  <div id="popup-type2" class="popup-box">
+    <h2 id="popup2-text">Do you confirm your choice?</h2>
+    <div id="popup2-buttons">
+      <button id="popup2-yes" disabled>Yes (5s)</button>
+      <button id="popup2-no" disabled>No (5s)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function Notif(iconClass, message, time = 5000) {
+  // Remove any existing notification first
+  const old = document.querySelector("#notification-root .notification");
+  if (old) old.remove();
+
+  // Create notification wrapper
+  const notif = document.createElement("div");
+  notif.className = "notification";
+
+  // Icon
+  const icon = document.createElement("i");
+  icon.className = iconClass;
+
+  // Text wrapper
+  const textWrapper = document.createElement("div");
+  textWrapper.className = "notification-text";
+
+  // Message
+  const msg = document.createElement("p");
+  msg.textContent = message;
+
+  // Progress bar
+  const progress = document.createElement("div");
+  progress.className = "progress-bar";
+
+  // Append
+  textWrapper.appendChild(msg);
+  textWrapper.appendChild(progress);
+  notif.appendChild(icon);
+  notif.appendChild(textWrapper);
+  document.getElementById("notification-root").appendChild(notif);
+
+  // Trigger show animation
+  requestAnimationFrame(() => {
+    notif.classList.add("show");
+    progress.style.transition = `width ${time}ms linear`;
+    progress.style.width = "100%";
+  });
+
+  // Hide after time
+  setTimeout(() => {
+    notif.classList.remove("show");
+    setTimeout(() => notif.remove(), 400); // wait for transition
+  }, time);
+}
+</script>
+
+<script>
+  // ================================
+  // Popup Configuration
+  // ================================
+  const ENABLE_POPUPS = false;  // <- toggle to false to disable all popups
+
+  // ================================
+  // Core Functions
+  // ================================
+  function showPopup(type) {
+    if (!ENABLE_POPUPS) return; // respect toggle
+    const overlay = document.getElementById("popup-overlay");
+    const popup1 = document.getElementById("popup-type1");
+    const popup2 = document.getElementById("popup-type2");
+    overlay.style.display = "flex";
+    popup1.style.display = "none";
+    popup2.style.display = "none";
+
+    if (type === 1) {
+      popup1.style.display = "block";
+      startCooldown(document.getElementById("popup1-skip"));
+    } else if (type === 2) {
+      popup2.style.display = "block";
+      startCooldown(document.getElementById("popup2-yes"), document.getElementById("popup2-no"));
+    }
+  }
+
+  function closePopup() {
+    const overlay = document.getElementById("popup-overlay");
+    overlay.style.display = "none";
+  }
+
+  // ================================
+  // Cooldown (5s delay)
+  // ================================
+  function startCooldown(...buttons) {
+    let remaining = 5;
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      btn.textContent = btn.textContent.replace(/\(\d+s\)/, "") + ` (${remaining}s)`;
+    });
+
+    const interval = setInterval(() => {
+      remaining--;
+      buttons.forEach(btn => {
+        btn.textContent = btn.textContent.replace(/\(\d+s\)/, "") + ` (${remaining}s)`;
+      });
+
+      if (remaining <= 0) {
+        clearInterval(interval);
+        buttons.forEach(btn => {
+          btn.disabled = false;
+          btn.textContent = btn.textContent.replace(/\(\d+s\)/, "");
+        });
+      }
+    }, 1000);
+  }
+
+  // ================================
+  // Event Listeners
+  // ================================
+  document.getElementById("popup1-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("popup1-input").value.trim();
+   
+
+    closePopup();
+    
+      Notif("fa-solid fa-heart", "Thankyou baby! 😭", 10000);
+      $.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?event=Message_${msg}&sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}`);
+
+      
+    
+  });
+
+  document.getElementById("popup1-skip").addEventListener("click", async () => {
+    closePopup();
+    $.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?event=clicked_skip&sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}`);
+
+  });
+
+  document.getElementById("popup2-yes").addEventListener("click", async () => {
+    
+    closePopup();
+    $.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?event=clicked_${document.getElementById("popup2-yes").innerHTML}&sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}`);
+
+  });
+
+  document.getElementById("popup2-no").addEventListener("click", async () => {
+    closePopup();
+    $.getJSON(`https://sendbotu.rajatcj.com.np/sharesessionv2?event=clicked_${document.getElementById("popup2-no").innerHTML}&sessionid=${chatid}&name=${encodeURIComponent(window.top.location.href)}`);
+
+  });
+
+
+  showPopup(1);
+  // ================================
+  // Example usage
+  // ================================
+  // showPopup(1); // For reply popup
+  // showPopup(2); // For yes/no popup
+</script>
+
+
+
+
+
+
 
 <script>
 const MANTRAS = [
