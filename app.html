@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My App Hub</title>
+
+  <!-- PWA Requirements -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- iOS Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <style>
+    :root {
+      --bg: #0c0c0c;
+      --card: #161616;
+      --text: #ffffff;
+      --accent: #7a7cff;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: auto;
+      padding: 22px;
+      position: relative;
+    }
+
+    /* Background Blobs */
+    .blob {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: -1;
+    }
+    .blob1 { background: #3a1e6c; top: -80px; left: -80px; }
+    .blob2 { background: #002d6b; bottom: -80px; right: -80px; }
+
+    .header {
+      text-align: center;
+      margin-top: 35px;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+      background: linear-gradient(to right, #ffffff, #8b88ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      font-size: 15px;
+      opacity: 0.55;
+      margin-top: 8px;
+    }
+
+    /* Link Cards */
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 25px;
+    }
+
+    .link-item {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 600;
+      box-shadow: 0 0 14px rgba(0,0,0,0.4);
+      transition: 0.2s ease;
+    }
+
+    .link-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 0 22px rgba(0,0,0,0.6);
+    }
+
+    .icon {
+      width: 26px;
+      height: 26px;
+      opacity: 0.75;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 13px;
+      opacity: 0.5;
+      margin-bottom: 30px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <div class="container">
+    <div class="header">
+      <h1>My App Hub</h1>
+      <p>Access all your sites in one place</p>
+    </div>
+
+    <div class="link-list">
+      <a class="link-item" href="https://example.com" target="_blank">
+        Portfolio
+        <img class="icon" src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" />
+      </a>
+
+      <a class="link-item" href="https://example.com/tools" target="_blank">
+        Tools
+        <img class="icon" src="https://cdn-icons-png.flaticon.com/512/3524/3524636.png" />
+      </a>
+
+      <a class="link-item" href="https://example.com/apps" target="_blank">
+        Apps
+        <img class="icon" src="https://cdn-icons-png.flaticon.com/512/1828/1828911.png" />
+      </a>
+
+      <a class="link-item" href="https://example.com/socials" target="_blank">
+        Socials
+        <img class="icon" src="https://cdn-icons-png.flaticon.com/512/1077/1077041.png" />
+      </a>
+    </div>
+
+    <div class="footer">Dark Mode • PWA Ready • Android & iOS</div>
+  </div>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js");
+    }
+  </script>
+</body>
+</html>
