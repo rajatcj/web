@@ -577,7 +577,7 @@ fetch(`https://api.github.com/users/${USERNAME}/events/public?per_page=1`)
     switch (e.type) {
       case "PushEvent":
         const commit = e.payload.commits[0];
-        text = `📝 Pushed a commit "${commit.message}"`;
+        text = `📝 Pushed a commit "`;
         break;
       case "PullRequestEvent":
         text = `🔀 ${e.payload.action} pull request in ${e.repo.name}`;

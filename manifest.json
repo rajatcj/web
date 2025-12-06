@@ -1,19 +1,19 @@
 {
   "name": "Rajat CJ",
   "short_name": "Rajat",
-  "start_url": "/",
+  "start_url": "/app",
   "scope": "/",
   "display": "standalone",
   "background_color": "#353B41",
   "theme_color": "#353B41",
   "icons": [
     {
-      "src": "./assets/botuhappy22.png",
+      "src": "./assets/rajat.jpg",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "./assets/botuhappy22.png",
+      "src": "./assets/rajat.jpg",
       "type": "image/png",
       "sizes": "512x512"
     }
