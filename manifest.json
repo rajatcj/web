@@ -1,7 +1,7 @@
 {
-  "name": "Rajat CJ",
+  "name": "App Lists",
   "short_name": "Rajat",
-  "start_url": "/app",
+  "start_url": "/app.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#353B41",
