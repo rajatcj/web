@@ -551,7 +551,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } else if (window.location.href.includes("?fromonlyfans")) {
     Notif("fa-solid fa-face-rolling-eyes", "Onlyfans? Check THIS out instead!", 10000);
   } else if (window.location.href.includes("?gmc")) {
-    Notif("fa-brands fa-ello", "Hi backbenchers dai/bhai/didi/baini haru 👋🏻", 10000);
+    Notif("fa-brands fa-ello", "Hi backbenchers dai/bhai/didi/baini haru 👋🏻 (Do not erase this QR, ill add sth special here soon)", 20000);
   } else if (window.location.href.includes("ig")) {
     Notif("fa-solid fa-ghost", "From instagram? Drop me a text if you liked this!", 10000);
   } 
