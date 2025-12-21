@@ -8,12 +8,12 @@
   "theme_color": "#353B41",
   "icons": [
     {
-      "src": "./assets/rajat.jpg",
+      "src": "./assets/rajatdarkbg.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "./assets/rajat.jpg",
+      "src": "./assets/rajatdarkbg.png",
       "type": "image/png",
       "sizes": "512x512"
     }
