@@ -104,17 +104,12 @@ button, .item{touch-action:manipulation}
 
 <script>
 const MANTRAS = [
-  {id:'sai', name:'Sai Baba', type:'activity', full:'Om Shri Sai Nathaya Namah'},
   {id:'gayatri', name:'Gayatri', type:'chant', full:'Om Bhur Bhuva Swaha.. Tat Savitur Varenyam.. Bhargo Devasya Dheemahi.. Dhiyo Yo Nah Prachodayat..', count:{default:3, sat:11}},
-  {id:'shiv', name:'Shiva', type:'chant', full:'Om Namah Shivaya', count:{default:11, mon:108}},
-  {id:'shani', name:'Saturn / Shani', type:'chant', full:'Om Sham Shanicharaya Namah', count:{default:11, sat:21}},
-  {id:'budha', name:'Mercury / Budha', type:'chant', full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
-  {id:'chandra', name:'Moon / Chandra', type:'chant', full:'Om Chandraya Namah', count:{default:21}, days:['mon']},
-  {id:'gan', name:'Ganesh', type:'chant', full:'Om Gan Ganapataye Namah', count:{default:21}, days:['tue']},
-  {id:'rahu', name:'Rahu', type:'chant', full:'Om Rahave Namah', count:{default:11}, days:['wed','sat']},
-  {id:'brihaspati', name:'Jupiter / Brihaspati', type:'chant', full:'Om Brim Brihaspataye Namah', count:{default:21}, days:['thu']},
-  {id:'gita', name:'Bhagavad Gita', type:'activity', full:'Read Bhagavad Gita shloka + meaning', fetch:true},
-  {id:'hare', name:'Hare Krishna', type:'chant', full:'Hare Kṛṣṇa, Hare Kṛṣṇa, Kṛṣṇa Kṛṣṇa, Hare Hare.. Hare Rāma, Hare Rāma, Rāma Rāma, Hare Hare', count:{default:216, base108:108}, isHare:true}
+  {id:'guru', name:'Guru Mantra', type:'chant', full:'Chant Guru Mantra', count:{default:108}},
+  {id:'mmj', name:'Mahamirthunjya Jaap', type:'chant', full:'Chant Mahamirthunjaya Jaap', count:{default:5}},
+  {id:'sitaram', name:'Sita Ram', type:'chant', full:'Chant Sita Ram', count:{default:108}},
+  {id:'kali', name:'Kali Mantra', type:'chant', full:'Chant Kali Mantra', count:{default:21}, days:['mon']},
+  {id:'hanuman', name:'Hanuman Chalisa', type:'chant', full:'', count:{default:1}, days:['tue']}
 ];
 let GITA_SHLOKA = null;
 async function loadGita(){
