@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <style>
+    :root {
+      --bg: #0f0f14;
+      --card: #1a1a23;
+      --text: #eaeaf0;
+      --muted: #9a9ab0;
+      --accent: #4f8cff;
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); }
+
+    .container { max-width: 900px; margin: auto; padding: 1rem; }
+    h1 { font-size: 1.4rem; margin-bottom: 0.3rem; }
+    h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+
+    .top { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+    .card { background: var(--card); padding: 1rem; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+
+    .total { font-size: 1.4rem; font-weight: 600; }
+    .muted { color: var(--muted); font-size: .9rem; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 1rem; margin-top: 1rem; }
+
+    input, button {
+      width: 100%; padding: .6rem; border-radius: 10px;
+      border: none; outline: none; background: #2a2a36; color: var(--text);
+    }
+
+    button { cursor: pointer; background: var(--accent); margin-top: .4rem; }
+    button.secondary { background: #2a2a36; }
+
+    .preset { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .preset button { flex: 1; background: #2a2a36; }
+
+    table { width: 100%; margin-top: .5rem; border-collapse: collapse; }
+    td { font-size: .85rem; padding: .25rem; border-bottom: 1px solid #2a2a36; }
+
+    .login {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    @media (max-width:600px){ .total{font-size:1.2rem;} }
+  </style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <div class="card" style="max-width:300px;width:100%">
+    <h2>🔒 Enter Password</h2>
+    <input type="password" id="pw" placeholder="Password" />
+    <button onclick="unlock()">Unlock</button>
+  </div>
+</div>
+
+<div class="container" id="app" hidden>
+  <h1>Expense Tracker</h1>
+  <div class="top">
+    <div class="card">
+      <div class="muted">Today</div>
+      <div class="total" id="todayTotal">Rs 0</div>
+    </div>
+    <div class="card">
+      <div class="muted">This Month</div>
+      <div class="total" id="monthTotal">Rs 0</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- TACOS -->
+    <div class="card">
+      <h2>Tacos</h2>
+      <div class="preset">
+        <button onclick="add('Tacos','khana',120)">120 khana</button>
+        <button onclick="add('Tacos','chicken khana',170)">170 chicken</button>
+        <button onclick="add('Tacos','roti chicken',170)">170 roti</button>
+      </div>
+      <input id="tacosText" placeholder="Custom item" />
+      <input id="tacosAmt" type="number" placeholder="Amount" />
+      <button onclick="custom('Tacos','tacosText','tacosAmt')">Add</button>
+      <div class="muted">Total: Rs <span id="sum-Tacos">0</span></div>
+      <table id="table-Tacos"></table>
+    </div>
+
+    <!-- MATTIKHAN -->
+    <div class="card">
+      <h2>Mattikhan</h2>
+      <input id="mattText" placeholder="Item (optional)" />
+      <input id="mattAmt" type="number" placeholder="Amount" />
+      <button onclick="custom('Mattikhan','mattText','mattAmt')">Add</button>
+      <div class="muted">Total: Rs <span id="sum-Mattikhan">0</span></div>
+      <table id="table-Mattikhan"></table>
+    </div>
+
+    <!-- FOOD -->
+    <div class="card">
+      <h2>Food & Drinks</h2>
+      <input id="foodText" placeholder="Item" />
+      <input id="foodAmt" type="number" placeholder="Amount" />
+      <button onclick="custom('Food','foodText','foodAmt')">Add</button>
+      <div class="muted">Total: Rs <span id="sum-Food">0</span></div>
+      <table id="table-Food"></table>
+    </div>
+
+    <!-- OTHER -->
+    <div class="card">
+      <h2>Other</h2>
+      <input id="otherText" placeholder="Item" />
+      <input id="otherAmt" type="number" placeholder="Amount" />
+      <button onclick="custom('Other','otherText','otherAmt')">Add</button>
+      <div class="muted">Total: Rs <span id="sum-Other">0</span></div>
+      <table id="table-Other"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASS = '1234';
+let data = JSON.parse(localStorage.getItem('expenses')||'[]');
+login.hidden=true; app.hidden=false;
+function unlock(){
+  if(pw.value===PASS){ login.hidden=true; app.hidden=false; render(); }
+}
+
+function add(cat,text,amt){ save(cat,text,amt); }
+function custom(cat,t,a){
+  const text=document.getElementById(t).value||'-';
+  const amt=+document.getElementById(a).value;
+  if(!amt) return;
+  save(cat,text,amt);
+  document.getElementById(t).value=''; document.getElementById(a).value='';
+}
+
+function save(cat,text,amt){
+  data.push({cat,text,amt,date:new Date().toISOString()});
+  localStorage.setItem('expenses',JSON.stringify(data));
+  render();
+}
+
+function render(){
+  const today=new Date().toDateString();
+  let todaySum=0, monthSum=0;
+  const sums={};
+  ['Tacos','Mattikhan','Food','Other'].forEach(c=>{
+    document.getElementById('table-'+c).innerHTML=''; sums[c]=0;
+  });
+
+  data.forEach(e=>{
+    const d=new Date(e.date);
+    if(d.toDateString()===today) todaySum+=e.amt;
+    if(d.getMonth()===new Date().getMonth()) monthSum+=e.amt;
+    sums[e.cat]+=e.amt;
+    document.getElementById('table-'+e.cat).innerHTML+=`<tr><td>${e.text}</td><td>Rs ${e.amt}</td></tr>`;
+  });
+
+  Object.keys(sums).forEach(c=>document.getElementById('sum-'+c).innerText=sums[c]);
+  todayTotal.innerText='Rs '+todaySum;
+  monthTotal.innerText='Rs '+monthSum;
+}
+</script>
+</body>
+</html>
