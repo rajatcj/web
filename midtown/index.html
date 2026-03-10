@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midtown Dental Clinic & Orthodontic Center | Pokhara</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <STYLE>
+        :root {
+    --primary: #008080; /* Medical Teal */
+    --secondary: #2c3e50;
+    --light: #f4f7f6;
+    --white: #ffffff;
+    --text: #333;
+}
+
+* {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body { color: var(--text); line-height: 1.6; background-color: var(--white); }
+
+.container { width: 90%; max-width: 1100px; margin: auto; }
+
+/* Navbar */
+.navbar {
+    background: var(--white);
+    padding: 1rem 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-container { display: flex; justify-content: space-between; align-items: center; }
+
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+.logo span { color: var(--primary); }
+
+.nav-links { display: flex; list-style: none; align-items: center; }
+.nav-links li a { text-decoration: none; color: var(--secondary); margin-left: 1.5rem; font-weight: 500; transition: 0.3s; }
+.nav-links li a:hover { color: var(--primary); }
+
+.btn-cta { background: var(--primary); color: white !important; padding: 0.5rem 1.2rem; border-radius: 5px; }
+
+.menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
+
+/* Hero */
+.hero {
+    height: 100vh;
+    background: linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.2)), url('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=1500&q=80');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+}
+
+.badge { background: #e0f2f1; color: var(--primary); padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; }
+
+.hero-content h1 { font-size: 3.5rem; color: var(--secondary); line-height: 1.2; margin: 1rem 0; }
+.hero-content h1 span { color: var(--primary); }
+.hero-content p { max-width: 500px; margin-bottom: 2rem; font-size: 1.1rem; }
+
+.btn-primary { background: var(--primary); color: white; padding: 1rem 2rem; border: none; border-radius: 5px; text-decoration: none; font-weight: 600; cursor: pointer; }
+.btn-outline { border: 2px solid var(--primary); color: var(--primary); padding: 0.9rem 2rem; border-radius: 5px; text-decoration: none; font-weight: 600; margin-left: 10px; }
+
+/* Stats Bar */
+.stats-bar { background: var(--secondary); color: white; padding: 2rem 0; text-align: center; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+
+/* Services */
+.services { padding: 5rem 0; background: var(--light); }
+.section-title { text-align: center; margin-bottom: 3rem; font-size: 2rem; color: var(--secondary); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+.card { background: white; padding: 30px; border-radius: 10px; text-align: center; transition: 0.3s; }
+.card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.card .icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
+
+/* About Section */
+.about { padding: 5rem 0; }
+.about-flex { display: flex; align-items: center; gap: 50px; }
+.about-img img { width: 100%; border-radius: 15px; }
+.check-list { list-style: none; margin-top: 20px; }
+.check-list li { margin-bottom: 10px; font-weight: 600; }
+.check-list i { color: var(--primary); margin-right: 10px; }
+
+/* Reviews */
+.reviews { padding: 5rem 0; background: var(--light); }
+.review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.review-card { background: white; padding: 2rem; border-radius: 10px; border-left: 5px solid var(--primary); }
+.stars { color: #f1c40f; margin-bottom: 10px; }
+
+/* Contact Section */
+.contact { padding: 5rem 0; }
+.contact-box { display: grid; grid-template-columns: 1fr 1fr; background: var(--secondary); color: white; border-radius: 15px; overflow: hidden; }
+.contact-info, .contact-form { padding: 3rem; }
+.contact-form { background: #34495e; }
+.contact-form input, .contact-form select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 5px; border: none; }
+
+footer { text-align: center; padding: 2rem; background: #eee; }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .menu-toggle { display: block; }
+    .hero-content h1 { font-size: 2.5rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .about-flex, .contact-box, .review-grid { grid-template-columns: 1fr; display: block; }
+    .about-img { margin-bottom: 20px; }
+    .hero { text-align: center; }
+    .hero-btns a { display: block; margin: 10px 0; }
+}
+
+    </STYLE>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-tooth"></i> MIDTOWN <span>DENTAL</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#reviews">Reviews</a></li>
+                <li><a href="#contact" class="btn-cta">Book Appointment</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="badge">4.9 Rated on Google Maps</span>
+                <h1>Your Smile's Best Friend in <span>Pokhara</span></h1>
+                <p>Advanced Orthodontics and Complete Dental Solutions in a clean, chill, and friendly environment. Experience painless dentistry today.</p>
+                <div class="hero-btns">
+                    <a href="#contact" class="btn-primary">Get Started</a>
+                    <a href="tel:061585333" class="btn-outline"><i class="fas fa-phone"></i> 061-585333</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-bar">
+        <div class="container stats-grid">
+            <div class="stat-item"><h3>4.9/5</h3><p>Google Rating</p></div>
+            <div class="stat-item"><h3>66+</h3><p>Positive Reviews</p></div>
+            <div class="stat-item"><h3>100%</h3><p>Sterilized Tools</p></div>
+            <div class="stat-item"><h3>0</h3><p>Crowd Stress</p></div>
+        </div>
+    </div>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Professional Care</h2>
+            <div class="grid">
+                <div class="card">
+                    <i class="fas fa-teeth-panoramic icon"></i>
+                    <h3>Orthodontics</h3>
+                    <p>Expert braces and alignment treatments for all ages to perfect your smile.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-fill-drip icon"></i>
+                    <h3>Cavity Fillings</h3>
+                    <p>Painless restoration using high-grade composite materials that look natural.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-broom icon"></i>
+                    <h3>Scaling & Polishing</h3>
+                    <p>Deep cleaning to remove plaque and prevent gum diseases effectively.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-hospital-user icon"></i>
+                    <h3>Oral Surgery</h3>
+                    <p>Minor oral surgeries and extractions handled with the utmost care.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container about-flex">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80" alt="Modern Clinic">
+            </div>
+            <div class="about-text">
+                <h2>The Midtown Experience</h2>
+                <p>We aren't just a dental clinic; we are a "chill" dental space. Located at Prithvi Chowk, we offer a spacious lounge, appointment-based scheduling to avoid crowds, and a team that treats you like family.</p>
+                <ul class="check-list">
+                    <li><i class="fas fa-check-circle"></i> Clean and Hygienic Space</li>
+                    <li><i class="fas fa-check-circle"></i> Appointment-based (No Crowd)</li>
+                    <li><i class="fas fa-check-circle"></i> Friendly Doctors & Hygienists</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2 class="section-title">What Our Patients Say</h2>
+            <div class="review-grid">
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Smooth procedure, chill people, spacious lounge. Appointment based so no crowd problem."</p>
+                    <h4>- Yas Shrestha</h4>
+                </div>
+                <div class="review-card">
+                    <div class="stars">★★★★★</div>
+                    <p>"Very clean and efficient. They saw my whole family of 5 in 45 minutes. Highly recommend!"</p>
+                    <h4>- Willa Thorpe</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-box">
+                <div class="contact-info">
+                    <h2>Visit Us</h2>
+                    <p><i class="fas fa-map-marker-alt"></i> Prithvi Chowk, Pokhara, Nepal</p>
+                    <p><i class="fas fa-clock"></i> Opens 9:30 AM (Tue-Sun)</p>
+                    <p><i class="fas fa-phone"></i> 061-585333</p>
+                </div>
+                <div class="contact-form">
+                    <form id="dentalForm">
+                        <input type="text" id="name" placeholder="Your Name" required>
+                        <input type="tel" id="phone" placeholder="Phone Number" required>
+                        <select id="service">
+                            <option value="">Select Service</option>
+                            <option value="braces">Orthodontics</option>
+                            <option value="checkup">General Checkup</option>
+                            <option value="whitening">Whitening</option>
+                        </select>
+                        <button type="submit" class="btn-primary">Book Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Midtown Dental Clinic & Orthodontic Center. Built for Pokhara.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Mobile Menu Toggle logic
+const mobileMenu = document.getElementById('mobile-menu');
+const navLinks = document.querySelector('.nav-links');
+
+mobileMenu.addEventListener('click', () => {
+    navLinks.classList.toggle('nav-active');
+    // Basic CSS toggle for demonstration
+    if(navLinks.style.display === "flex") {
+        navLinks.style.display = "none";
+    } else {
+        navLinks.style.display = "flex";
+        navLinks.style.flexDirection = "column";
+        navLinks.style.position = "absolute";
+        navLinks.style.top = "70px";
+        navLinks.style.left = "0";
+        navLinks.style.width = "100%";
+        navLinks.style.background = "white";
+        navLinks.style.padding = "20px";
+    }
+});
+
+// Form Submission
+const dentalForm = document.getElementById('dentalForm');
+
+dentalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+
+    alert(`Thank you ${name}! Midtown Dental has received your request. We will call you on ${phone} within 1 hour.`);
+    dentalForm.reset();
+});
+
+// Smooth Scroll Highlight
+window.addEventListener('scroll', () => {
+    let current = '';
+    const sections = document.querySelectorAll('section');
+    const navLi = document.querySelectorAll('.nav-links li a');
+
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 100) {
+            current = section.getAttribute('id');
+        }
+    });
+
+    navLi.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href').includes(current)) {
+            a.style.color = "#008080";
+        } else {
+            a.style.color = "#2c3e50";
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

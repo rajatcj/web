@@ -1,63 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Disco Sync Pro</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Disco Sync</title>
 
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
 <style>
+:root {
+  --glass: rgba(0,0,0,.55);
+}
+
 html, body {
   margin: 0;
   height: 100%;
   background: black;
   overflow: hidden;
+  font-family: system-ui;
 }
 
 #stage {
   position: fixed;
   inset: 0;
   transition: background 80ms linear;
-  filter: saturate(150%);
 }
 
-.glow {
-  box-shadow: inset 0 0 80px rgba(255,255,255,.4);
-}
+.glow { box-shadow: inset 0 0 100px rgba(255,255,255,.5); }
+.blur { filter: blur(6px) saturate(180%); }
 
-.blur {
-  filter: blur(6px) saturate(200%);
-}
-
-#ui {
+/* ---------- UI ---------- */
+#menuBtn {
   position: fixed;
-  top: 10px;
-  left: 10px;
-  background: rgba(0,0,0,.65);
-  padding: 12px;
-  border-radius: 10px;
+  bottom: 20px;
+  right: 20px;
+  background: var(--glass);
   color: white;
-  font-family: system-ui;
+  border-radius: 50%;
+  width: 54px;
+  height: 54px;
+  border: none;
+  font-size: 22px;
   z-index: 10;
-  width: 200px;
 }
 
-button, select {
+#panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 260px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 16px;
+  transform: translateX(100%);
+  transition: .3s;
+  z-index: 9;
+}
+
+#panel.open {
+  transform: translateX(0);
+}
+
+button, select, input {
   width: 100%;
-  margin: 4px 0;
-  padding: 6px;
-  border-radius: 6px;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 8px;
   border: none;
 }
 
 label {
-  font-size: 13px;
+  font-size: 14px;
   display: block;
+  margin-top: 6px;
 }
 
-#qr { margin-top: 6px; }
+#qr { margin-top: 10px; }
 #status { font-size: 12px; opacity: .8; }
 </style>
 </head>
@@ -66,22 +87,31 @@ label {
 
 <div id="stage"></div>
 
-<div id="ui">
-  <button onclick="createRoom()">🎧 Create Room</button>
+<button id="menuBtn" onclick="togglePanel()">☰</button>
+
+<div id="panel">
+  <h3>Disco Sync</h3>
+
+  <button onclick="createRoom()">🎧 Create Room (DJ)</button>
   <input id="roomInput" placeholder="Room ID">
   <button onclick="joinRoom()">👥 Join Room</button>
 
-  <select id="mode" onchange="setMode(this.value)">
-    <option value="beat">🎵 Beat Pulse</option>
-    <option value="rainbow">🌈 Rainbow</option>
-    <option value="strobe">⚡ Strobe</option>
-    <option value="wave">🌊 Wave</option>
-    <option value="bass">🔊 Bass Reactive</option>
+  <select id="audioSource">
+    <option value="mic">🎤 Microphone</option>
+    <option value="device">🔊 Device / Tab Audio</option>
   </select>
 
-  <label><input type="checkbox" id="vibe"> 📳 Vibration</label>
-  <label><input type="checkbox" id="glow"> ✨ Glow</label>
-  <label><input type="checkbox" id="blur"> 🌫 Blur</label>
+  <select id="mode" onchange="currentMode=this.value">
+    <option value="beat">Beat Pulse</option>
+    <option value="rainbow">Rainbow</option>
+    <option value="strobe">Strobe</option>
+    <option value="wave">Wave</option>
+    <option value="bass">Bass</option>
+  </select>
+
+  <label><input type="checkbox" id="glow"> Glow</label>
+  <label><input type="checkbox" id="blur"> Blur</label>
+  <label><input type="checkbox" id="vibe"> Vibration</label>
 
   <button onclick="toggleFullscreen()">⛶ Fullscreen</button>
 
@@ -90,137 +120,106 @@ label {
 </div>
 
 <script>
-/* ---------------- CORE ---------------- */
-let peer, connections = [], conn;
-let isDJ = false;
+/* ---------- CORE ---------- */
+let peer, connections=[], conn;
 let analyser, data;
 let lastEnergy = 0;
-let currentMode = "beat";
 let hue = 0;
-
+let currentMode = "beat";
 const stage = document.getElementById("stage");
 
-/* ---------------- ROOM ---------------- */
+/* ---------- ROOM ---------- */
 function genRoom() {
   return "dj-" + Math.random().toString(36).slice(2,7);
 }
 
 function createRoom() {
   const id = genRoom();
-  isDJ = true;
   peer = new Peer(id);
   status("Room: " + id);
+
   peer.on("open", () => showQR(id));
   peer.on("connection", c => connections.push(c));
-  initMic();
+
+  initAudio();
 }
 
 function joinRoom() {
-  const id = roomInput.value.trim();
   peer = new Peer();
   peer.on("open", () => {
-    conn = peer.connect(id);
+    conn = peer.connect(roomInput.value.trim());
     status("Connected");
     conn.on("data", applyState);
   });
 }
 
-function showQR(id) {
-  qr.innerHTML = "";
-  new QRCode(qr, {
-    text: location.href.split("?")[0] + "?room=" + id,
-    width: 128,
-    height: 128
-  });
+/* ---------- AUDIO ---------- */
+async function initAudio() {
+  let stream;
+
+  if (audioSource.value === "device") {
+    stream = await navigator.mediaDevices.getDisplayMedia({
+      audio: true,
+      video: false
+    });
+  } else {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }
+
+  const ctx = new AudioContext();
+  ctx.resume();
+
+  analyser = ctx.createAnalyser();
+  analyser.fftSize = 256;
+  data = new Uint8Array(analyser.frequencyBinCount);
+
+  ctx.createMediaStreamSource(stream).connect(analyser);
+  loop();
 }
 
-/* ---------------- AUDIO ---------------- */
-function initMic() {
-  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-    const ctx = new AudioContext();
-    ctx.resume();
-    analyser = ctx.createAnalyser();
-    analyser.fftSize = 256;
-    data = new Uint8Array(analyser.frequencyBinCount);
-    ctx.createMediaStreamSource(stream).connect(analyser);
-    loop();
-  });
-}
-
-function beatDetect(e) {
-  const beat = e > lastEnergy * 1.35;
-  lastEnergy = e * 0.8 + lastEnergy * 0.2;
-  return beat;
-}
-
-/* ---------------- LOOP ---------------- */
+/* ---------- VISUAL ENGINE ---------- */
 function loop() {
   requestAnimationFrame(loop);
   analyser.getByteFrequencyData(data);
+
   const energy = data.reduce((a,b)=>a+b)/data.length;
-  const beat = beatDetect(energy);
+  const beat = energy > lastEnergy * 1.4;
+  lastEnergy = energy * 0.8 + lastEnergy * 0.2;
 
-  const state = visualEngine(energy, beat);
-  applyVisual(state);
-  broadcast(state);
-}
-
-/* ---------------- VISUAL ENGINE ---------------- */
-function visualEngine(energy, beat) {
   hue = (hue + 1 + energy*0.02) % 360;
+
   let color;
-
   switch (currentMode) {
-    case "rainbow":
-      color = `hsl(${hue},100%,50%)`;
-      break;
-
-    case "strobe":
-      color = beat ? "#fff" : "#000";
-      break;
-
-    case "wave":
-      color = `hsl(${hue},100%,${40 + Math.sin(Date.now()/150)*20}%)`;
-      break;
-
-    case "bass":
-      color = `hsl(${energy*3},100%,50%)`;
-      break;
-
-    default:
-      color = beat ? `hsl(${hue},100%,60%)` : `hsl(${hue},100%,30%)`;
+    case "rainbow": color = `hsl(${hue},100%,50%)`; break;
+    case "strobe": color = beat ? "#fff" : "#000"; break;
+    case "wave": color = `hsl(${hue},100%,${40+Math.sin(Date.now()/200)*20}%)`; break;
+    case "bass": color = `hsl(${energy*3},100%,50%)`; break;
+    default: color = beat ? `hsl(${hue},100%,60%)` : `hsl(${hue},100%,30%)`;
   }
 
-  return { color, beat, mode: currentMode };
-}
-
-/* ---------------- APPLY ---------------- */
-function applyVisual(state) {
-  stage.style.background = state.color;
-
-  stage.classList.toggle("glow", glow.checked && state.beat);
-  stage.classList.toggle("blur", blur.checked && state.beat);
-
-  if (state.beat && vibe.checked && navigator.vibrate) {
-    navigator.vibrate(30);
-  }
-}
-
-function applyState(state) {
-  currentMode = state.mode;
+  const state = { color, beat, mode: currentMode };
   applyVisual(state);
-}
-
-/* ---------------- SYNC ---------------- */
-function broadcast(state) {
   connections.forEach(c => c.send(state));
 }
 
-function setMode(m) {
-  currentMode = m;
+function applyVisual(s) {
+  stage.style.background = s.color;
+  stage.classList.toggle("glow", glow.checked && s.beat);
+  stage.classList.toggle("blur", blur.checked && s.beat);
+
+  if (s.beat && vibe.checked && navigator.vibrate) navigator.vibrate(30);
 }
 
-/* ---------------- UI ---------------- */
+function applyState(s) {
+  currentMode = s.mode;
+  applyVisual(s);
+}
+
+/* ---------- UI ---------- */
+function togglePanel() {
+  panel.classList.toggle("open");
+}
+
 function toggleFullscreen() {
   document.fullscreenElement
     ? document.exitFullscreen()
@@ -231,7 +230,16 @@ function status(t) {
   document.getElementById("status").innerText = t;
 }
 
-/* ---------------- AUTO JOIN ---------------- */
+function showQR(id) {
+  qr.innerHTML = "";
+  new QRCode(qr, {
+    text: location.href.split("?")[0] + "?room=" + id,
+    width: 120,
+    height: 120
+  });
+}
+
+/* ---------- AUTO JOIN ---------- */
 const q = new URLSearchParams(location.search);
 if (q.get("room")) roomInput.value = q.get("room");
 </script>
