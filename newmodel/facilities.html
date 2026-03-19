@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Facilities – New Model Secondary School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.facility-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:16px;overflow:hidden;margin-bottom:60px;box-shadow:var(--shadow);}
+.facility-hero-left{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:50px 44px;color:#fff;display:flex;flex-direction:column;justify-content:center;}
+.facility-hero-left h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:16px;}
+.facility-hero-left p{color:rgba(255,255,255,.75);line-height:1.75;font-size:.95rem;}
+.facility-hero-right{background:linear-gradient(135deg,#1a3a2a,#2d6a4f);display:flex;align-items:center;justify-content:center;font-size:6rem;min-height:280px;}
+
+.facility-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:60px;}
+.facility-detail-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:var(--transition);}
+.facility-detail-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(13,34,53,.18);}
+.fdc-banner{height:160px;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative;}
+.fdc-banner::after{content:'';position:absolute;inset:0;background:rgba(13,34,53,.15);}
+.fdc-banner.lib{background:linear-gradient(135deg,#3a1a0d,#8a4020);}
+.fdc-banner.trans{background:linear-gradient(135deg,#0d2a3a,#1a5a7a);}
+.fdc-banner.sports{background:linear-gradient(135deg,#1a2d0d,#3a6a1a);}
+.fdc-banner.comp{background:linear-gradient(135deg,#0d1a3a,#1a3a6a);}
+.fdc-banner.class{background:linear-gradient(135deg,#2d1a3a,#5a3070);}
+.fdc-banner.cafe{background:linear-gradient(135deg,#3a2a0d,#7a5a1a);}
+.fdc-banner.hostel{background:linear-gradient(135deg,#1a0d2d,#3a1a5a);}
+.fdc-banner.council{background:linear-gradient(135deg,#0d3a1a,#1a7a3a);}
+.fdc-body{padding:28px;}
+.fdc-body h3{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:10px;}
+.fdc-body p{color:var(--muted);line-height:1.72;font-size:.9rem;}
+.fdc-features{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+.fdc-features li{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;color:var(--text);}
+.fdc-features li::before{content:'✓';color:var(--gold);font-weight:700;flex-shrink:0;margin-top:1px;}
+
+.campus-highlights{background:var(--navy);padding:80px 0;}
+.highlights-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.highlight-item{text-align:center;padding:24px 16px;border:1px solid rgba(255,255,255,.1);border-radius:12px;transition:var(--transition);}
+.highlight-item:hover{border-color:var(--gold);background:rgba(200,150,42,.08);}
+.highlight-icon{font-size:2.5rem;margin-bottom:14px;}
+.highlight-item h3{font-family:'Playfair Display',serif;color:var(--gold);font-size:1.6rem;margin-bottom:6px;}
+.highlight-item p{color:rgba(255,255,255,.6);font-size:.82rem;}
+
+.faq-section{background:var(--cream);}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.faq-item{background:var(--white);border-radius:10px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);cursor:pointer;transition:var(--transition);}
+.faq-item:hover{box-shadow:var(--shadow);}
+.faq-question{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.faq-question h4{font-size:.9rem;font-weight:600;color:var(--navy);}
+.faq-toggle{font-size:1.2rem;color:var(--gold);flex-shrink:0;}
+.faq-answer{color:var(--muted);font-size:.85rem;line-height:1.65;margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:none;}
+.faq-item.open .faq-answer{display:block;}
+.faq-item.open .faq-toggle{transform:rotate(45deg);}
+.faq-toggle{transition:transform .3s ease;}
+
+@media(max-width:1024px){
+  .facility-hero-grid{grid-template-columns:1fr;}
+  .facility-hero-right{display:none;}
+  .facility-detail-grid{grid-template-columns:1fr;}
+  .highlights-grid{grid-template-columns:repeat(2,1fr);}
+  .faq-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- POPUP -->
+<div id="popup-overlay"><div id="popup-box"><div id="popup-header"><h2 id="popup-title">Announcement</h2><button id="popup-close-btn" onclick="closePopup()">✕</button></div><div id="popup-body"><p></p></div></div></div>
+<button id="popup-create-btn" onclick="toggleAdmin()">📢 Create Popup</button>
+<div id="popup-admin-panel">
+  <h3>📢 Create a New Popup</h3>
+  <input type="text" id="pa-title" placeholder="Popup title"/>
+  <textarea id="pa-text" placeholder="Message text..."></textarea>
+  <label class="admin-file-label" for="pa-file">📎 Attach PDF or Image<input type="file" id="pa-file" accept="image/*,.pdf" onchange="previewAdminFile(this)"/></label>
+  <small id="pa-file-name" style="color:var(--muted);font-size:.78rem;display:block;margin-bottom:10px;"></small>
+  <button id="launch-popup-btn" onclick="launchCustomPopup()">🚀 Show Popup Now</button>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar"><div class="topbar-inner"><span>📍 Nagdhunga, Pokhara-8, Kaski, Nepal</span><span>📞 <a href="tel:061520484">061-520484</a> | 061-537808</span><span>✉️ <a href="mailto:newmodel520484@gmail.com">newmodel520484@gmail.com</a></span></div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-emblem">NM</div><div class="logo-text"><strong>New Model Secondary School</strong><small>Learn · Innovate · Accelerate</small></div></a>
+    <nav>
+      <a href="index.html">Home</a><a href="team.html">Team</a><a href="facilities.html" class="active">Facilities</a><a href="rules.html">Rules &amp; Regulations</a><a href="notice.html">Notice</a><a href="admission.html" class="nav-cta">Admission</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a><a href="team.html">Team</a><a href="facilities.html">Facilities</a><a href="rules.html">Rules &amp; Regulations</a><a href="notice.html">Notice</a><a href="admission.html">Admission ↗</a>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-breadcrumb"><a href="index.html">Home</a><span>Facilities</span></div>
+    <h1>Our Facilities</h1>
+    <p>New Model provides a rich, modern campus environment — every resource designed to support outstanding learning and student wellbeing.</p>
+  </div>
+</div>
+
+<!-- CAMPUS OVERVIEW -->
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="facility-hero-grid fade-in">
+      <div class="facility-hero-left">
+        <h2>A Campus Built for Excellence</h2>
+        <p>Located in the serene surroundings of Nagdhunga, Pokhara, our campus offers a peaceful and stimulating environment for learning. Every facility has been carefully developed to meet the growing needs of students and to match international standards of education.</p>
+        <p style="margin-top:14px;">From well-stocked libraries and modern labs to spacious sports grounds and hygienic cafeterias — New Model ensures students have everything they need to thrive.</p>
+      </div>
+      <div class="facility-hero-right">🏫</div>
+    </div>
+
+    <div class="section-head fade-in">
+      <span class="section-tag">Infrastructure</span>
+      <h2 class="section-title">All Facilities in Detail</h2>
+      <hr class="divider"/>
+    </div>
+    <div class="facility-detail-grid">
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner lib">📚</div>
+        <div class="fdc-body">
+          <h3>Library</h3>
+          <p>A comprehensive, spacious library stocked with textbooks, reference books, periodicals, and educational materials to inspire curiosity and support deep, independent learning.</p>
+          <ul class="fdc-features">
+            <li>Wide collection of academic and reference books</li>
+            <li>Quiet, well-lit reading spaces</li>
+            <li>Periodicals and educational journals</li>
+            <li>Available for students during all school hours</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner trans">🚌</div>
+        <div class="fdc-body">
+          <h3>Transportation</h3>
+          <p>An extensive transportation system covering all major areas of the Pokhara valley, ensuring students have safe, reliable, and timely transport to and from school every day.</p>
+          <ul class="fdc-features">
+            <li>Multiple bus routes covering Pokhara valley</li>
+            <li>Experienced and responsible drivers</li>
+            <li>Regular vehicle maintenance for safety</li>
+            <li>Punctual pickup and drop schedules</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner sports">🏟️</div>
+        <div class="fdc-body">
+          <h3>Sports &amp; Recreation Centers</h3>
+          <p>A wide-ranging, unique sports and recreation complex designed to foster teamwork, fitness, discipline, and the spirit of healthy competition among all students.</p>
+          <ul class="fdc-features">
+            <li>Outdoor sports grounds for cricket, football, athletics</li>
+            <li>Indoor games and recreational areas</li>
+            <li>Annual Sports Meet organized each year</li>
+            <li>Trained sports instructors and coaches</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner comp">💻</div>
+        <div class="fdc-body">
+          <h3>Hi-Tech Computer Laboratories</h3>
+          <p>State-of-the-art computer laboratories with high-speed internet access and regularly updated hardware and software, preparing students for a technology-driven world.</p>
+          <ul class="fdc-features">
+            <li>Latest desktop computers with updated software</li>
+            <li>High-speed broadband internet connectivity</li>
+            <li>Qualified ICT teachers and lab assistants</li>
+            <li>Practical sessions for all grade levels</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner class">🏫</div>
+        <div class="fdc-body">
+          <h3>Ultra-Modern Classrooms</h3>
+          <p>Our classrooms are designed for maximum learning effectiveness — spacious, well-ventilated, well-lit, and equipped with modern teaching aids and interactive learning tools.</p>
+          <ul class="fdc-features">
+            <li>Spacious, well-ventilated classroom spaces</li>
+            <li>Adequate natural lighting and seating</li>
+            <li>Teaching aids and visual learning tools</li>
+            <li>Separate rooms for each grade level</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner cafe">🍽️</div>
+        <div class="fdc-body">
+          <h3>Cafeteria</h3>
+          <p>Affordable, hot, hygienic, and nutritious meals are served daily in our on-campus cafeteria, ensuring students are fueled and energized throughout the school day.</p>
+          <ul class="fdc-features">
+            <li>Healthy and nutritious daily meal options</li>
+            <li>Maintained to high hygiene standards</li>
+            <li>Affordable pricing for all students</li>
+            <li>Clean, comfortable dining space</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner hostel">🏠</div>
+        <div class="fdc-body">
+          <h3>Hostel</h3>
+          <p>Spacious, secure and well-managed hostel facilities for outstation students, providing a comfortable home-away-from-home with a proper environment for study and rest.</p>
+          <ul class="fdc-features">
+            <li>Spacious, well-furnished rooms</li>
+            <li>Secure and supervised premises</li>
+            <li>Quiet study environment for boarders</li>
+            <li>Nutritious meals included</li>
+          </ul>
+        </div>
+      </div>
+      <div class="facility-detail-card fade-in">
+        <div class="fdc-banner council">🏛️</div>
+        <div class="fdc-body">
+          <h3>Student Council</h3>
+          <p>Our active Student Council provides students with opportunities for leadership, decision-making, and personal development — empowering them to be responsible citizens.</p>
+          <ul class="fdc-features">
+            <li>Elected student body representing all grades</li>
+            <li>Organizes school events and activities</li>
+            <li>Liaison between students and administration</li>
+            <li>Develops leadership and civic responsibility</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<section class="campus-highlights">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag" style="color:var(--gold-light);">By the Numbers</span>
+      <h2 class="section-title" style="color:#fff;">Campus Highlights</h2>
+      <hr class="divider center"/>
+    </div>
+    <div class="highlights-grid">
+      <div class="highlight-item fade-in"><div class="highlight-icon">📚</div><h3>5,000+</h3><p>Books in the Library Collection</p></div>
+      <div class="highlight-item fade-in"><div class="highlight-icon">💻</div><h3>40+</h3><p>Computers in the Lab</p></div>
+      <div class="highlight-item fade-in"><div class="highlight-icon">🚌</div><h3>8+</h3><p>Bus Routes Across Pokhara</p></div>
+      <div class="highlight-item fade-in"><div class="highlight-icon">🏟️</div><h3>2+</h3><p>Sports Grounds &amp; Activity Areas</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">FAQs</span>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <hr class="divider center"/>
+      <p class="section-sub" style="margin-top:14px;">Have questions about our facilities? Find answers to the most common queries below.</p>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>What transport facilities are available for students?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">We operate an extensive bus network covering all major areas of the Pokhara valley. Students can avail the transport service at an affordable monthly fee. Routes and schedules are available from the school office.</div>
+      </div>
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>Is the hostel facility available for girls too?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Yes, the hostel facility is available for both male and female students with separate, supervised accommodations. The hostel environment is safe, secure, and conducive to study.</div>
+      </div>
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>How is the library managed for student access?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">The library is open during all school hours. Students can borrow books using their school library card. A librarian is always available to assist students in finding resources.</div>
+      </div>
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>Are sports facilities available for all students?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Yes, sports and recreational facilities are available to all enrolled students. We encourage active participation in sports as part of holistic development. Annual Sports Meet is held each year.</div>
+      </div>
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>Are computers available for all grade levels?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">Our computer laboratory serves students from all grade levels. Scheduled practical classes ensure every student gets hands-on experience with modern computers and internet resources.</div>
+      </div>
+      <div class="faq-item fade-in" onclick="toggleFaq(this)">
+        <div class="faq-question"><h4>What food is available in the cafeteria?</h4><span class="faq-toggle">+</span></div>
+        <div class="faq-answer">The cafeteria offers a variety of healthy, hot and hygienic meals at affordable prices. The menu is rotated regularly to provide nutritional balance for growing students.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand"><div class="logo-emblem" style="margin-bottom:14px;">NM</div><p>New Model Secondary School is one of the most reputed co-educational institutions in Pokhara, committed to quality and affordable education since 2037 BS.</p><div class="social-links"><a href="https://facebook.com" class="social-btn" target="_blank">f</a><a href="https://newmodel.edu.np" class="social-btn" target="_blank">🌐</a></div></div>
+        <div class="footer-col"><h4>Navigation</h4><a href="index.html">Home</a><a href="team.html">Our Team</a><a href="facilities.html">Facilities</a><a href="notice.html">Notice Board</a><a href="rules.html">Rules &amp; Regulations</a></div>
+        <div class="footer-col"><h4>Academics</h4><a href="admission.html">Admission</a><a href="#">10+2 Program</a><a href="#">Scholarship</a></div>
+        <div class="footer-col"><h4>Contact Us</h4><p>📍 Nagdhunga, Pokhara-8,<br/>Kaski, Nepal – 33700</p><p>📞 061-520484 / 061-537808</p><p>✉️ newmodel520484@gmail.com</p></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2082 BS New Model Secondary School. All rights reserved.</p><a href="#">Privacy Policy</a></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+function toggleFaq(el){
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+</script>
+</body>
+</html>

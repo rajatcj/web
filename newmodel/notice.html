@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Notice Board – New Model Secondary School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.notice-page-layout{display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start;}
+.notice-filter-bar{
+  background:var(--white);border-radius:10px;padding:16px 20px;
+  box-shadow:var(--shadow);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.filter-btn{
+  background:var(--cream);border:1.5px solid #e0e0e0;border-radius:20px;
+  padding:7px 16px;font-size:.8rem;font-weight:600;cursor:pointer;
+  color:var(--text);transition:var(--transition);
+}
+.filter-btn:hover,.filter-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.filter-label{font-size:.8rem;color:var(--muted);font-weight:600;white-space:nowrap;}
+
+.notice-board-full{background:var(--white);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.notice-board-full .notice-board-header{background:var(--navy);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;}
+.notice-board-full .notice-board-header h3{color:#fff;font-size:1rem;font-weight:600;display:flex;align-items:center;gap:10px;}
+.notice-board-full .notice-board-header h3::before{content:'📋';}
+.notice-item-full{
+  padding:20px 24px;border-bottom:1px solid #f0f0f0;
+  display:flex;gap:16px;align-items:flex-start;cursor:pointer;transition:var(--transition);
+}
+.notice-item-full:hover{background:#faf8f4;}
+.notice-item-full:last-child{border-bottom:none;}
+.notice-item-full .notice-date{flex-shrink:0;background:var(--navy);color:#fff;border-radius:8px;padding:8px 10px;text-align:center;min-width:52px;}
+.notice-item-full .notice-date .day{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;line-height:1;}
+.notice-item-full .notice-date .mon{font-size:.65rem;text-transform:uppercase;color:var(--gold-light);letter-spacing:.06em;}
+.notice-info-full{flex:1;}
+.notice-info-full h4{font-size:.95rem;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.notice-info-full p{font-size:.84rem;color:var(--muted);line-height:1.6;}
+.notice-attachment{display:flex;align-items:center;gap:6px;color:var(--gold);font-size:.78rem;font-weight:500;margin-top:7px;}
+.notice-read-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:.78rem;color:var(--navy);font-weight:600;border:1px solid var(--navy);border-radius:5px;padding:4px 12px;transition:var(--transition);}
+.notice-read-btn:hover{background:var(--navy);color:#fff;}
+
+.notice-empty{padding:48px 24px;text-align:center;color:var(--muted);}
+.notice-empty span{font-size:3rem;display:block;margin-bottom:12px;}
+
+/* sidebar */
+.notice-sidebar-widget{background:var(--white);border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:20px;}
+.notice-sidebar-widget h3{font-size:.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--cream);}
+.category-list{list-style:none;}
+.category-list li{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #f5f5f5;cursor:pointer;transition:var(--transition);}
+.category-list li:last-child{border-bottom:none;}
+.category-list li:hover{color:var(--gold);}
+.cat-name{font-size:.875rem;font-weight:500;}
+.cat-count{background:var(--cream);color:var(--navy);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;}
+
+@media(max-width:900px){
+  .notice-page-layout{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- POPUP -->
+<div id="popup-overlay"><div id="popup-box"><div id="popup-header"><h2 id="popup-title">Announcement</h2><button id="popup-close-btn" onclick="closePopup()">✕</button></div><div id="popup-body"><p></p></div></div></div>
+<button id="popup-create-btn" onclick="toggleAdmin()">📢 Create Popup</button>
+<div id="popup-admin-panel">
+  <h3>📢 Create a New Popup</h3>
+  <input type="text" id="pa-title" placeholder="Popup title"/>
+  <textarea id="pa-text" placeholder="Message text..."></textarea>
+  <label class="admin-file-label" for="pa-file">📎 Attach PDF or Image<input type="file" id="pa-file" accept="image/*,.pdf" onchange="previewAdminFile(this)"/></label>
+  <small id="pa-file-name" style="color:var(--muted);font-size:.78rem;display:block;margin-bottom:10px;"></small>
+  <button id="launch-popup-btn" onclick="launchCustomPopup()">🚀 Show Popup Now</button>
+</div>
+
+<!-- NOTICE MODALS -->
+<div id="notice-modal">
+  <div id="notice-modal-box">
+    <div class="nm-header"><h3>📋 Add New Notice</h3><button class="nm-close" onclick="closeNoticeModal()">✕</button></div>
+    <div class="nm-body">
+      <label>Notice Title *</label>
+      <input type="text" id="nm-title" placeholder="e.g. Annual Examination Schedule"/>
+      <label>Category</label>
+      <select id="nm-cat"><option value="new">New</option><option value="important">Important</option><option value="pdf">PDF</option></select>
+      <label>Description</label>
+      <textarea id="nm-desc" placeholder="Short description of the notice..."></textarea>
+      <label>Attach File (PDF or Image)</label>
+      <div class="nm-file-area" onclick="document.getElementById('nm-file').click()">
+        <span style="font-size:1.6rem">📎</span>
+        <p id="nm-file-label">Click to attach PDF or Image</p>
+        <input type="file" id="nm-file" accept="image/*,.pdf" onchange="updateFileLabel(this)"/>
+      </div>
+      <button class="nm-submit" onclick="addNotice()">Post Notice</button>
+    </div>
+  </div>
+</div>
+<div id="notice-view-modal">
+  <div id="notice-view-box">
+    <div class="nm-header"><h3 id="nv-title">Notice</h3><button class="nm-close" onclick="closeNoticeView()">✕</button></div>
+    <div class="nm-body">
+      <p id="nv-date" style="color:var(--muted);font-size:.8rem;margin-bottom:12px;"></p>
+      <p id="nv-desc" style="color:var(--text);line-height:1.7;"></p>
+      <div id="nv-attachment" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar"><div class="topbar-inner"><span>📍 Nagdhunga, Pokhara-8, Kaski, Nepal</span><span>📞 <a href="tel:061520484">061-520484</a> | 061-537808</span><span>✉️ <a href="mailto:newmodel520484@gmail.com">newmodel520484@gmail.com</a></span></div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-emblem">NM</div><div class="logo-text"><strong>New Model Secondary School</strong><small>Learn · Innovate · Accelerate</small></div></a>
+    <nav>
+      <a href="index.html">Home</a><a href="team.html">Team</a><a href="facilities.html">Facilities</a><a href="rules.html">Rules &amp; Regulations</a><a href="notice.html" class="active">Notice</a><a href="admission.html" class="nav-cta">Admission</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a><a href="team.html">Team</a><a href="facilities.html">Facilities</a><a href="rules.html">Rules &amp; Regulations</a><a href="notice.html">Notice</a><a href="admission.html">Admission ↗</a>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-breadcrumb"><a href="index.html">Home</a><span>Notice Board</span></div>
+    <h1>Notice Board</h1>
+    <p>All official announcements, circulars, events and updates from New Model Secondary School — newest always on top.</p>
+  </div>
+</div>
+
+<!-- ANNOUNCE BAR -->
+<div class="announce-bar">
+  <div class="announce-inner">
+    <span class="announce-label">Latest</span>
+    <div class="announce-ticker">
+      <div class="ticker-items">
+        <span>🏆 Anij Pokhrel selected at National Level Mathematics Olympiad!</span>
+        <span>📣 Admission Open for Academic Year 2082 BS — Apply Now</span>
+        <span>🥇 New Model Sports Meet 2082 — Prize Distribution Completed</span>
+        <span>📚 Scholarship Applications being accepted — Contact school office</span>
+        <span>🏆 Anij Pokhrel selected at National Level Mathematics Olympiad!</span>
+        <span>📣 Admission Open for Academic Year 2082 BS — Apply Now</span>
+        <span>🥇 New Model Sports Meet 2082 — Prize Distribution Completed</span>
+        <span>📚 Scholarship Applications being accepted — Contact school office</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTICE BOARD -->
+<section style="background:var(--cream);">
+  <div class="container">
+    <div class="notice-page-layout">
+      <!-- MAIN -->
+      <div>
+        <!-- FILTER BAR -->
+        <div class="notice-filter-bar fade-in">
+          <span class="filter-label">Filter:</span>
+          <button class="filter-btn active" onclick="filterNotices('all', this)">All Notices</button>
+          <button class="filter-btn" onclick="filterNotices('new', this)">New</button>
+          <button class="filter-btn" onclick="filterNotices('important', this)">Important</button>
+          <button class="filter-btn" onclick="filterNotices('pdf', this)">With PDF</button>
+          <div style="margin-left:auto;">
+            <button class="notice-upload-btn" onclick="openNoticeModal()" style="background:var(--navy);border:none;color:#fff;padding:9px 18px;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">+ Add Notice</button>
+          </div>
+        </div>
+
+        <!-- NOTICE LIST -->
+        <div class="notice-board-full fade-in">
+          <div class="notice-board-header">
+            <h3>All Notices <span id="notice-count" style="font-size:.78rem;opacity:.6;font-weight:400;margin-left:6px;"></span></h3>
+          </div>
+          <div id="notice-list-full"></div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside style="position:sticky;top:90px;">
+        <div class="notice-sidebar-widget fade-in">
+          <h3>By Category</h3>
+          <ul class="category-list" id="category-counts"></ul>
+        </div>
+        <div class="notice-sidebar-widget fade-in">
+          <h3>Quick Links</h3>
+          <a class="quick-link" href="admission.html"><span class="icon">📝</span> Admission Info</a>
+          <a class="quick-link" href="index.html"><span class="icon">🏠</span> Home</a>
+          <a class="quick-link" href="team.html"><span class="icon">👩‍🏫</span> Our Team</a>
+          <a class="quick-link" href="facilities.html"><span class="icon">🏫</span> Facilities</a>
+        </div>
+        <div class="notice-sidebar-widget fade-in">
+          <h3>Contact School</h3>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">📞 061-520484</p>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:8px;">✉️ newmodel520484@gmail.com</p>
+          <p style="font-size:.85rem;color:var(--muted);">📍 Nagdhunga, Pokhara-8</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand"><div class="logo-emblem" style="margin-bottom:14px;">NM</div><p>New Model Secondary School is one of the most reputed co-educational institutions in Pokhara, committed to quality and affordable education since 2037 BS.</p><div class="social-links"><a href="https://facebook.com" class="social-btn" target="_blank">f</a><a href="https://newmodel.edu.np" class="social-btn" target="_blank">🌐</a></div></div>
+        <div class="footer-col"><h4>Navigation</h4><a href="index.html">Home</a><a href="team.html">Our Team</a><a href="facilities.html">Facilities</a><a href="notice.html">Notice Board</a><a href="rules.html">Rules &amp; Regulations</a></div>
+        <div class="footer-col"><h4>Academics</h4><a href="admission.html">Admission</a><a href="#">10+2 Program</a><a href="#">Scholarship</a></div>
+        <div class="footer-col"><h4>Contact Us</h4><p>📍 Nagdhunga, Pokhara-8,<br/>Kaski, Nepal – 33700</p><p>📞 061-520484 / 061-537808</p><p>✉️ newmodel520484@gmail.com</p></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2082 BS New Model Secondary School. All rights reserved.</p><a href="#">Privacy Policy</a></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+let currentFilter = 'all';
+
+function renderFullNotices(filter) {
+  const container = document.getElementById('notice-list-full');
+  const toShow = filter === 'all' ? NOTICES : NOTICES.filter(n => n.cat === filter);
+  const countEl = document.getElementById('notice-count');
+  if(countEl) countEl.textContent = `(${toShow.length})`;
+
+  if (toShow.length === 0) {
+    container.innerHTML = `<div class="notice-empty"><span>📭</span><p>No notices in this category.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = '';
+  toShow.forEach(n => {
+    const div = document.createElement('div');
+    div.className = 'notice-item-full';
+    div.onclick = () => viewNotice(n.id);
+    div.innerHTML = `
+      <div class="notice-date"><div class="day">${n.day}</div><div class="mon">${n.month.substring(0,3)}</div></div>
+      <div class="notice-info-full">
+        <span class="notice-badge badge-${n.cat}">${n.cat.toUpperCase()}</span>
+        <h4>${n.title}</h4>
+        <p>${n.desc.substring(0,120)}${n.desc.length>120?'...':''}</p>
+        ${n.fileName ? `<div class="notice-attachment">📎 ${n.fileName}</div>` : ''}
+        <span class="notice-read-btn">Read More →</span>
+      </div>`;
+    container.appendChild(div);
+  });
+
+  // category counts
+  const catEl = document.getElementById('category-counts');
+  if (catEl) {
+    const all = NOTICES.length;
+    const newC = NOTICES.filter(n=>n.cat==='new').length;
+    const imp = NOTICES.filter(n=>n.cat==='important').length;
+    const pdf = NOTICES.filter(n=>n.cat==='pdf').length;
+    catEl.innerHTML = `
+      <li onclick="filterNotices('all',null)"><span class="cat-name">📋 All Notices</span><span class="cat-count">${all}</span></li>
+      <li onclick="filterNotices('new',null)"><span class="cat-name">🟢 New</span><span class="cat-count">${newC}</span></li>
+      <li onclick="filterNotices('important',null)"><span class="cat-name">🟠 Important</span><span class="cat-count">${imp}</span></li>
+      <li onclick="filterNotices('pdf',null)"><span class="cat-name">🔵 With PDF</span><span class="cat-count">${pdf}</span></li>`;
+  }
+}
+
+function filterNotices(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderFullNotices(cat);
+}
+
+// Override addNotice to also refresh full list
+const _origAdd = window.addNotice;
+document.addEventListener('DOMContentLoaded', () => {
+  renderFullNotices('all');
+});
+
+// patch addNotice to refresh the full notice list too
+const origAddNotice = addNotice;
+window.addNotice = function() {
+  origAddNotice();
+  renderFullNotices(currentFilter);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>New Model Secondary School - Nagdhunga, Pokhara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+/* ===== HOME-ONLY STYLES ===== */
+.hero{position:relative;height:580px;overflow:hidden;background:var(--navy);}
+.carousel-track{display:flex;height:100%;transition:transform .7s cubic-bezier(.77,0,.18,1);}
+.slide{min-width:100%;height:100%;position:relative;background-size:cover;background-position:center;flex-shrink:0;}
+.slide::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(13,34,53,.82) 40%,rgba(13,34,53,.2));}
+.slide:nth-child(1){background:linear-gradient(135deg,#0d2235 0%,#1e4060 50%,#0d2235 100%);}
+.slide:nth-child(2){background:linear-gradient(135deg,#1a3a2a 0%,#2d6a4f 50%,#1a3a2a 100%);}
+.slide:nth-child(3){background:linear-gradient(135deg,#2d1a35 0%,#5a3070 50%,#2d1a35 100%);}
+.slide-pattern{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(circle at 2px 2px,white 1px,transparent 0);background-size:32px 32px;}
+.slide-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:60px 80px;max-width:680px;}
+.slide-tag{display:inline-block;background:var(--gold);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:18px;}
+.slide-content h1{font-family:'Playfair Display',serif;color:#fff;font-size:3rem;line-height:1.15;margin-bottom:16px;}
+.slide-content p{color:rgba(255,255,255,.8);font-size:1.05rem;line-height:1.7;margin-bottom:28px;}
+.slide-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#fff;padding:13px 26px;border-radius:6px;font-weight:600;text-decoration:none;transition:var(--transition);width:fit-content;font-size:.95rem;}
+.slide-btn:hover{background:var(--gold-light);transform:translateY(-2px);}
+.carousel-controls{position:absolute;bottom:28px;left:80px;z-index:10;display:flex;gap:8px;}
+.dot{width:28px;height:4px;background:rgba(255,255,255,.4);border-radius:2px;cursor:pointer;transition:var(--transition);border:none;}
+.dot.active{background:var(--gold);width:42px;}
+.carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.3);color:#fff;border-radius:50%;width:46px;height:46px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);font-size:1.1rem;}
+.carousel-arrow:hover{background:var(--gold);border-color:var(--gold);}
+#prev-btn{left:20px;}
+#next-btn{right:20px;}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.about-visual{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);border-radius:16px;padding:50px 40px;color:#fff;position:relative;overflow:hidden;}
+.about-visual::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:var(--gold);opacity:.1;border-radius:50%;}
+.about-visual::after{content:'';position:absolute;bottom:-30px;left:-30px;width:120px;height:120px;background:var(--gold);opacity:.08;border-radius:50%;}
+.about-visual h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:8px;position:relative;z-index:1;}
+.about-visual .tagline{color:var(--gold-light);font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:24px;position:relative;z-index:1;}
+.about-visual .since{border-top:1px solid rgba(255,255,255,.15);padding-top:20px;margin-top:24px;font-size:.85rem;color:rgba(255,255,255,.6);position:relative;z-index:1;}
+.about-visual .since strong{color:var(--gold-light);font-size:1.4rem;display:block;font-family:'Playfair Display',serif;}
+.mvv{display:grid;gap:20px;}
+.mvv-card{background:var(--white);border-radius:10px;padding:20px 22px;border-left:4px solid var(--gold);box-shadow:0 2px 12px rgba(0,0,0,.06);transition:var(--transition);}
+.mvv-card:hover{transform:translateX(4px);box-shadow:var(--shadow);}
+.mvv-card h4{color:var(--navy);font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.mvv-card p{color:var(--muted);font-size:.9rem;line-height:1.65;}
+
+.facilities-section{background:var(--white);}
+.facilities-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.facility-card{background:var(--cream);border-radius:12px;padding:28px 22px;text-align:center;transition:var(--transition);border:1.5px solid transparent;}
+.facility-card:hover{background:var(--white);border-color:var(--gold);transform:translateY(-6px);box-shadow:var(--shadow);}
+.facility-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.5rem;}
+.facility-card h3{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.facility-card p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+.notice-section{background:var(--cream);}
+.notice-layout{display:grid;grid-template-columns:2fr 1fr;gap:40px;}
+
+.programs-section{background:var(--navy);}
+.programs-section .section-title{color:#fff;}
+.programs-section .section-sub{color:rgba(255,255,255,.6);}
+.programs-section .section-tag{color:var(--gold-light);}
+.programs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.prog-card{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:30px 24px;transition:var(--transition);}
+.prog-card:hover{background:rgba(200,150,42,.12);border-color:var(--gold);transform:translateY(-4px);}
+.prog-card .icon{font-size:2rem;margin-bottom:14px;}
+.prog-card h3{color:#fff;font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:10px;}
+.prog-card p{color:rgba(255,255,255,.6);font-size:.875rem;line-height:1.65;}
+.prog-card .learn-more{display:inline-flex;align-items:center;gap:6px;color:var(--gold-light);font-size:.82rem;font-weight:600;margin-top:16px;text-decoration:none;transition:var(--transition);}
+.prog-card .learn-more:hover{gap:10px;}
+
+.victory-section{background:var(--white);}
+.achievements-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.achievement-card{border-radius:12px;overflow:hidden;border:1.5px solid #eee;transition:var(--transition);}
+.achievement-card:hover{box-shadow:var(--shadow);transform:translateY(-4px);}
+.achiev-banner{height:90px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.achiev-banner.gold{background:linear-gradient(135deg,#c8962a,#e8b84b);}
+.achiev-banner.blue{background:linear-gradient(135deg,#1565c0,#1976d2);}
+.achiev-banner.green{background:linear-gradient(135deg,#2e7d32,#388e3c);}
+.achiev-body{padding:18px 20px;}
+.achiev-body h4{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.achiev-body p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+.gallery-section{background:var(--cream);}
+.gallery-mosaic{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:180px 180px;gap:12px;border-radius:12px;overflow:hidden;}
+.gallery-tile{background:var(--navy2);position:relative;overflow:hidden;cursor:pointer;}
+.gallery-tile:first-child{grid-column:span 2;grid-row:span 2;}
+.gallery-tile .tile-inner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.3;}
+.gallery-tile:nth-child(1){background:linear-gradient(135deg,#0d2235,#1e4060);}
+.gallery-tile:nth-child(2){background:linear-gradient(135deg,#1a3a2a,#2d6a4f);}
+.gallery-tile:nth-child(3){background:linear-gradient(135deg,#2d1a35,#5a3070);}
+.gallery-tile:nth-child(4){background:linear-gradient(135deg,#3a1a0d,#7a4020);}
+.gallery-tile:nth-child(5){background:linear-gradient(135deg,#0d2235,#3a4060);}
+.gallery-tile-overlay{position:absolute;inset:0;background:rgba(13,34,53,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--transition);color:#fff;font-size:.85rem;font-weight:600;}
+.gallery-tile:hover .gallery-tile-overlay{opacity:1;}
+.see-all-btn{display:inline-flex;align-items:center;gap:8px;margin-top:32px;background:transparent;border:2px solid var(--navy);color:var(--navy);padding:12px 24px;border-radius:6px;font-weight:600;text-decoration:none;transition:var(--transition);font-size:.9rem;}
+.see-all-btn:hover{background:var(--navy);color:#fff;}
+
+.message-section{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);position:relative;overflow:hidden;}
+.message-section::before{content:'';position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:var(--gold);opacity:.06;}
+.message-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.message-card{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:16px;padding:36px;}
+.quote-mark{font-family:'Playfair Display',serif;font-size:6rem;color:var(--gold);line-height:.8;opacity:.4;margin-bottom:12px;}
+.message-card blockquote{color:rgba(255,255,255,.88);font-size:1rem;line-height:1.75;font-style:italic;margin-bottom:24px;}
+.msg-author{display:flex;align-items:center;gap:14px;}
+.msg-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:#fff;font-size:1.2rem;font-weight:900;}
+.msg-author-info strong{display:block;color:#fff;font-size:.9rem;}
+.msg-author-info span{color:rgba(255,255,255,.5);font-size:.78rem;}
+.message-info{color:#fff;}
+.message-info .section-tag{color:var(--gold-light);}
+.message-info h2{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:16px;color:#fff;}
+.message-info p{color:rgba(255,255,255,.65);line-height:1.75;margin-bottom:20px;font-size:.95rem;}
+.contact-chips{display:flex;flex-direction:column;gap:10px;}
+.chip{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.75);font-size:.875rem;}
+.chip .chip-icon{width:32px;height:32px;background:rgba(255,255,255,.08);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+
+@media(max-width:1024px){
+  .about-grid,.message-layout{grid-template-columns:1fr;}
+  .facilities-grid{grid-template-columns:repeat(2,1fr);}
+  .programs-grid{grid-template-columns:1fr 1fr;}
+  .achievements-grid{grid-template-columns:1fr 1fr;}
+  .notice-layout{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .slide-content{padding:40px 28px;max-width:100%;}
+  .slide-content h1{font-size:2rem;}
+  .hero{height:460px;}
+  .gallery-mosaic{grid-template-columns:repeat(2,1fr);grid-template-rows:auto;}
+  .gallery-tile:first-child{grid-column:span 2;grid-row:span 1;}
+  .programs-grid,.achievements-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .facilities-grid{grid-template-columns:1fr;}
+  .gallery-mosaic{grid-template-columns:1fr;grid-template-rows:auto;}
+  .gallery-tile:first-child{grid-column:span 1;}
+}
+</style>
+</head>
+<body>
+
+<!-- POPUP -->
+<div id="popup-overlay">
+  <div id="popup-box">
+    <div id="popup-header">
+      <h2 id="popup-title">Important Announcement</h2>
+      <button id="popup-close-btn" onclick="closePopup()">✕</button>
+    </div>
+    <div id="popup-body"><p></p></div>
+  </div>
+</div>
+
+<!-- POPUP ADMIN -->
+<button id="popup-create-btn" onclick="toggleAdmin()">📢 Create Popup</button>
+<div id="popup-admin-panel">
+  <h3>📢 Create a New Popup</h3>
+  <input type="text" id="pa-title" placeholder="Popup title (e.g. Admission Open!)"/>
+  <textarea id="pa-text" placeholder="Message text (optional)..."></textarea>
+  <label class="admin-file-label" for="pa-file">
+    📎 Attach PDF or Image (optional)
+    <input type="file" id="pa-file" accept="image/*,.pdf" onchange="previewAdminFile(this)"/>
+  </label>
+  <small id="pa-file-name" style="color:var(--muted);font-size:.78rem;display:block;margin-bottom:10px;"></small>
+  <button id="launch-popup-btn" onclick="launchCustomPopup()">🚀 Show Popup Now</button>
+</div>
+
+<!-- NOTICE MODALS -->
+<div id="notice-modal">
+  <div id="notice-modal-box">
+    <div class="nm-header">
+      <h3>📋 Add New Notice</h3>
+      <button class="nm-close" onclick="closeNoticeModal()">✕</button>
+    </div>
+    <div class="nm-body">
+      <label>Notice Title *</label>
+      <input type="text" id="nm-title" placeholder="e.g. Annual Examination Schedule"/>
+      <label>Category</label>
+      <select id="nm-cat"><option value="new">New</option><option value="important">Important</option><option value="pdf">PDF</option></select>
+      <label>Description</label>
+      <textarea id="nm-desc" placeholder="Short description of the notice..."></textarea>
+      <label>Attach File (PDF or Image)</label>
+      <div class="nm-file-area" onclick="document.getElementById('nm-file').click()">
+        <span style="font-size:1.6rem">📎</span>
+        <p id="nm-file-label">Click to attach PDF or Image</p>
+        <input type="file" id="nm-file" accept="image/*,.pdf" onchange="updateFileLabel(this)"/>
+      </div>
+      <button class="nm-submit" onclick="addNotice()">Post Notice</button>
+    </div>
+  </div>
+</div>
+<div id="notice-view-modal">
+  <div id="notice-view-box">
+    <div class="nm-header">
+      <h3 id="nv-title">Notice</h3>
+      <button class="nm-close" onclick="closeNoticeView()">✕</button>
+    </div>
+    <div class="nm-body">
+      <p id="nv-date" style="color:var(--muted);font-size:.8rem;margin-bottom:12px;"></p>
+      <p id="nv-desc" style="color:var(--text);line-height:1.7;"></p>
+      <div id="nv-attachment" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>📍 Nagdhunga, Pokhara-8, Kaski, Nepal</span>
+    <span>📞 <a href="tel:061520484">061-520484</a> &nbsp;|&nbsp; 061-537808</span>
+    <span>✉️ <a href="mailto:newmodel520484@gmail.com">newmodel520484@gmail.com</a></span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-emblem">NM</div>
+      <div class="logo-text">
+        <strong>New Model Secondary School</strong>
+        <small>Learn · Innovate · Accelerate</small>
+      </div>
+    </a>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="team.html">Team</a>
+      <a href="facilities.html">Facilities</a>
+      <a href="rules.html">Rules &amp; Regulations</a>
+      <a href="notice.html">Notice</a>
+      <a href="admission.html" class="nav-cta">Admission</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="team.html">Team</a>
+    <a href="facilities.html">Facilities</a>
+    <a href="rules.html">Rules &amp; Regulations</a>
+    <a href="notice.html">Notice</a>
+    <a href="admission.html">Admission ↗</a>
+  </div>
+</header>
+
+<!-- HERO CAROUSEL -->
+<section class="hero">
+  <div class="carousel-track" id="carousel">
+    <div class="slide">
+      <div class="slide-pattern"></div>
+      <div class="slide-content">
+        <span class="slide-tag">Est. 2037 BS · Pokhara</span>
+        <h1>Excellence in Education Since 2037 BS</h1>
+        <p>New Model Secondary School — a proud institution shaping generations of bright minds in the heart of Pokhara.</p>
+        <a href="admission.html" class="slide-btn">Apply for Admission →</a>
+      </div>
+    </div>
+    <div class="slide">
+      <div class="slide-pattern"></div>
+      <div class="slide-content">
+        <span class="slide-tag">Academic Achievement</span>
+        <h1>Proven Results. Committed Faculty.</h1>
+        <p>Our highly qualified, experienced teachers guide students to excellence at every level, from SEE to 10+2.</p>
+        <a href="team.html" class="slide-btn">Meet Our Team →</a>
+      </div>
+    </div>
+    <div class="slide">
+      <div class="slide-pattern"></div>
+      <div class="slide-content">
+        <span class="slide-tag">Scholarships Available</span>
+        <h1>Quality Education for Every Child</h1>
+        <p>We believe every student deserves access to quality and affordable education, regardless of background.</p>
+        <a href="notice.html" class="slide-btn">View Notices →</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-arrow" id="prev-btn" onclick="prevSlide()">‹</button>
+  <button class="carousel-arrow" id="next-btn" onclick="nextSlide()">›</button>
+  <div class="carousel-controls" id="carousel-dots"></div>
+</section>
+
+<!-- ANNOUNCE BAR -->
+<div class="announce-bar">
+  <div class="announce-inner">
+    <span class="announce-label">Latest News</span>
+    <div class="announce-ticker">
+      <div class="ticker-items">
+        <span>📣 Admission Open for Academic Year 2083 BS — Apply Now</span>
+        <span>📚 Scholarship Applications being accepted — Contact the school office for details</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item fade-in"><div class="stat-num">33+</div><div class="stat-label">Batches in SEE</div></div>
+    <div class="stat-item fade-in"><div class="stat-num">10+</div><div class="stat-label">Batches in 10+2</div></div>
+    <div class="stat-item fade-in"><div class="stat-num">2037</div><div class="stat-label">Established (BS)</div></div>
+    <div class="stat-item fade-in"><div class="stat-num">2.3K+</div><div class="stat-label">Community Followers</div></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section>
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual fade-in">
+        <h2>New Model Secondary School</h2>
+        <p class="tagline">Learn · Innovate · Accelerate</p>
+        <p style="color:rgba(255,255,255,.75);font-size:.95rem;line-height:1.75;">One of the most reputed schools of Pokhar, a well-established, privately run co-educational institution with a long, glorious history. Situated in the surroundings of Nagdhunga, Pokhara, we have nurtured generations of bright, capable citizens.</p>
+        <div class="since"><strong>2037 BS</strong>Year of Establishment</div>
+      </div>
+      <div class="fade-in">
+        <div class="section-head">
+          <span class="section-tag">Who We Are</span>
+          <h2 class="section-title">Built on Values, Driven by Vision</h2>
+          <hr class="divider"/>
+          <p class="section-sub" style="margin-top:14px;">Our school combines academic rigour with a warm, inclusive environment that helps every student discover their potential.</p>
+        </div>
+        <div class="mvv">
+          <div class="mvv-card"><h4>🎯 Mission</h4><p>To develop, strengthen and expand educational schemes and facilities for quality education in order to meet the changing needs of today's children.</p></div>
+          <div class="mvv-card"><h4>🔭 Vision</h4><p>To create an educational world in which children of all backgrounds and from all corners of the country have an opportunity for quality and affordable education.</p></div>
+          <div class="mvv-card"><h4>🤝 Commitment</h4><p>To provide modern education at the forefront of professional practice in Nepal, helping children realize their full potential and develop positive attitudes towards life.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACILITIES TEASER -->
+<section class="facilities-section">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">Campus Life</span>
+      <h2 class="section-title">World-Class Facilities</h2>
+      <hr class="divider center"/>
+      <p class="section-sub" style="margin-top:14px;">We provide a rich learning environment with modern infrastructure designed to support every student's growth.</p>
+    </div>
+    <div class="facilities-grid">
+      <div class="facility-card fade-in"><div class="facility-icon">📚</div><h3>Library</h3><p>A comprehensive, spacious library stocked with resources to inspire curiosity and deep learning.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🚌</div><h3>Transportation</h3><p>An extensive transportation network covering all major areas of Pokhara valley.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🏟️</div><h3>Sports &amp; Recreation</h3><p>A wide-ranging sports and recreation complex fostering teamwork, fitness, and spirit.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">💻</div><h3>Computer Lab</h3><p>High-speed internet and an updated computer laboratory for 21st-century learning.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🏫</div><h3>Classrooms</h3><p>Ultra-modern, well-ventilated classrooms equipped for interactive and engaging lessons.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🍽️</div><h3>Cafeteria</h3><p>Healthy, hygienic and affordable meals served daily in our on-campus cafeteria.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🏠</div><h3>Hostel</h3><p>Spacious rooms with a proper learning environment for outstation students.</p></div>
+      <div class="facility-card fade-in"><div class="facility-icon">🏛️</div><h3>Student Council</h3><p>An active student council that develops leadership, confidence and civic responsibility.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:36px;"><a href="facilities.html" class="see-all-btn">Explore All Facilities →</a></div>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="programs-section">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">Academics</span>
+      <h2 class="section-title">Our Programs</h2>
+      <hr class="divider center"/>
+      <p class="section-sub" style="margin-top:14px;">From foundational schooling to higher secondary education, we offer pathways that match every student's aspirations.</p>
+    </div>
+    <div class="programs-grid">
+      <div class="prog-card fade-in"><div class="icon">🎓</div><h3>Secondary Education (SEE)</h3><p>A rigorous and comprehensive curriculum aligned with the National Examination Board, preparing students for higher study and life beyond school.</p><a href="admission.html" class="learn-more">Learn More →</a></div>
+      <div class="prog-card fade-in"><div class="icon">📐</div><h3>10+2 Management Stream</h3><p>Higher secondary management education that builds analytical thinking, entrepreneurship, and professional readiness — backed by board-level achievements.</p><a href="admission.html" class="learn-more">Learn More →</a></div>
+      <div class="prog-card fade-in"><div class="icon">🔬</div><h3>Science Stream (Upcoming)</h3><p>We have applied for affiliation to offer Science and Hotel Management streams, expanding our academic offerings for future students.</p><a href="notice.html" class="learn-more">Stay Updated →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTICE BOARD -->
+<section class="notice-section">
+  <div class="container">
+    <div class="section-head fade-in">
+      <span class="section-tag">Updates</span>
+      <h2 class="section-title">Notice Board</h2>
+      <hr class="divider"/>
+      <p class="section-sub" style="margin-top:14px;">Stay informed with the latest announcements, circulars and events from the school.</p>
+    </div>
+    <div class="notice-layout">
+      <div class="notice-board fade-in">
+        <div class="notice-board-header">
+          <h3>Latest Notices</h3>
+          <button class="notice-upload-btn" onclick="openNoticeModal()">+ Add Notice</button>
+        </div>
+        <ul class="notice-list" id="notice-list-home"></ul>
+      </div>
+      <div class="fade-in">
+        <div class="quick-card">
+          <h3>Quick Links</h3>
+          <a class="quick-link" href="notice.html"><span class="icon">📋</span> All Notices</a>
+          <a class="quick-link" href="admission.html"><span class="icon">📝</span> Admission Info</a>
+          <a class="quick-link" href="team.html"><span class="icon">👩‍🏫</span> Meet the Team</a>
+          <a class="quick-link" href="facilities.html"><span class="icon">🏫</span> Facilities</a>
+          <a class="quick-link" href="rules.html"><span class="icon">📜</span> Rules &amp; Regulations</a>
+        </div>
+        <div class="quick-card">
+          <h3>Contact</h3>
+          <p style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:8px;">📞 061-520484 / 061-537808</p>
+          <p style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);margin-bottom:8px;">✉️ newmodel520484@gmail.com</p>
+          <p style="display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);">📍 Nagdhunga, Pokhara-8, Kaski</p>
+          <a href="https://maps.google.com/?q=New+Model+Secondary+School+Nagdhunga+Pokhara" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--navy);color:#fff;padding:9px 16px;border-radius:6px;font-size:.82rem;font-weight:600;text-decoration:none;">🗺️ View on Map</a>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:28px;"><a href="notice.html" class="see-all-btn">View All Notices →</a></div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section class="victory-section">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">Our Pride</span>
+      <h2 class="section-title">Victories &amp; Achievements</h2>
+      <hr class="divider center"/>
+    </div>
+    <div class="achievements-grid">
+      <div class="achievement-card fade-in"><div class="achiev-banner gold">🏅</div><div class="achiev-body"><h4>National Mathematics Olympiad</h4><p>Anij Pokhrel of Grade 10 secured 1st position in Gandaki Province and was selected for the National Level Mathematics Olympiad. A true hat-trick achievement!</p></div></div>
+      <div class="achievement-card fade-in"><div class="achiev-banner blue">🥈</div><div class="achiev-body"><h4>3rd Position — HSEB Board Exam</h4><p>In Academic Year 2070, Januka Gautam scored 80.6% and won 3rd position in Kaski District in the HSEB Management stream — proving New Model leads from the front.</p></div></div>
+      <div class="achievement-card fade-in"><div class="achiev-banner green">🏆</div><div class="achiev-body"><h4>Sports Meet 2082 — Champions</h4><p>New Model Sports Meet 2082 was a grand success with outstanding performances across multiple disciplines. Congratulations to all winners!</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="container">
+    <div class="section-head fade-in">
+      <span class="section-tag">Gallery</span>
+      <h2 class="section-title">Life at New Model</h2>
+      <hr class="divider"/>
+    </div>
+    <div class="gallery-mosaic fade-in">
+      <div class="gallery-tile"><div class="tile-inner">🏫</div><div class="gallery-tile-overlay">School Campus</div></div>
+      <div class="gallery-tile"><div class="tile-inner">📚</div><div class="gallery-tile-overlay">Library</div></div>
+      <div class="gallery-tile"><div class="tile-inner">🏅</div><div class="gallery-tile-overlay">Sports Day</div></div>
+      <div class="gallery-tile"><div class="tile-inner">🎉</div><div class="gallery-tile-overlay">Events</div></div>
+      <div class="gallery-tile"><div class="tile-inner">💻</div><div class="gallery-tile-overlay">Computer Lab</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MESSAGE -->
+<section class="message-section">
+  <div class="container">
+    <div class="message-layout">
+      <div class="message-info fade-in">
+        <span class="section-tag">From the Principal</span>
+        <h2>A Message from Our Leadership</h2>
+        <p>At New Model Secondary School, we believe education is the most powerful tool to transform a child's future. Our dedicated team of educators works tirelessly every day to bring out the very best in each student — intellectually, socially, and personally.</p>
+        <div class="contact-chips">
+          <div class="chip"><span class="chip-icon">📞</span> 061-520484 / 061-537808</div>
+          <div class="chip"><span class="chip-icon">✉️</span> newmodel520484@gmail.com</div>
+          <div class="chip"><span class="chip-icon">📍</span> Nagdhunga, Pokhara-8, Kaski, Nepal</div>
+        </div>
+      </div>
+      <div class="message-card fade-in">
+        <div class="quote-mark">"</div>
+        <blockquote>Education is not merely about academics — it is about building character, cultivating curiosity, and inspiring a lifelong love of learning. New Model has always stood for that ideal.</blockquote>
+        <div class="msg-author">
+          <div class="msg-avatar">P</div>
+          <div class="msg-author-info"><strong>The Principal</strong><span>New Model Secondary School, Pokhara</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo-emblem" style="margin-bottom:14px;">NM</div>
+          <p>New Model Secondary School is one of the most reputed co-educational institutions in Pokhara, committed to quality and affordable education since 2037 BS.</p>
+          <div class="social-links">
+            <a href="https://facebook.com" class="social-btn" target="_blank">f</a>
+            <a href="https://newmodel.edu.np" class="social-btn" target="_blank">🌐</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <a href="index.html">Home</a>
+          <a href="team.html">Our Team</a>
+          <a href="facilities.html">Facilities</a>
+          <a href="notice.html">Notice Board</a>
+          <a href="rules.html">Rules &amp; Regulations</a>
+        </div>
+        <div class="footer-col">
+          <h4>Academics</h4>
+          <a href="admission.html">Admission</a>
+          <a href="#">10+2 Program</a>
+          <a href="#">Scholarship</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <p>📍 Nagdhunga, Pokhara-8,<br/>Kaski, Nepal – 33700</p>
+          <p>📞 061-520484 / 061-537808</p>
+          <p>✉️ newmodel520484@gmail.com</p>
+          <p>🌐 newmodel.edu.np</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2082 BS New Model Secondary School. All rights reserved.</p>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

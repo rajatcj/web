@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Our Team – New Model Secondary School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css"/>
+<style>
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+.team-card{background:var(--white);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:var(--transition);}
+.team-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(13,34,53,.2);}
+.team-card-banner{height:140px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.team-card-banner.navy{background:linear-gradient(135deg,var(--navy),var(--navy2));}
+.team-card-banner.gold{background:linear-gradient(135deg,#8a6010,var(--gold));}
+.team-card-banner.green{background:linear-gradient(135deg,#1a3a2a,#2d6a4f);}
+.team-card-banner.teal{background:linear-gradient(135deg,#0d3a3a,#1a6a6a);}
+.team-avatar{
+  width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:2rem;color:#fff;font-weight:900;
+  border:3px solid rgba(255,255,255,.3);position:absolute;bottom:-24px;left:24px;
+}
+.team-card-body{padding:32px 24px 24px;}
+.team-role{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.team-card-body h3{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--navy);margin-bottom:6px;}
+.team-dept{font-size:.8rem;color:var(--muted);margin-bottom:14px;}
+.team-card-body p{font-size:.85rem;color:var(--muted);line-height:1.65;}
+.team-qual{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.qual-tag{background:var(--cream);color:var(--navy);font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:20px;}
+
+.leadership-section{background:var(--navy);padding:80px 0;}
+.leadership-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+.leadership-card{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:16px;padding:36px;}
+.leader-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:2rem;color:#fff;font-weight:900;margin-bottom:20px;}
+.leadership-card h3{font-family:'Playfair Display',serif;color:#fff;font-size:1.4rem;margin-bottom:4px;}
+.leadership-card .role-tag{color:var(--gold-light);font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;display:block;}
+.leadership-card p{color:rgba(255,255,255,.7);line-height:1.75;font-size:.92rem;}
+.leadership-info .section-tag{color:var(--gold-light);}
+.leadership-info h2{font-family:'Playfair Display',serif;color:#fff;font-size:2rem;margin-bottom:16px;}
+.leadership-info p{color:rgba(255,255,255,.65);line-height:1.75;}
+
+.dept-section{background:var(--cream);}
+.dept-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.dept-card{background:var(--white);border-radius:12px;padding:24px;text-align:center;box-shadow:var(--shadow);transition:var(--transition);border-top:4px solid var(--gold);}
+.dept-card:hover{transform:translateY(-4px);}
+.dept-icon{font-size:2rem;margin-bottom:12px;}
+.dept-card h3{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.dept-card p{font-size:.8rem;color:var(--muted);}
+
+@media(max-width:1024px){
+  .team-grid{grid-template-columns:repeat(2,1fr);}
+  .dept-grid{grid-template-columns:repeat(2,1fr);}
+  .leadership-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .team-grid{grid-template-columns:1fr;}
+  .dept-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- POPUP -->
+<div id="popup-overlay"><div id="popup-box"><div id="popup-header"><h2 id="popup-title">Announcement</h2><button id="popup-close-btn" onclick="closePopup()">✕</button></div><div id="popup-body"><p></p></div></div></div>
+<button id="popup-create-btn" onclick="toggleAdmin()">📢 Create Popup</button>
+<div id="popup-admin-panel">
+  <h3>📢 Create a New Popup</h3>
+  <input type="text" id="pa-title" placeholder="Popup title"/>
+  <textarea id="pa-text" placeholder="Message text..."></textarea>
+  <label class="admin-file-label" for="pa-file">📎 Attach PDF or Image<input type="file" id="pa-file" accept="image/*,.pdf" onchange="previewAdminFile(this)"/></label>
+  <small id="pa-file-name" style="color:var(--muted);font-size:.78rem;display:block;margin-bottom:10px;"></small>
+  <button id="launch-popup-btn" onclick="launchCustomPopup()">🚀 Show Popup Now</button>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar"><div class="topbar-inner"><span>📍 Nagdhunga, Pokhara-8, Kaski, Nepal</span><span>📞 <a href="tel:061520484">061-520484</a> | 061-537808</span><span>✉️ <a href="mailto:newmodel520484@gmail.com">newmodel520484@gmail.com</a></span></div></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-emblem">NM</div>
+      <div class="logo-text"><strong>New Model Secondary School</strong><small>Learn · Innovate · Accelerate</small></div>
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="team.html" class="active">Team</a>
+      <a href="facilities.html">Facilities</a>
+      <a href="rules.html">Rules &amp; Regulations</a>
+      <a href="notice.html">Notice</a>
+      <a href="admission.html" class="nav-cta">Admission</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></div>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Home</a><a href="team.html">Team</a><a href="facilities.html">Facilities</a><a href="rules.html">Rules &amp; Regulations</a><a href="notice.html">Notice</a><a href="admission.html">Admission ↗</a>
+  </div>
+</header>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-breadcrumb"><a href="index.html">Home</a><span>Our Team</span></div>
+    <h1>Meet Our Team</h1>
+    <p>Dedicated, experienced and passionate educators committed to bringing out the best in every student at New Model.</p>
+  </div>
+</div>
+
+<!-- LEADERSHIP -->
+<section class="leadership-section">
+  <div class="container">
+    <div class="leadership-grid">
+      <div class="leadership-info fade-in">
+        <span class="section-tag">Leadership</span>
+        <h2>Guided by Experience &amp; Vision</h2>
+        <hr class="divider" style="border-top-color:var(--gold);margin-bottom:20px;"/>
+        <p>All teaching staff at New Model are well-veteran and highly qualified professionals who have gained years of experience in their respective fields. Our leadership team sets the direction for academic excellence, student wellbeing, and institutional growth.</p>
+        <p style="margin-top:14px;">Together, they foster an environment of trust, innovation, and high aspirations — the hallmarks that have made New Model a name synonymous with quality education in Pokhara.</p>
+      </div>
+      <div class="leadership-card fade-in">
+        <div class="leader-avatar">P</div>
+        <h3>The Principal</h3>
+        <span class="role-tag">Principal &amp; Academic Head</span>
+        <p>Leading the school with a vision for academic excellence and holistic student development. The Principal oversees all academic, administrative, and welfare functions at New Model Secondary School.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section class="dept-section">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">Departments</span>
+      <h2 class="section-title">Academic Departments</h2>
+      <hr class="divider center"/>
+      <p class="section-sub" style="margin-top:14px;">Our school is organized into focused departments, each led by experienced subject specialists.</p>
+    </div>
+    <div class="dept-grid">
+      <div class="dept-card fade-in"><div class="dept-icon">📐</div><h3>Mathematics</h3><p>Building strong analytical and problem-solving foundations for every student.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🔬</div><h3>Science</h3><p>Encouraging curiosity, experimentation, and scientific thinking from an early age.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🌐</div><h3>English</h3><p>Developing confident communication, reading, and writing skills in English.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">📖</div><h3>Nepali</h3><p>Nurturing love for the national language, literature, and cultural heritage.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">💼</div><h3>Management</h3><p>Preparing students for commerce, business, and professional careers through the 10+2 program.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🏺</div><h3>Social Studies</h3><p>Building civic awareness, historical knowledge, and appreciation of society and culture.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">💻</div><h3>Computer Science</h3><p>Equipping students with digital literacy and foundational programming skills.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🎨</div><h3>Arts &amp; Activities</h3><p>Fostering creativity, expression, and holistic development through arts and co-curricular programs.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHING STAFF -->
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-head fade-in">
+      <span class="section-tag">Faculty</span>
+      <h2 class="section-title">Our Teaching Staff</h2>
+      <hr class="divider"/>
+      <p class="section-sub" style="margin-top:14px;">Our faculty members are specialists in their fields, dedicated to nurturing every student's potential.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card fade-in">
+        <div class="team-card-banner navy"><div class="team-avatar">R</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Head of Department</div>
+          <h3>Mathematics Faculty</h3>
+          <div class="team-dept">Department of Mathematics</div>
+          <p>Our mathematics team builds strong conceptual foundations and problem-solving skills, with a track record of producing top district performers.</p>
+          <div class="team-qual"><span class="qual-tag">M.Ed. Mathematics</span><span class="qual-tag">10+ Years Exp.</span></div>
+        </div>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-card-banner gold"><div class="team-avatar">S</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Senior Teacher</div>
+          <h3>Science Faculty</h3>
+          <div class="team-dept">Department of Science</div>
+          <p>Experienced science educators who bring lessons to life through demonstrations, lab work, and real-world application of scientific concepts.</p>
+          <div class="team-qual"><span class="qual-tag">M.Sc. Physics</span><span class="qual-tag">8+ Years Exp.</span></div>
+        </div>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-card-banner green"><div class="team-avatar">A</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Senior Teacher</div>
+          <h3>English Faculty</h3>
+          <div class="team-dept">Department of English</div>
+          <p>Dedicated English language educators focused on communication, comprehension, and confidence building for students at all levels.</p>
+          <div class="team-qual"><span class="qual-tag">M.A. English</span><span class="qual-tag">12+ Years Exp.</span></div>
+        </div>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-card-banner teal"><div class="team-avatar">N</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Teacher</div>
+          <h3>Nepali Faculty</h3>
+          <div class="team-dept">Department of Nepali</div>
+          <p>Our Nepali department fosters appreciation for national language and literature while building strong communication skills in students.</p>
+          <div class="team-qual"><span class="qual-tag">M.A. Nepali</span><span class="qual-tag">7+ Years Exp.</span></div>
+        </div>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-card-banner navy"><div class="team-avatar">M</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Senior Teacher</div>
+          <h3>Management Faculty</h3>
+          <div class="team-dept">Department of Management (10+2)</div>
+          <p>Industry-experienced management educators who prepare 10+2 students for higher education and professional careers in business and commerce.</p>
+          <div class="team-qual"><span class="qual-tag">MBA</span><span class="qual-tag">9+ Years Exp.</span></div>
+        </div>
+      </div>
+      <div class="team-card fade-in">
+        <div class="team-card-banner gold"><div class="team-avatar">P</div></div>
+        <div class="team-card-body">
+          <div class="team-role">Teacher</div>
+          <h3>Computer Science Faculty</h3>
+          <div class="team-dept">Department of Computer Science</div>
+          <p>Technology-savvy educators who equip students with essential digital literacy skills and foundational computer science knowledge.</p>
+          <div class="team-qual"><span class="qual-tag">B.Sc. CSIT</span><span class="qual-tag">6+ Years Exp.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT STAFF -->
+<section style="background:var(--cream);">
+  <div class="container">
+    <div class="section-head center fade-in">
+      <span class="section-tag">Support Team</span>
+      <h2 class="section-title">Administrative &amp; Support Staff</h2>
+      <hr class="divider center"/>
+      <p class="section-sub" style="margin-top:14px;">Behind every great school is a hardworking support team ensuring smooth daily operations.</p>
+    </div>
+    <div class="dept-grid">
+      <div class="dept-card fade-in"><div class="dept-icon">🗂️</div><h3>Administration</h3><p>Managing day-to-day operations, records, and communications for the school.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">📚</div><h3>Library Staff</h3><p>Maintaining and expanding our library resources for students and teachers alike.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🔧</div><h3>Maintenance</h3><p>Keeping the campus clean, safe and well-maintained for a healthy learning environment.</p></div>
+      <div class="dept-card fade-in"><div class="dept-icon">🚌</div><h3>Transport Team</h3><p>Ensuring safe and timely transportation for students across Pokhara valley.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-grid">
+        <div class="footer-brand"><div class="logo-emblem" style="margin-bottom:14px;">NM</div><p>New Model Secondary School is one of the most reputed co-educational institutions in Pokhara, committed to quality and affordable education since 2037 BS.</p><div class="social-links"><a href="https://facebook.com" class="social-btn" target="_blank">f</a><a href="https://newmodel.edu.np" class="social-btn" target="_blank">🌐</a></div></div>
+        <div class="footer-col"><h4>Navigation</h4><a href="index.html">Home</a><a href="team.html">Our Team</a><a href="facilities.html">Facilities</a><a href="notice.html">Notice Board</a><a href="rules.html">Rules &amp; Regulations</a></div>
+        <div class="footer-col"><h4>Academics</h4><a href="admission.html">Admission</a><a href="#">10+2 Program</a><a href="#">Scholarship</a></div>
+        <div class="footer-col"><h4>Contact Us</h4><p>📍 Nagdhunga, Pokhara-8,<br/>Kaski, Nepal – 33700</p><p>📞 061-520484 / 061-537808</p><p>✉️ newmodel520484@gmail.com</p></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2082 BS New Model Secondary School. All rights reserved.</p><a href="#">Privacy Policy</a></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
