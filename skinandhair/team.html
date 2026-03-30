@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Doctors | Pokhara Skin & Hair Clinic</title>
+  <meta name="description" content="Meet our specialist dermatologists — Dr. Prakash Acharya and Dr. Bishnu Prakash Adhikari — leading dermatology experts at Pokhara Skin & Hair Clinic." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .doctor-featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 56px;
+    }
+    .doctor-featured-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-mist);
+      transition: var(--transition);
+    }
+    .doctor-featured-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .doctor-featured-img { height: 340px; overflow: hidden; position: relative; }
+    .doctor-featured-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform 0.6s ease; }
+    .doctor-featured-card:hover .doctor-featured-img img { transform: scale(1.04); }
+    .doctor-featured-badge {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: linear-gradient(135deg, var(--teal-mid), var(--teal-light));
+      color: white;
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .doctor-featured-body { padding: 32px; }
+    .doctor-featured-body h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--teal-deep);
+      margin-bottom: 4px;
+    }
+    .doctor-featured-body .spec {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .doctor-featured-body p {
+      font-size: 0.9rem;
+      color: var(--gray-mid);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .doctor-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .doctor-tag {
+      background: var(--teal-pale);
+      color: var(--teal-deep);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 50px;
+    }
+    .doctor-contact-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-mist);
+    }
+    @media (max-width: 768px) {
+      .doctor-featured { grid-template-columns: 1fr; }
+      .doctor-featured-img { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar dark-bg" role="navigation">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="https://instagram.fktm17-1.fna.fbcdn.net/v/t51.82787-19/516630051_17901350493212580_1417171856512482996_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDE5LmMyIn0&_nc_ht=instagram.fktm17-1.fna.fbcdn.net&_nc_cat=100&_nc_oc=Q6cZ2gH-2OFqhtthREgvuSrCHJ7v-tYcWfzU2eh97BsDfQuF6YlaThl2Hju6iYh7RrWkUfaM1sXpTO_uhZETKU_ghzIa&_nc_ohc=OuOxxPNh6DUQ7kNvwF9thrp&_nc_gid=PoPDjKmNUDf-C1mM_jJIgw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfxnQ_GUoRMOquCSi6bTljYufP2mVd-m9y6UPuoBiriIbA&oe=69CCBDA7&_nc_sid=7a9f4b" alt="Logo" />
+      <div class="nav-logo-text"><strong>Skin &amp; Hair Clinic</strong><span>Pokhara, Nepal</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li><li><a href="team.html" class="active">Doctors</a></li>
+      <li><a href="testimonials.html">Reviews</a></li><li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="contact.html" class="btn btn-primary nav-cta"><i class="fa-regular fa-calendar"></i> Book Appointment</a>
+    <button class="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<nav class="mobile-menu">
+  <a href="index.html">Home</a><a href="about.html">About Us</a><a href="services.html">Services</a>
+  <a href="team.html">Our Doctors</a><a href="testimonials.html">Reviews</a><a href="contact.html">Contact</a>
+  <div class="mobile-cta"><a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">Book Appointment</a></div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="page-hero-content">
+      <div class="breadcrumb"><a href="index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:0.65rem"></i> Our Doctors</div>
+      <h1>Meet Our <em>Expert Doctors</em></h1>
+      <p>Our dermatologists are among Nepal's most respected specialists in skin and hair conditions — trained, experienced, and deeply committed to patient care.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURED DOCTORS ══ -->
+<section class="section" style="background:var(--ivory)">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="section-label">Our Specialists</div>
+      <h2 class="section-title">Dermatologists You Can <em>Trust</em></h2>
+      <p class="section-subtitle">Specialist dermatologists visiting regularly from Kathmandu — bringing capital-city expertise to Pokhara.</p>
+    </div>
+
+    <div class="doctor-featured">
+      <!-- Dr. Prakash Acharya -->
+      <article class="doctor-featured-card fade-left">
+        <div class="doctor-featured-img">
+          <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80" alt="Dr. Prakash Acharya — Dermatologist at Pokhara Skin & Hair Clinic" />
+          <div class="doctor-featured-badge">Lead Dermatologist</div>
+        </div>
+        <div class="doctor-featured-body">
+          <h2>Dr. Prakash Acharya</h2>
+          <div class="spec">MD Dermatology · Dermatologist</div>
+          <p>Dr. Prakash Acharya is a renowned dermatologist known throughout the Gandaki region for his expertise in skin and hair disorders. With extensive specialist training and years of clinical experience, he has successfully treated thousands of patients. He visits Pokhara Skin & Hair Clinic regularly, ensuring patients receive expert care without traveling to Kathmandu.</p>
+          <div class="doctor-tags">
+            <span class="doctor-tag">Skin Disorders</span>
+            <span class="doctor-tag">Hair Loss</span>
+            <span class="doctor-tag">Cosmetic Dermatology</span>
+            <span class="doctor-tag">Acne Treatment</span>
+            <span class="doctor-tag">Vitiligo</span>
+          </div>
+          <div class="doctor-contact-row">
+            <a href="contact.html" class="btn btn-primary" style="font-size:0.82rem;padding:10px 22px;"><i class="fa-regular fa-calendar"></i> Book Appointment</a>
+            <a href="tel:+9779845815246" class="btn btn-outline" style="font-size:0.82rem;padding:10px 22px;"><i class="fa-solid fa-phone"></i> Call</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Dr. Bishnu Prakash Adhikari -->
+      <article class="doctor-featured-card fade-right">
+        <div class="doctor-featured-img">
+          <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&q=80" alt="Dr. Bishnu Prakash Adhikari — Dermatologist at Pokhara Skin & Hair Clinic" />
+          <div class="doctor-featured-badge">Co-founder &amp; Dermatologist</div>
+        </div>
+        <div class="doctor-featured-body">
+          <h2>Dr. Bishnu Prakash Adhikari</h2>
+          <div class="spec">MD Dermatology · Dermatologist</div>
+          <p>Dr. Bishnu Prakash Adhikari is a specialist dermatologist and co-founder of Pokhara Skin & Hair Clinic. Committed to making quality dermatological care accessible to Pokhara and the wider Gandaki region, he brings deep expertise in both medical and cosmetic dermatology. His patient-centered approach and thorough clinical practice have earned him great respect among colleagues and patients alike.</p>
+          <div class="doctor-tags">
+            <span class="doctor-tag">Medical Dermatology</span>
+            <span class="doctor-tag">Scalp Conditions</span>
+            <span class="doctor-tag">Chemical Peels</span>
+            <span class="doctor-tag">Skin Infections</span>
+            <span class="doctor-tag">Pigmentation</span>
+          </div>
+          <div class="doctor-contact-row">
+            <a href="contact.html" class="btn btn-primary" style="font-size:0.82rem;padding:10px 22px;"><i class="fa-regular fa-calendar"></i> Book Appointment</a>
+            <a href="tel:+9779851063249" class="btn btn-outline" style="font-size:0.82rem;padding:10px 22px;"><i class="fa-solid fa-phone"></i> Call</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY OUR DOCTORS ══ -->
+<section class="section" style="background:var(--teal-mist)">
+  <div class="container">
+    <div class="text-center fade-up">
+      <div class="section-label">Our Approach</div>
+      <h2 class="section-title">What Makes Our Doctors <em>Different</em></h2>
+    </div>
+    <div class="why-grid stagger" style="margin-top:56px">
+      <div class="why-card">
+        <div class="why-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+        <h3>Specialist Training</h3>
+        <p>Both doctors hold MD degrees in Dermatology and have completed rigorous specialist training from recognized institutions in Nepal.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><i class="fa-solid fa-stethoscope"></i></div>
+        <h3>Evidence-Based Practice</h3>
+        <p>Treatments are grounded in the latest clinical evidence and guidelines — no guesswork, only proven protocols.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><i class="fa-solid fa-comments"></i></div>
+        <h3>Patient Communication</h3>
+        <p>Our doctors take time to explain your diagnosis, discuss treatment options, and answer all your questions in clear, simple terms.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon"><i class="fa-solid fa-rotate"></i></div>
+        <h3>Regular Visits</h3>
+        <p>Specialist doctors visit the clinic regularly from Kathmandu — ensuring consistent, high-quality care for all patients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VISITING SCHEDULE ══ -->
+<section class="section" style="background:var(--teal-deep);padding:60px 0;">
+  <div class="container">
+    <div class="text-center fade-up" style="color:white;margin-bottom:40px;">
+      <div class="section-label" style="color:var(--gold-light);">Doctor Schedule</div>
+      <h2 style="font-family:var(--font-display);font-size:2rem;color:white;margin-bottom:8px;">Visiting <em style="color:var(--gold-light)">Schedule</em></h2>
+      <p style="color:rgba(255,255,255,0.65);">Call ahead to confirm appointment times and doctor availability.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:700px;margin:0 auto;" class="stagger">
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-md);padding:28px;text-align:center;">
+        <div style="font-size:2rem;color:var(--gold-light);margin-bottom:8px;"><i class="fa-solid fa-calendar-week"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.3rem;color:white;margin-bottom:6px;">Dr. Prakash Acharya</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">Lead Dermatologist</div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:10px;font-size:0.875rem;color:rgba(255,255,255,0.85);">Saturday &amp; Sunday<br><span style="font-size:0.8rem;color:rgba(255,255,255,0.55)">Regular clinic hours</span></div>
+      </div>
+      <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-md);padding:28px;text-align:center;">
+        <div style="font-size:2rem;color:var(--gold-light);margin-bottom:8px;"><i class="fa-solid fa-calendar-check"></i></div>
+        <div style="font-family:var(--font-display);font-size:1.3rem;color:white;margin-bottom:6px;">Dr. Bishnu Adhikari</div>
+        <div style="font-size:0.82rem;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px;">Dermatologist &amp; Co-founder</div>
+        <div style="background:rgba(255,255,255,0.1);border-radius:var(--radius-sm);padding:10px;font-size:0.875rem;color:rgba(255,255,255,0.85);">Sunday – Friday<br><span style="font-size:0.8rem;color:rgba(255,255,255,0.55)">8:00 AM – 7:00 PM</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <a href="tel:+9779845815246" class="btn btn-gold"><i class="fa-solid fa-phone"></i> Call to Confirm: 9845815246</a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to See a Specialist?</h2>
+    <p>Book your consultation with Dr. Prakash Acharya or Dr. Bishnu Prakash Adhikari today. Expert dermatology care, right in Pokhara.</p>
+    <div class="cta-actions">
+      <a href="contact.html" class="btn btn-white"><i class="fa-regular fa-calendar-check"></i> Book Now</a>
+      <a href="services.html" class="btn btn-outline-white">View Services <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><img src="https://instagram.fktm17-1.fna.fbcdn.net/v/t51.82787-19/516630051_17901350493212580_1417171856512482996_n.jpg?efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDE5LmMyIn0&_nc_ht=instagram.fktm17-1.fna.fbcdn.net&_nc_cat=100&_nc_oc=Q6cZ2gH-2OFqhtthREgvuSrCHJ7v-tYcWfzU2eh97BsDfQuF6YlaThl2Hju6iYh7RrWkUfaM1sXpTO_uhZETKU_ghzIa&_nc_ohc=OuOxxPNh6DUQ7kNvwF9thrp&_nc_gid=PoPDjKmNUDf-C1mM_jJIgw&edm=AP4sbd4BAAAA&ccb=7-5&oh=00_AfxnQ_GUoRMOquCSi6bTljYufP2mVd-m9y6UPuoBiriIbA&oe=69CCBDA7&_nc_sid=7a9f4b" alt="Logo" /><div class="footer-logo-text"><strong>Pokhara Skin &amp; Hair Clinic</strong><span>Gandaki Health Care Pvt. Ltd.</span></div></div>
+        <p>Premier dermatology clinic in Pokhara, Nepal.</p>
+        <div class="footer-socials"><a href="https://www.facebook.com/p/Pokhara-Skin-Hair-Clinic-61561770561179/" class="footer-social" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a><a href="https://www.instagram.com/pokharaskinandhairclinic/" class="footer-social" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a></div>
+      </div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About Us</a></li><li><a href="services.html">Services</a></li><li><a href="team.html">Doctors</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a href="services.html">Acne Treatment</a></li><li><a href="services.html">Hair Loss Therapy</a></li><li><a href="services.html">Chemical Peels</a></li><li><a href="services.html">Laser Therapy</a></li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><div class="footer-hours"><div class="footer-hour"><span>Sun – Fri</span><span>8AM–7PM</span></div><div class="footer-hour" style="flex-direction:column;gap:4px;border:none;"><span style="color:rgba(255,255,255,0.7)"><i class="fa-solid fa-phone" style="color:var(--teal-light)"></i> 9845815246</span><span style="color:rgba(255,255,255,0.5);font-size:0.78rem"><i class="fa-solid fa-location-dot" style="color:var(--gold-light)"></i> Nayabazar-08, Pokhara</span></div></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Pokhara Skin &amp; Hair Clinic. All rights reserved.</span></div>
+  </div>
+</footer>
+<button class="back-to-top" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></button>
+<script src="script.js"></script>
+</body>
+</html>
