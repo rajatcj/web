@@ -1,0 +1,1556 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Rajat · Dashboard</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#080810" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════ */
+:root {
+  --bg:          #080810;
+  --surface:     #0f0f1a;
+  --surface2:    #141425;
+  --surface3:    #1a1a2e;
+  --border:      rgba(255,255,255,0.06);
+  --border2:     rgba(255,255,255,0.10);
+  --accent:      #7c6aff;
+  --accent2:     #a78bfa;
+  --pink:        #f472b6;
+  --teal:        #2dd4bf;
+  --amber:       #fbbf24;
+  --red:         #f87171;
+  --text:        #e8e6f0;
+  --muted:       #6e6b82;
+  --muted2:      #9490a8;
+  --radius:      18px;
+  --radius-sm:   12px;
+  --nav-h:       80px;
+  font-family: 'Sora', sans-serif;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* App shell */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+═══════════════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* ═══════════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════════ */
+.page {
+  display: none;
+  padding: 0 0 calc(var(--nav-h) + 24px);
+  min-height: 100dvh;
+  animation: pageIn 0.28s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+  position: relative;
+  z-index: 1;
+}
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL PAGE HEADER
+═══════════════════════════════════════════════ */
+.page-header {
+  padding: 56px 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--muted2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: -10px 20px 20px;
+}
+
+/* ═══════════════════════════════════════════════
+   HOME PAGE
+═══════════════════════════════════════════════ */
+.home-topbar {
+  padding: env(safe-area-inset-top, 12px) 20px 0;
+  padding-top: max(env(safe-area-inset-top), 48px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.avatar-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(124,106,255,0.2);
+  flex-shrink: 0;
+}
+.avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+.home-greeting {
+  flex: 1;
+}
+.home-greeting .name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.home-greeting .sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.install-pill {
+  background: var(--accent);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  display: none;
+  font-family: 'Sora', sans-serif;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.install-pill:hover { transform: scale(1.04); box-shadow: 0 4px 20px rgba(124,106,255,0.5); }
+
+/* ── Hero glance cards ── */
+.glance-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 20px 20px 0;
+}
+
+.glance-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.glance-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.glance-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+}
+
+.glance-card .gc-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Weather card */
+.weather-card { grid-column: span 2; }
+.weather-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.weather-temp {
+  font-size: 42px;
+  font-weight: 700;
+  font-family: 'Space Mono', monospace;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.weather-icon { font-size: 40px; line-height: 1; }
+.weather-desc { font-size: 13px; color: var(--muted2); margin-top: 6px; }
+.weather-loc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* Spotify card */
+.spotify-card { grid-column: span 2; }
+.spotify-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.spotify-art {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--surface3);
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+.spotify-art img { width: 100%; height: 100%; object-fit: cover; display: none; }
+.spotify-art .music-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: linear-gradient(135deg, #1db954 0%, #0d7a37 100%);
+}
+.spotify-info { flex: 1; min-width: 0; }
+.spotify-track {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spotify-artist { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.spotify-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+}
+.pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #1db954;
+  animation: pulse-anim 1.5s infinite;
+}
+@keyframes pulse-anim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.spotify-status span { font-size: 11px; color: #1db954; font-weight: 500; }
+
+/* Date time card */
+.time-display {
+  font-family: 'Space Mono', monospace;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.date-display { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* Quick action grid */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 24px 20px 10px;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 0 20px;
+}
+.quick-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: 'Sora', sans-serif;
+  color: var(--text);
+}
+.quick-btn:active { transform: scale(0.93); }
+.quick-btn .qb-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+.quick-btn .qb-label { font-size: 10px; font-weight: 500; color: var(--muted2); }
+
+/* Pages library */
+.pages-list { padding: 0 20px; display: flex; flex-direction: column; gap: 8px; }
+
+.page-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.18s;
+}
+.page-item:hover, .page-item:active { background: var(--surface2); transform: scale(0.99); }
+
+.page-item .pi-icon {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.page-item .pi-info { flex: 1; min-width: 0; }
+.page-item .pi-name { font-size: 14px; font-weight: 600; }
+.page-item .pi-url { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: 'Space Mono', monospace; }
+.page-item .pi-arrow { color: var(--muted); font-size: 16px; }
+
+/* ═══════════════════════════════════════════════
+   NOTES PAGE
+═══════════════════════════════════════════════ */
+.notes-toolbar {
+  padding: 0 20px 16px;
+  display: flex;
+  gap: 8px;
+}
+.note-compose-btn {
+  flex: 1;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.18s;
+}
+.note-compose-btn:hover { box-shadow: 0 4px 20px rgba(124,106,255,0.4); }
+
+.notes-list { padding: 0 20px; display: flex; flex-direction: column; gap: 10px; }
+
+.note-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+}
+.note-card:hover { background: var(--surface2); }
+.note-card .nc-title { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+.note-card .nc-body { font-size: 13px; color: var(--muted2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.note-card .nc-date { font-size: 10px; color: var(--muted); margin-top: 10px; font-family: 'Space Mono', monospace; }
+.note-card .nc-del {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(248,113,113,0.12);
+  border: none; border-radius: 8px;
+  color: var(--red); font-size: 13px;
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 40px;
+  color: var(--muted);
+}
+.empty-state .es-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+.empty-state p { font-size: 14px; line-height: 1.6; }
+
+/* Note editor modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(12px);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; animation: overlayIn 0.2s ease; }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-sheet {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  padding: 16px 20px calc(env(safe-area-inset-bottom) + 24px);
+  animation: sheetUp 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: none; }
+}
+
+.sheet-handle {
+  width: 36px; height: 4px;
+  background: var(--border2);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+.sheet-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.sheet-close {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: none; color: var(--muted);
+  font-size: 16px; cursor: pointer;
+  display: grid; place-items: center;
+}
+
+.note-title-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.note-title-input:focus { border-color: var(--accent); }
+
+.note-body-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  min-height: 140px;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.6;
+}
+.note-body-input:focus { border-color: var(--accent); }
+
+.kv-status {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+  display: none;
+}
+.kv-status.saving { background: rgba(124,106,255,0.15); color: var(--accent2); display: block; }
+.kv-status.ok     { background: rgba(45,212,191,0.12); color: var(--teal); display: block; }
+.kv-status.err    { background: rgba(248,113,113,0.12); color: var(--red); display: block; }
+
+.save-note-btn {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.18s;
+}
+.save-note-btn:hover { box-shadow: 0 4px 20px rgba(124,106,255,0.45); }
+
+/* ═══════════════════════════════════════════════
+   IFRAME PAGES
+═══════════════════════════════════════════════ */
+.iframe-page {
+  width: 100%;
+  border: none;
+  display: block;
+  height: calc(100dvh - var(--nav-h));
+}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS PAGE
+═══════════════════════════════════════════════ */
+.settings-locked {
+  padding: 60px 20px;
+  text-align: center;
+}
+.lock-icon {
+  font-size: 52px;
+  margin-bottom: 20px;
+}
+.settings-locked h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.settings-locked p { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+
+.pin-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.pin-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  background: transparent;
+  transition: all 0.15s;
+}
+.pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+.pin-dot.error  { background: var(--red); border-color: var(--red); }
+
+.pin-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.pin-key {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  height: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s;
+  font-family: 'Sora', sans-serif;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 600;
+}
+.pin-key:active { transform: scale(0.92); background: var(--surface2); }
+.pin-key .sub { font-size: 8px; letter-spacing: 0.08em; color: var(--muted); margin-top: 1px; }
+.pin-key.del { font-size: 16px; }
+
+/* Settings content */
+.settings-content { display: none; padding: 0 20px; }
+.settings-content.unlocked { display: block; }
+
+.settings-group {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.settings-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 20px 8px;
+}
+
+.settings-row {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-row .sr-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+.settings-row .sr-info { flex: 1; }
+.settings-row .sr-name { font-size: 14px; font-weight: 500; }
+.settings-row .sr-desc { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.settings-row .sr-action { color: var(--muted); font-size: 14px; }
+
+/* Cookie editor */
+.cookie-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+}
+.cookie-row-edit {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cookie-key, .cookie-val {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  outline: none;
+}
+.cookie-key { max-width: 110px; }
+.cookie-key:focus, .cookie-val:focus { border-color: var(--accent); }
+.cookie-save-btn {
+  background: var(--teal);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cookie-del-btn {
+  background: rgba(248,113,113,0.15);
+  color: var(--red);
+  border: none;
+  border-radius: 10px;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  font-size: 15px;
+}
+.add-cookie-btn {
+  background: var(--surface2);
+  border: 1px dashed var(--border2);
+  border-radius: 10px;
+  padding: 10px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  color: var(--accent2);
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ═══════════════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════════════ */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  height: var(--nav-h);
+  padding: 10px 12px calc(env(safe-area-inset-bottom) + 10px);
+  background: rgba(8, 8, 16, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  min-width: 52px;
+}
+.nav-btn .nb-icon {
+  font-size: 22px;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.nav-btn .nb-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.nav-btn.active .nb-label { color: var(--accent2); }
+.nav-btn.active .nb-icon { transform: scale(1.1); }
+.nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 2px;
+  background: var(--accent);
+  border-radius: 0 0 2px 2px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 999px;
+  z-index: 300;
+  opacity: 0;
+  transition: all 0.25s;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 2px; }
+
+/* Misc */
+button, [data-target] { -webkit-tap-highlight-color: transparent; }
+a { text-decoration: none; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ════ HOME ════ -->
+<section id="page-home" class="page active">
+  <div class="home-topbar">
+    <div class="avatar-wrap">
+      <img src="https://dcdn.dstn.to/avatars/754033245972201612" alt="Rajat" />
+    </div>
+    <div class="home-greeting">
+      <div class="name">Hey, Rajat 👋</div>
+      <div class="sub" id="greet-sub">Personal Dashboard</div>
+    </div>
+    <button class="install-pill" id="installBtn">⬇ Install</button>
+  </div>
+
+  <!-- Glance cards -->
+  <div class="glance-row">
+    <!-- Weather -->
+    <div class="glance-card weather-card" id="weatherCard">
+      <div class="gc-label">🌤 Weather</div>
+      <div class="weather-main">
+        <div>
+          <div class="weather-temp" id="wTemp">--°</div>
+          <div class="weather-desc" id="wDesc">Loading…</div>
+          <div class="weather-loc" id="wLoc">Pokhara, NP</div>
+        </div>
+        <div class="weather-icon" id="wIcon">🌡</div>
+      </div>
+    </div>
+
+    <!-- Clock -->
+    <div class="glance-card" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);">
+      <div class="gc-label">🕐 Time</div>
+      <div class="time-display" id="clock">--:--</div>
+      <div class="date-display" id="dateDisp">—</div>
+    </div>
+
+    <!-- Lanyard/Discord -->
+    <div class="glance-card" id="discordCard">
+      <div class="gc-label">🎮 Discord</div>
+      <div id="discordStatus" style="font-size:13px; color:var(--muted);">Loading…</div>
+    </div>
+
+    <!-- Spotify -->
+    <div class="glance-card spotify-card" id="spotifyCard">
+      <div class="gc-label" id="spotifyLabel">🎵 Spotify</div>
+      <div class="spotify-inner">
+        <div class="spotify-art">
+          <div class="music-placeholder" id="spotifyArtPlaceholder">🎵</div>
+          <img id="spotifyArt" src="" alt="" />
+        </div>
+        <div class="spotify-info">
+          <div class="spotify-track" id="spotifyTrack">Not playing</div>
+          <div class="spotify-artist" id="spotifyArtist">—</div>
+          <div class="spotify-status" id="spotifyStatus" style="display:none">
+            <div class="pulse-dot"></div>
+            <span>Now Playing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section-label">Quick Actions</div>
+  <div class="quick-grid">
+    <button class="quick-btn" data-nav="notes">
+      <div class="qb-icon" style="background:rgba(124,106,255,0.15); color:var(--accent2)">📝</div>
+      <span class="qb-label">Notes</span>
+    </button>
+    <button class="quick-btn" data-nav="chant">
+      <div class="qb-icon" style="background:rgba(251,191,36,0.12); color:var(--amber)">📿</div>
+      <span class="qb-label">Chant</span>
+    </button>
+    <button class="quick-btn" data-nav="chat">
+      <div class="qb-icon" style="background:rgba(45,212,191,0.12); color:var(--teal)">💬</div>
+      <span class="qb-label">Chat</span>
+    </button>
+    <button class="quick-btn" data-nav="newsite">
+      <div class="qb-icon" style="background:rgba(244,114,182,0.12); color:var(--pink)">🆕</div>
+      <span class="qb-label">Add Site</span>
+    </button>
+  </div>
+
+  <!-- Pages Library -->
+  <div class="section-label">My Pages</div>
+  <div class="pages-list">
+    <a class="page-item" href="https://rajatcj.com/?app" target="_blank">
+      <div class="pi-icon" style="background:rgba(124,106,255,0.12); color:var(--accent2)">🏠</div>
+      <div class="pi-info">
+        <div class="pi-name">Home</div>
+        <div class="pi-url">rajatcj.com/</div>
+      </div>
+      <span class="pi-arrow">›</span>
+    </a>
+    <a class="page-item" href="https://rajatcj.com/linktree?app" target="_blank">
+      <div class="pi-icon" style="background:rgba(45,212,191,0.12); color:var(--teal)">🔗</div>
+      <div class="pi-info">
+        <div class="pi-name">Linktree</div>
+        <div class="pi-url">rajatcj.com/linktree</div>
+      </div>
+      <span class="pi-arrow">›</span>
+    </a>
+    <a class="page-item" href="https://rajatcj.com/aboutme?app" target="_blank">
+      <div class="pi-icon" style="background:rgba(251,191,36,0.12); color:var(--amber)">👤</div>
+      <div class="pi-info">
+        <div class="pi-name">About Me</div>
+        <div class="pi-url">rajatcj.com/aboutme</div>
+      </div>
+      <span class="pi-arrow">›</span>
+    </a>
+    <a class="page-item" href="https://rajatcj.com/chant.html" target="_blank">
+      <div class="pi-icon" style="background:rgba(244,114,182,0.12); color:var(--pink)">📿</div>
+      <div class="pi-info">
+        <div class="pi-name">Chant Counter</div>
+        <div class="pi-url">rajatcj.com/chant.html</div>
+      </div>
+      <span class="pi-arrow">›</span>
+    </a>
+    <a class="page-item" href="https://rajatcj.com/newsite.html" target="_blank">
+      <div class="pi-icon" style="background:rgba(248,113,113,0.12); color:var(--red)">🌐</div>
+      <div class="pi-info">
+        <div class="pi-name">New KV Site</div>
+        <div class="pi-url">rajatcj.com/newsite.html</div>
+      </div>
+      <span class="pi-arrow">›</span>
+    </a>
+  </div>
+
+  <div style="height: 20px;"></div>
+</section>
+
+<!-- ════ NOTES ════ -->
+<section id="page-notes" class="page">
+  <div class="page-header">
+    <h1>📝 Notes</h1>
+    <button class="note-compose-btn" id="openNoteEditor" style="flex:0; padding:10px 16px; font-size:13px;">+ New</button>
+  </div>
+  <p class="page-sub">Saved to Lanyard KV · Your Discord notes</p>
+  <div class="notes-toolbar">
+    <div style="font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px;">
+      <div id="kvConnStatus" style="width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block;"></div>
+      <span id="kvConnLabel">Connecting…</span>
+    </div>
+  </div>
+  <div class="notes-list" id="notesList">
+    <div class="empty-state">
+      <div class="es-icon">📋</div>
+      <p>No notes yet.<br>Tap <strong>+ New</strong> to create one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════ CHANT ════ -->
+<section id="page-chant" class="page" style="padding-bottom:0">
+  <iframe class="iframe-page" src="https://rajatcj.com/chant.html" scrolling="yes"></iframe>
+</section>
+
+<!-- ════ CHAT ════ -->
+<section id="page-chat" class="page" style="padding-bottom:0">
+  <iframe class="iframe-page" src="../chat/indexneo.html" scrolling="yes"></iframe>
+</section>
+
+<!-- ════ NEW SITE ════ -->
+<section id="page-newsite" class="page" style="padding-bottom:0">
+  <iframe class="iframe-page" src="https://rajatcj.com/newsite.html" scrolling="yes"></iframe>
+</section>
+
+<!-- ════ SETTINGS ════ -->
+<section id="page-settings" class="page">
+  <div class="page-header">
+    <h1>⚙️ Settings</h1>
+  </div>
+  <p class="page-sub">Protected · Enter PIN to access</p>
+
+  <!-- Locked state -->
+  <div class="settings-locked" id="settingsLocked">
+    <div class="lock-icon">🔐</div>
+    <h2>Enter PIN</h2>
+    <p>This area is password protected.<br>Enter your 4-digit PIN.</p>
+    <div class="pin-dots" id="pinDots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-pad">
+      <div class="pin-key" data-key="1">1<span class="sub"></span></div>
+      <div class="pin-key" data-key="2">2<span class="sub">ABC</span></div>
+      <div class="pin-key" data-key="3">3<span class="sub">DEF</span></div>
+      <div class="pin-key" data-key="4">4<span class="sub">GHI</span></div>
+      <div class="pin-key" data-key="5">5<span class="sub">JKL</span></div>
+      <div class="pin-key" data-key="6">6<span class="sub">MNO</span></div>
+      <div class="pin-key" data-key="7">7<span class="sub">PQRS</span></div>
+      <div class="pin-key" data-key="8">8<span class="sub">TUV</span></div>
+      <div class="pin-key" data-key="9">9<span class="sub">WXYZ</span></div>
+      <div class="pin-key" data-key="cancel" style="font-size:12px;color:var(--muted)">Cancel</div>
+      <div class="pin-key" data-key="0">0</div>
+      <div class="pin-key del" data-key="del">⌫</div>
+    </div>
+  </div>
+
+  <!-- Unlocked state -->
+  <div class="settings-content" id="settingsContent">
+    <div class="settings-group-label">Cookies</div>
+    <div class="settings-group">
+      <div class="cookie-editor" id="cookieEditor">
+        <!-- cookie rows rendered by JS -->
+      </div>
+      <div style="padding:0 16px 14px;">
+        <button class="add-cookie-btn" id="addCookieBtn">＋ Add Cookie</button>
+      </div>
+    </div>
+
+    <div class="settings-group-label">Lanyard KV</div>
+    <div class="settings-group">
+      <div class="settings-row">
+        <div class="sr-icon" style="background:rgba(124,106,255,0.12)">🔑</div>
+        <div class="sr-info">
+          <div class="sr-name">Discord User ID</div>
+          <div class="sr-desc" id="kvUserIdDisplay">754033245972201612</div>
+        </div>
+      </div>
+      <div class="settings-row" style="display:block; padding:14px 16px;">
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">API Token</div>
+        <div style="display:flex; gap:8px;">
+          <input type="password" id="kvTokenInput" placeholder="Enter Lanyard API token…"
+            style="flex:1; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:9px 12px; font-family:'Space Mono',monospace; font-size:12px; color:var(--text); outline:none;"
+          />
+          <button onclick="saveKvToken()" style="background:var(--accent);color:white;border:none;border-radius:10px;padding:9px 14px;font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-group-label">Security</div>
+    <div class="settings-group">
+      <div class="settings-row" style="cursor:pointer" onclick="changePIN()">
+        <div class="sr-icon" style="background:rgba(248,113,113,0.12)">🔒</div>
+        <div class="sr-info">
+          <div class="sr-name">Change PIN</div>
+          <div class="sr-desc">Update your 4-digit lock PIN</div>
+        </div>
+        <span class="sr-action">›</span>
+      </div>
+      <div class="settings-row" style="cursor:pointer" onclick="lockSettings()">
+        <div class="sr-icon" style="background:rgba(251,191,36,0.12)">🔓</div>
+        <div class="sr-info">
+          <div class="sr-name">Lock Settings</div>
+          <div class="sr-desc">Re-lock this panel</div>
+        </div>
+        <span class="sr-action">›</span>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+  </div>
+</section>
+
+<!-- ════ BOTTOM NAV ════ -->
+<nav class="bottom-nav">
+  <div class="nav-btn active" data-nav="home">
+    <span class="nb-icon">🏠</span>
+    <span class="nb-label">Home</span>
+  </div>
+  <div class="nav-btn" data-nav="notes">
+    <span class="nb-icon">📝</span>
+    <span class="nb-label">Notes</span>
+  </div>
+  <div class="nav-btn" data-nav="chat">
+    <span class="nb-icon">💬</span>
+    <span class="nb-label">Chat</span>
+  </div>
+  <div class="nav-btn" data-nav="chant">
+    <span class="nb-icon">📿</span>
+    <span class="nb-label">Chant</span>
+  </div>
+  <div class="nav-btn" data-nav="settings">
+    <span class="nb-icon">⚙️</span>
+    <span class="nb-label">Settings</span>
+  </div>
+</nav>
+
+</div>
+
+<!-- NOTE EDITOR MODAL -->
+<div class="modal-overlay" id="noteModal">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">
+      <span id="noteModalTitle">New Note</span>
+      <button class="sheet-close" id="closeNoteModal">✕</button>
+    </div>
+    <input class="note-title-input" id="noteTitleInput" placeholder="Title…" maxlength="80" />
+    <textarea class="note-body-input" id="noteBodyInput" placeholder="Write your note…"></textarea>
+    <div class="kv-status" id="kvStatus"></div>
+    <button class="save-note-btn" id="saveNoteBtn">Save to Lanyard KV</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════
+   CONFIG
+════════════════════════════════════════════ */
+const DISCORD_ID = '754033245972201612';
+const DEFAULT_PIN = '1234'; // change after deploy
+const LANYARD_BASE = 'https://api.lanyard.rest/v1';
+
+/* ════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navBtn = document.querySelector(`.nav-btn[data-nav="${id}"]`);
+  if (navBtn) navBtn.classList.add('active');
+  // load notes when switching to notes
+  if (id === 'notes') loadNotes();
+}
+
+document.querySelectorAll('[data-nav]').forEach(el => {
+  el.addEventListener('click', () => showPage(el.dataset.nav));
+});
+
+/* ════════════════════════════════════════════
+   CLOCK
+════════════════════════════════════════════ */
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}`;
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dateDisp').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+
+  const hour = now.getHours();
+  let greet = hour < 12 ? '☀️ Good morning' : hour < 17 ? '🌤 Good afternoon' : '🌙 Good evening';
+  document.getElementById('greet-sub').textContent = greet;
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+/* ════════════════════════════════════════════
+   WEATHER (Open-Meteo — free, no key)
+════════════════════════════════════════════ */
+async function loadWeather() {
+  try {
+    // Pokhara coords
+    const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=28.2096&longitude=83.9856&current_weather=true&hourly=relativehumidity_2m');
+    const data = await res.json();
+    const cw = data.current_weather;
+    const code = cw.weathercode;
+    const temp = Math.round(cw.temperature);
+    document.getElementById('wTemp').textContent = `${temp}°C`;
+    const [desc, icon] = weatherCode(code, cw.is_day);
+    document.getElementById('wDesc').textContent = desc;
+    document.getElementById('wIcon').textContent = icon;
+  } catch(e) {
+    document.getElementById('wDesc').textContent = 'Unable to load';
+  }
+}
+
+function weatherCode(code, isDay) {
+  if (code === 0) return [isDay ? 'Clear sky' : 'Clear night', isDay ? '☀️' : '🌙'];
+  if (code <= 2) return ['Partly cloudy', '⛅'];
+  if (code === 3) return ['Overcast', '☁️'];
+  if (code <= 49) return ['Foggy', '🌫'];
+  if (code <= 59) return ['Drizzle', '🌦'];
+  if (code <= 69) return ['Rain', '🌧'];
+  if (code <= 79) return ['Snow', '❄️'];
+  if (code <= 82) return ['Rain showers', '🌦'];
+  if (code <= 86) return ['Snow showers', '🌨'];
+  return ['Thunderstorm', '⛈'];
+}
+loadWeather();
+
+/* ════════════════════════════════════════════
+   LANYARD (Discord + Spotify)
+════════════════════════════════════════════ */
+async function loadLanyard() {
+  try {
+    const res = await fetch(`${LANYARD_BASE}/users/${DISCORD_ID}`);
+    const json = await res.json();
+    const d = json.data;
+
+    // Discord status
+    const statusMap = {
+      online: ['🟢','Online'],
+      idle:   ['🟡','Idle'],
+      dnd:    ['🔴','Do Not Disturb'],
+      offline:['⚫','Offline']
+    };
+    const [dot, label] = statusMap[d.discord_status] || ['⚫','Offline'];
+    document.getElementById('discordStatus').innerHTML =
+      `<span style="font-size:20px">${dot}</span>&nbsp;<span style="font-weight:600;font-size:14px">${label}</span><br><span style="font-size:11px;color:var(--muted)">@${d.discord_user.username}</span>`;
+
+    // Spotify
+    if (d.spotify) {
+      const sp = d.spotify;
+      document.getElementById('spotifyTrack').textContent = sp.song;
+      document.getElementById('spotifyArtist').textContent = sp.artist.replace(/;/g, ', ');
+      document.getElementById('spotifyLabel').textContent = '🎵 Now Playing';
+      document.getElementById('spotifyStatus').style.display = 'flex';
+      if (sp.album_art_url) {
+        const img = document.getElementById('spotifyArt');
+        img.src = sp.album_art_url;
+        img.style.display = 'block';
+        document.getElementById('spotifyArtPlaceholder').style.display = 'none';
+      }
+    } else {
+      document.getElementById('spotifyTrack').textContent = 'Nothing playing';
+      document.getElementById('spotifyArtist').textContent = 'Open Spotify to broadcast';
+    }
+  } catch(e) {
+    document.getElementById('discordStatus').textContent = 'Offline';
+  }
+}
+loadLanyard();
+setInterval(loadLanyard, 30000);
+
+/* ════════════════════════════════════════════
+   LANYARD KV — NOTES
+════════════════════════════════════════════ */
+function getKvToken() {
+  return localStorage.getItem('kv_token') || '';
+}
+
+async function kvGet(key) {
+  const res = await fetch(`${LANYARD_BASE}/users/${DISCORD_ID}/kv/${key}`, {
+    headers: { 'Authorization': getKvToken() }
+  });
+  if (!res.ok) return null;
+  const text = await res.text();
+  try { return JSON.parse(text); } catch { return text; }
+}
+
+async function kvSet(key, value) {
+  const res = await fetch(`${LANYARD_BASE}/users/${DISCORD_ID}/kv/${encodeURIComponent(key)}`, {
+    method: 'PUT',
+    headers: { 'Authorization': getKvToken(), 'Content-Type': 'text/plain' },
+    body: typeof value === 'string' ? value : JSON.stringify(value)
+  });
+  return res.ok;
+}
+
+async function kvDel(key) {
+  const res = await fetch(`${LANYARD_BASE}/users/${DISCORD_ID}/kv/${encodeURIComponent(key)}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': getKvToken() }
+  });
+  return res.ok;
+}
+
+// Note storage key
+const NOTES_KEY = 'rajat_notes';
+
+// Local fallback
+function localNotes() {
+  try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; } catch { return []; }
+}
+function localSaveNotes(notes) {
+  localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+}
+
+let notes = localNotes();
+
+async function loadNotes() {
+  const label = document.getElementById('kvConnLabel');
+  const dot = document.getElementById('kvConnStatus');
+  try {
+    const remote = await kvGet(NOTES_KEY);
+    if (remote && Array.isArray(remote)) {
+      notes = remote;
+      localSaveNotes(notes);
+      label.textContent = 'Synced with Lanyard KV';
+      dot.style.background = 'var(--teal)';
+    } else {
+      label.textContent = 'Using local storage';
+      dot.style.background = 'var(--amber)';
+    }
+  } catch {
+    label.textContent = 'Local only';
+    dot.style.background = 'var(--muted)';
+  }
+  renderNotes();
+}
+
+function renderNotes() {
+  const list = document.getElementById('notesList');
+  if (!notes.length) {
+    list.innerHTML = `<div class="empty-state"><div class="es-icon">📋</div><p>No notes yet.<br>Tap <strong>+ New</strong> to create one.</p></div>`;
+    return;
+  }
+  list.innerHTML = notes.map((n, i) => `
+    <div class="note-card" onclick="openNote(${i})">
+      <div class="nc-title">${escHtml(n.title || 'Untitled')}</div>
+      <div class="nc-body">${escHtml(n.body || '')}</div>
+      <div class="nc-date">${new Date(n.ts).toLocaleString()}</div>
+      <button class="nc-del" onclick="event.stopPropagation(); deleteNote(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let editingIndex = -1;
+
+function openNote(i) {
+  editingIndex = i;
+  const n = notes[i];
+  document.getElementById('noteTitleInput').value = n.title || '';
+  document.getElementById('noteBodyInput').value = n.body || '';
+  document.getElementById('noteModalTitle').textContent = 'Edit Note';
+  openNoteModal();
+}
+
+function openNoteModal() {
+  const modal = document.getElementById('noteModal');
+  modal.classList.add('open');
+  document.getElementById('kvStatus').className = 'kv-status';
+}
+
+document.getElementById('openNoteEditor').onclick = () => {
+  editingIndex = -1;
+  document.getElementById('noteTitleInput').value = '';
+  document.getElementById('noteBodyInput').value = '';
+  document.getElementById('noteModalTitle').textContent = 'New Note';
+  openNoteModal();
+};
+
+document.getElementById('closeNoteModal').onclick = () => {
+  document.getElementById('noteModal').classList.remove('open');
+};
+
+document.getElementById('noteModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('noteModal'))
+    document.getElementById('noteModal').classList.remove('open');
+});
+
+document.getElementById('saveNoteBtn').onclick = async () => {
+  const title = document.getElementById('noteTitleInput').value.trim();
+  const body = document.getElementById('noteBodyInput').value.trim();
+  if (!title && !body) { showToast('Write something first!'); return; }
+
+  const note = { title, body, ts: Date.now() };
+  if (editingIndex >= 0) notes[editingIndex] = note;
+  else notes.unshift(note);
+
+  localSaveNotes(notes);
+  renderNotes();
+
+  const status = document.getElementById('kvStatus');
+  status.className = 'kv-status saving';
+  status.textContent = '⏳ Saving to Lanyard KV…';
+
+  const ok = await kvSet(NOTES_KEY, notes);
+  if (ok) {
+    status.className = 'kv-status ok';
+    status.textContent = '✓ Saved to Lanyard KV!';
+    setTimeout(() => document.getElementById('noteModal').classList.remove('open'), 700);
+  } else {
+    status.className = 'kv-status err';
+    status.textContent = '⚠ Saved locally (KV failed — check token in Settings)';
+  }
+};
+
+async function deleteNote(i) {
+  notes.splice(i, 1);
+  localSaveNotes(notes);
+  renderNotes();
+  await kvSet(NOTES_KEY, notes);
+  showToast('Note deleted');
+}
+
+/* ════════════════════════════════════════════
+   SETTINGS — PIN LOCK
+════════════════════════════════════════════ */
+let pinBuffer = '';
+let settingsUnlocked = false;
+
+function getSavedPin() { return localStorage.getItem('app_pin') || DEFAULT_PIN; }
+
+document.querySelectorAll('.pin-key').forEach(k => {
+  k.addEventListener('click', () => {
+    const key = k.dataset.key;
+    if (key === 'cancel') { showPage('home'); return; }
+    if (key === 'del') { pinBuffer = pinBuffer.slice(0, -1); }
+    else if (pinBuffer.length < 4) { pinBuffer += key; }
+    updatePinDots();
+    if (pinBuffer.length === 4) checkPin();
+  });
+});
+
+function updatePinDots(state) {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pd' + i);
+    dot.className = 'pin-dot';
+    if (state === 'error') { dot.classList.add('error'); }
+    else if (i < pinBuffer.length) { dot.classList.add('filled'); }
+  }
+}
+
+function checkPin() {
+  if (pinBuffer === getSavedPin()) {
+    settingsUnlocked = true;
+    document.getElementById('settingsLocked').style.display = 'none';
+    document.getElementById('settingsContent').classList.add('unlocked');
+    renderCookies();
+    loadKvToken();
+    pinBuffer = '';
+    updatePinDots();
+  } else {
+    updatePinDots('error');
+    navigator.vibrate && navigator.vibrate([80, 40, 80]);
+    setTimeout(() => { pinBuffer = ''; updatePinDots(); }, 900);
+  }
+}
+
+function lockSettings() {
+  settingsUnlocked = false;
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('settingsLocked').style.display = 'block';
+  document.getElementById('settingsContent').classList.remove('unlocked');
+  showToast('Settings locked');
+}
+
+// Reset lock when leaving settings
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.nav !== 'settings' && settingsUnlocked) lockSettings();
+  });
+});
+
+function changePIN() {
+  const newPin = prompt('Enter new 4-digit PIN:');
+  if (newPin && /^\d{4}$/.test(newPin)) {
+    localStorage.setItem('app_pin', newPin);
+    showToast('PIN updated ✓');
+  } else if (newPin !== null) {
+    showToast('PIN must be exactly 4 digits');
+  }
+}
+
+/* ════════════════════════════════════════════
+   COOKIE EDITOR
+════════════════════════════════════════════ */
+function getAllCookies() {
+  const cookies = {};
+  document.cookie.split(';').forEach(c => {
+    const [k, ...vs] = c.trim().split('=');
+    if (k) cookies[k.trim()] = vs.join('=');
+  });
+  return cookies;
+}
+
+function renderCookies() {
+  const cookies = getAllCookies();
+  const editor = document.getElementById('cookieEditor');
+  const rows = Object.entries(cookies).map(([k, v]) => createCookieRow(k, v)).join('');
+  editor.innerHTML = rows || '<div style="padding:14px;font-size:13px;color:var(--muted)">No cookies found.</div>';
+}
+
+function createCookieRow(k = '', v = '') {
+  const uid = 'cr_' + Math.random().toString(36).slice(2, 7);
+  return `
+    <div class="cookie-row-edit" id="${uid}">
+      <input class="cookie-key" placeholder="name" value="${escHtml(k)}" />
+      <input class="cookie-val" placeholder="value" value="${escHtml(v)}" />
+      <button class="cookie-save-btn" onclick="saveCookieRow('${uid}')">Set</button>
+      <button class="cookie-del-btn" onclick="delCookieRow('${uid}','${escHtml(k)}')">✕</button>
+    </div>`;
+}
+
+function saveCookieRow(uid) {
+  const row = document.getElementById(uid);
+  const k = row.querySelector('.cookie-key').value.trim();
+  const v = row.querySelector('.cookie-val').value;
+  if (!k) { showToast('Cookie name required'); return; }
+  document.cookie = `${k}=${v}; path=/; max-age=31536000`;
+  showToast(`Cookie '${k}' set ✓`);
+}
+
+function delCookieRow(uid, name) {
+  document.cookie = `${name}=; path=/; max-age=0`;
+  document.getElementById(uid)?.remove();
+  showToast(`Cookie '${name}' deleted`);
+}
+
+document.getElementById('addCookieBtn').onclick = () => {
+  const editor = document.getElementById('cookieEditor');
+  const dummy = document.createElement('div');
+  dummy.innerHTML = createCookieRow('', '');
+  editor.appendChild(dummy.firstElementChild);
+};
+
+/* ════════════════════════════════════════════
+   KV TOKEN IN SETTINGS
+════════════════════════════════════════════ */
+function loadKvToken() {
+  const t = getKvToken();
+  if (t) document.getElementById('kvTokenInput').value = t;
+}
+function saveKvToken() {
+  const val = document.getElementById('kvTokenInput').value.trim();
+  localStorage.setItem('kv_token', val);
+  showToast('Token saved ✓');
+}
+
+/* ════════════════════════════════════════════
+   INSTALL PROMPT (PWA)
+════════════════════════════════════════════ */
+let deferredPrompt = null;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-flex';
+});
+
+installBtn.onclick = async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  installBtn.style.display = 'none';
+  if (outcome === 'accepted') showToast('App installed! 🎉');
+};
+
+window.addEventListener('appinstalled', () => {
+  installBtn.style.display = 'none';
+});
+
+/* ════════════════════════════════════════════
+   SERVICE WORKER
+════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').catch(() => {});
+}
+
+/* ════════════════════════════════════════════
+   TOAST
+════════════════════════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+</script>
+</body>
+</html>
