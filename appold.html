@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>My Dark App</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0a0a0a" />
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<style>
+    :root {
+        --bg: #0b0a0f;
+        --card: #0b0a0f;
+        --card2: #0b0a0f;
+        --accent: #ee6464;
+        --muted: #9ba0ad;
+        --radius: 14px;
+        --shadow: 0 8px 30px rgba(0,0,0,0.45);
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+        color-scheme: dark;
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: white;
+        overflow-x: hidden;
+    }
+
+    /* Desktop layout optimization */
+    #app {
+        max-width: 1000px;
+        margin: auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+    }
+
+    header.appbar {
+        display:flex;
+        align-items:center;
+        gap:12px;
+        backdrop-filter: blur(8px);
+        position:sticky;
+        top:0;
+        z-index:10;
+    }
+
+    .app-icon {
+        width:46px;
+        height:46px;
+        border-radius:12px;
+        background:var(--accent);
+        display:grid;
+        place-items:center;
+        font-weight:700;
+        font-size:20px;
+        color:black;
+    }
+
+    main {
+		padding-bottom: 100px;
+        padding:22px;
+        flex:1;
+    }
+
+    .grid {
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+        gap:16px;
+        margin-top:15px;
+    }
+
+    .card {
+        background:var(--card);
+        padding:16px;
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        cursor:pointer;
+        transition: all .2s ease;
+        border:1px solid rgba(255,255,255,0.04);
+    }
+    .card:hover { transform: translateY(-6px); }
+
+    .card .h { font-size:17px; font-weight:600; }
+    .card .p { font-size:14px; color:var(--muted); }
+
+    .page { display:none; animation:fade .22s ease both; }
+    .page.active { display:block; }
+
+    @keyframes fade {
+        from { opacity:0; transform:translateY(10px); }
+        to { opacity:1; transform:none; }
+    }
+
+    .list-item {
+        background:var(--card2);
+        padding:14px;
+        border-radius:12px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-top:10px;
+        border:1px solid rgba(255,255,255,0.04);
+    }
+
+    .muted { color:var(--muted); }
+
+    textarea {
+        width:100%;
+        background:var(--card2);
+        color:white;
+        border:1px solid rgba(255,255,255,0.08);
+        padding:10px;
+        border-radius:12px;
+    }
+
+    .primary {
+        background:var(--accent);
+        color:black;
+        padding:10px 16px;
+        border-radius:12px;
+        font-weight:600;
+        border:0;
+        cursor:pointer;
+        margin-top:8px;
+    }
+
+    /* ------------------ Floating glass bottom menu ------------------ */
+    /* Floating bottom nav with iOS-style glass effect */
+nav.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    
+    /* iOS Liquid Glass effect */
+    background: rgba(255, 255, 255, 0.15); /* semi-transparent */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    z-index: 1000;
+
+    /* Optional smooth transition */
+    transition: all 0.25s ease-in-out;
+}
+
+/* Buttons inside nav */
+.nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn.active {
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--accent); /* accent color */
+    font-weight: 600;
+}
+
+
+    /* Mobile version becomes dock-like */
+    @media(max-width:700px){
+        nav.bottom-nav {
+            width: 92%;
+            justify-content: space-around;
+            padding: 10px;
+            gap:0;
+        }
+        .nav-btn { flex:1; }
+    }
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<main>
+    
+
+<!-- HOME -->
+<section id="home" class="page active">
+	<header class="appbar">
+    <img class="app-icon" src="https://dcdn.dstn.to/avatars/754033245972201612" />
+    <div>
+        <div style="font-weight:600;font-size:17px">Rajat CJ</div>
+        <div class="muted" style="font-size:12px">Personal Dashboard</div>
+    </div>
+
+    <button id="installBtn" class="primary" style="margin-left:auto; display:none;">Install</button>
+</header>
+    <h2>Dashboard</h2>
+    <p class="muted">Choose a section</p>
+
+    <div class="grid">
+        <div class="card" data-target="notes"><div class="h">📝 Notes</div><div class="p">Quick ideas</div></div>
+        <div class="card" data-target="chant"><div class="h">📿 Chant</div><div class="p">Daily Chant Flow</div></div>
+        <div class="card" data-target="chat"><div class="h">📱 Chat</div><div class="p">Website Chatroom</div></div>
+        <div class="card" data-target="newsite"><div class="h">🆕 Add Site</div><div class="p">Add New KV Site</div></div>
+    </div>
+
+	    <h2>Pages</h2>
+    <p class="muted">Pages Under rajatcj.com</p>
+
+    <div class="grid">
+        <div class="card" onclick="window.location.href='https://rajatcj.com/?app'"><div class="h">Home</div><div class="p">rajatcj.com/</div></div>
+        <div class="card" onclick="window.location.href='https://rajatcj.com/linktree?app'"><div class="h">Linktree</div><div class="p">rajatcj.com/linktree</div></div>
+        <div class="card" onclick="window.location.href='https://rajatcj.com/aboutme?app'"><div class="h">About Me</div><div class="p">rajatcj.com/aboutme</div></div>
+        
+	</div>
+</section>
+
+<!-- NOTES -->
+<section id="notes" class="page">
+    <h2>Notes</h2>
+    <textarea id="noteInput" placeholder="Write something..." rows="5"></textarea>
+    <button id="saveNote" class="primary">Save</button>
+</section>
+
+<!-- PROFILE -->
+<section id="chant" class="page">
+	    <iframe 
+        src="https://rajatcj.com/chant.html"
+		scrolling="no"
+        style="
+            border: none;
+            width: calc(100% + 44px);
+            height: 1500px;
+            display: block;
+			margin: -22px;
+            overflow: hidden;
+        ">
+    </iframe>
+</section>
+
+<!-- TASKS -->
+<section id="chat" class="page">
+    	    <iframe 
+        src="../chat/indexneo.html"
+		scrolling="no"
+        style="
+            border: none;
+            width: calc(100% + 44px);
+            height: calc(100vh - 100px);
+            display: block;
+			margin: -22px;
+            overflow: hidden;
+        ">
+    </iframe>
+</section>
+
+<!-- ABOUT -->
+<section id="newsite" class="page">
+	    <iframe 
+        src="https://rajatcj.com/newsite.html"
+		scrolling="no"
+        style="
+            border: none;
+            width: calc(100% + 44px);
+            height: 2000px;
+            display: block;
+			margin: -22px;
+            overflow: hidden;
+        ">
+    </iframe>
+</section>
+
+</main>
+
+<!-- FLOATING BOTTOM NAV -->
+<nav class="bottom-nav">
+    <div class="nav-btn" data-target="home">🏠<span>Home</span></div>
+    <div class="nav-btn" data-target="notes">📝<span>Notes</span></div>
+    <div class="nav-btn" data-target="chat">📱<span>Chat</span></div>
+    <div class="nav-btn" data-target="chant">📿<span>Chant</span></div>
+    <div class="nav-btn" data-target="newsite">🆕<span>New Site</span></div>
+</nav>
+
+</div>
+
+<script>
+function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector('.nav-btn[data-target="'+id+'"]').classList.add('active');
+}
+
+document.querySelectorAll('[data-target]').forEach(btn=>{
+    btn.addEventListener('click',()=>showPage(btn.dataset.target));
+});
+
+document.getElementById('saveNote').onclick = ()=>{
+    alert("Saved locally ✔");
+    document.getElementById('noteInput').value="";
+};
+
+// ---------------- Install prompt ----------------
+let deferredPrompt=null;
+const installBtn=document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+    e.preventDefault();
+    deferredPrompt=e;
+    installBtn.style.display='inline-flex';
+});
+
+installBtn.onclick=async ()=>{
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    installBtn.style.display='none';
+};
+
+// ---------------- SW ----------------
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
+</body>
+</html>
