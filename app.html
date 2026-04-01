@@ -356,7 +356,8 @@ a{text-decoration:none;}
     </div>
     <div class="cal-grid" id="calGrid"></div>
   </div>
-  <button class="chant-open-btn" onclick="markChantToday()">
+  
+  <button class="p-chantmain chant-open-btn" data-nav="chantmain" onclick="markChantToday()">
     <i class="fa-solid fa-om"></i> Open Chant App
   </button>
   <div class="sec-label">Activity Log</div>
@@ -382,6 +383,11 @@ a{text-decoration:none;}
 <!-- ██ NEW SITE ██ -->
 <section id="p-newsite" class="page" style="padding-bottom:0">
   <iframe style="width:100%;border:none;display:block;height:calc(100dvh - var(--nav-h))" src="https://rajatcj.com/newsite.html"></iframe>
+</section>
+
+<!-- ██ CHANTMAIN ██ -->
+<section id="p-chantmain" class="page" style="padding-bottom:0">
+  <iframe style="width:100%;border:none;display:block;height:calc(100dvh - var(--nav-h))" src="https://rajatcj.com/chant.html"></iframe>
 </section>
 
 <!-- ██ SETTINGS ██ -->
@@ -589,7 +595,7 @@ function markChantToday(){
     renderStreak(); renderCalendar();
     kvSet('chant_log',log);
   }else{ showToast('Already marked today ✓'); }
-  window.open('https://rajatcj.com/chant.html') 
+  
 }
 
 function computeStreak(log){
