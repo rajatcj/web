@@ -492,6 +492,9 @@ a{text-decoration:none;}
 <div class="toast" id="toast"></div>
 
 <script>
+
+  const chanturl = localStorage.getItem("chantSRC") || "https://rajatcj.com/chant.html"
+  document.getElementById("p-chantmain").innerHTML = `<iframe style="width:100%;border:none;display:block;height:calc(100dvh - var(--nav-h))" src="${chanturl}"></iframe>`;
 /* ═══════════ CONFIG ═══════════ */
 const DEFAULT_PIN='1234';
 const LANYARD_BASE='https://api.lanyard.rest/v1';
