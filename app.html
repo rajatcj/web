@@ -107,7 +107,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .sstat-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
 .sstat-lbl{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:3px;}
 
-.cal-wrap{margin:16px 20px 0;}
+.cal-wrap{max-width:480px; margin:16px 20px 0;}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .cal-month{font-size:15px;font-weight:700;}
 .cal-nav{background:var(--s2);border:1px solid var(--border);border-radius:9px;color:var(--muted2);width:32px;height:32px;display:grid;place-items:center;cursor:pointer;font-size:13px;transition:all .15s;}
@@ -189,7 +189,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .add-ls-btn{background:var(--s2);border:1px dashed var(--border2);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;color:#a78bfa;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
 
 /* ── NAV ── */
-nav.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:var(--nav-h);padding:10px 8px calc(env(safe-area-inset-bottom)+8px);background:rgba(9,9,15,.88);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-around;z-index:100;}
+nav.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;height:var(--nav-h);padding:10px 8px calc(env(safe-area-inset-bottom)+8px);background:rgba(9,9,15,.88);backdrop-filter:blur(28px) saturate(200%);-webkit-backdrop-filter:blur(28px) saturate(200%);border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-around;z-index:100;}
 .nbtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 10px;border-radius:14px;cursor:pointer;transition:all .17s;position:relative;min-width:50px;}
 .nbtn i{font-size:20px;color:var(--muted);transition:all .2s;}
 .nbtn .nl{font-size:10px;font-weight:600;color:var(--muted);transition:color .2s;}
