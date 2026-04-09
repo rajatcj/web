@@ -12,7 +12,7 @@
     --scroll-box-color: hsl(var(--hue-color), 12%, 38%);
     --scroll-thumb-color: hsl(var(--hue-color), 12%, 26%);
 
-    --body-font: 'Poppins', sans-serif;
+    --body-font: 'JetBrains Mono', sans-serif;
     --signature-font: 'Turret Road', sans-serif;
 
     --biggest-font-size: 3rem;
@@ -59,7 +59,15 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body, button, input { font-family: var(--body-font); font-size: var(--normal-font-size); }
-    body { background-color: var(--body-color); color: var(--text-color); }
+    body { background-color: var(--body-color); color: var(--text-color);  
+}
+
+  .grid-bg {
+    position: absolute; inset: -0;
+    background-image: linear-gradient(#ffffff10 1px, transparent 1px),
+                      linear-gradient(90deg, #ffffff10 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
 h1, h2, h3 { color: var(--title-color); font-weight: var(--font-bold); }
 ul { list-style: none; }
 a { text-decoration: none; }
