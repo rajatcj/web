@@ -1,0 +1,3144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Clinical Simulation OS · Medical Decision Engine</title>
+  <meta name="description" content="Time-based clinical simulation engine for MBBS students." />
+  <meta name="theme-color" content="#080c10" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ─── Root Variables ──────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg-deep:      #080c10;
+  --bg-base:      #0d1117;
+  --bg-panel:     #111820;
+  --bg-card:      #161e28;
+  --bg-card-hover: #1c2635;
+  --bg-elevated:  #1f2a38;
+
+  --border:       #1e2d3d;
+  --border-light: #243447;
+
+  --text-primary:   #e8eef5;
+  --text-secondary: #7a9ab5;
+  --text-muted:     #3d5470;
+  --text-dim:       #2a3e52;
+
+  --accent-green:  #0dbd8b;
+  --accent-green2: #00d4a0;
+  --accent-amber:  #f5a623;
+  --accent-red:    #e8445a;
+  --accent-blue:   #3da8f5;
+  --accent-purple: #a78bfa;
+
+  --danger-bg:    rgba(232, 68, 90, 0.08);
+  --warning-bg:   rgba(245, 166, 35, 0.08);
+  --success-bg:   rgba(13, 189, 139, 0.08);
+  --info-bg:      rgba(61, 168, 245, 0.08);
+
+  --font-mono:    'IBM Plex Mono', monospace;
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+
+  --header-h: 60px;
+  --patient-h: 72px;
+  --tab-h: 48px;
+}
+
+/* ─── Reset & Base ────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 99px; }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  HOME SCREEN                                                                 */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.home-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.home-topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-base);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent-green), #0a9e76);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.logo-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.topbar-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-green);
+  background: rgba(13, 189, 139, 0.1);
+  border: 1px solid rgba(13, 189, 139, 0.25);
+  padding: 4px 10px;
+  border-radius: 99px;
+  letter-spacing: 0.05em;
+}
+
+/* Hero */
+.home-hero {
+  padding: 64px 32px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(13, 189, 139, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-green);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--accent-green);
+}
+
+.hero-sub {
+  margin-top: 16px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+/* Stats bar */
+.home-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  padding: 24px 32px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-base);
+}
+
+.home-stat {
+  text-align: center;
+}
+
+.home-stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.home-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+/* Cases Grid */
+.home-cases-section {
+  flex: 1;
+  padding: 40px 32px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Case Card */
+.case-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.case-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.case-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.case-card:hover::before { opacity: 1; }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.card-difficulty {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 99px;
+  border: 1px solid;
+}
+
+.diff-intermediate {
+  color: var(--accent-amber);
+  border-color: rgba(245, 166, 35, 0.3);
+  background: rgba(245, 166, 35, 0.07);
+}
+
+.diff-beginner {
+  color: var(--accent-green);
+  border-color: rgba(13, 189, 139, 0.3);
+  background: rgba(13, 189, 139, 0.07);
+}
+
+.diff-advanced {
+  color: var(--accent-red);
+  border-color: rgba(232, 68, 90, 0.3);
+  background: rgba(232, 68, 90, 0.07);
+}
+
+.card-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.card-subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.card-tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--text-secondary);
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.card-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.card-cta {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-green);
+  background: rgba(13, 189, 139, 0.1);
+  border: 1px solid rgba(13, 189, 139, 0.25);
+  padding: 6px 16px;
+  border-radius: 99px;
+  letter-spacing: 0.02em;
+  transition: all 0.15s;
+}
+
+.case-card:hover .card-cta {
+  background: rgba(13, 189, 139, 0.2);
+}
+
+/* Footer */
+.home-footer {
+  text-align: center;
+  padding: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  border-top: 1px solid var(--border);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  GAME SCREEN                                                                 */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+.game-layout {
+  display: grid;
+  grid-template-rows: var(--header-h) var(--patient-h) auto;
+  grid-template-columns: 1fr 280px;
+  grid-template-areas:
+    "header header"
+    "patient patient"
+    "body log";
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ─── Game Header ─────────────────────────────────────────────────────────── */
+.game-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  z-index: 10;
+}
+
+.btn-back {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: none;
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-back:hover { color: var(--text-primary); border-color: var(--border-light); }
+
+.case-title-small {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.hud-vitals {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.vital-hud-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.vital-hud-item.vital-warn {
+  color: var(--accent-red);
+  border-color: rgba(232, 68, 90, 0.4);
+  background: var(--danger-bg);
+  animation: vitalPulse 1s infinite alternate;
+}
+
+@keyframes vitalPulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.hud-stats {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.hud-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 12px;
+  min-width: 72px;
+  border-right: 1px solid var(--border);
+}
+
+.hud-stat:last-child { border-right: none; }
+
+.hud-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hud-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1px;
+}
+
+.hud-value.stage-early { color: var(--accent-green); }
+.hud-value.stage-localized { color: var(--accent-amber); }
+.hud-value.stage-perforation { color: var(--accent-red); animation: vitalPulse 0.6s infinite alternate; }
+.hud-value.budget-low { color: var(--accent-red); }
+
+.hud-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-jump {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: var(--bg-elevated);
+  color: var(--accent-blue);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-jump:hover {
+  background: rgba(61, 168, 245, 0.12);
+  border-color: rgba(61, 168, 245, 0.4);
+}
+
+.btn-end {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-end.btn-end-ready {
+  color: var(--accent-amber);
+  border-color: rgba(245, 166, 35, 0.4);
+  background: rgba(245, 166, 35, 0.08);
+}
+
+/* ─── Patient Banner ──────────────────────────────────────────────────────── */
+.patient-banner {
+  grid-area: patient;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.patient-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--bg-elevated);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.patient-avatar svg { width: 28px; height: 28px; }
+
+.patient-info { flex: 1; min-width: 0; }
+
+.patient-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.patient-complaint {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-primary);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-stage-badge {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.stage-badge-early {
+  color: var(--accent-green);
+  background: rgba(13, 189, 139, 0.1);
+  border: 1px solid rgba(13, 189, 139, 0.3);
+}
+
+.stage-badge-localized {
+  color: var(--accent-amber);
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.35);
+}
+
+.stage-badge-perforation {
+  color: var(--accent-red);
+  background: rgba(232, 68, 90, 0.12);
+  border: 1px solid rgba(232, 68, 90, 0.4);
+  animation: vitalPulse 0.6s infinite alternate;
+}
+
+/* ─── Game Body ───────────────────────────────────────────────────────────── */
+.game-body {
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-base);
+}
+
+/* ─── Tab Bar ─────────────────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.tab-bar::-webkit-scrollbar { height: 2px; }
+
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0 18px;
+  height: var(--tab-h);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-btn:hover { color: var(--text-secondary); }
+
+.tab-btn.active {
+  color: var(--accent-green);
+  border-bottom-color: var(--accent-green);
+  background: rgba(13, 189, 139, 0.04);
+}
+
+.badge {
+  font-size: 9px;
+  background: var(--accent-green);
+  color: var(--bg-deep);
+  padding: 1px 5px;
+  border-radius: 99px;
+  font-weight: 700;
+  min-width: 16px;
+  text-align: center;
+}
+
+/* ─── Tab Content ─────────────────────────────────────────────────────────── */
+.tab-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.tab-panel {
+  display: none;
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.tab-panel.active { display: block; }
+
+/* ─── Log Panel ───────────────────────────────────────────────────────────── */
+.log-panel {
+  grid-area: log;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.log-header {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.log-entries {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+}
+
+.log-time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+}
+
+.log-msg { color: var(--text-secondary); }
+
+.log-entry.log-action   { background: var(--info-bg); border-left-color: var(--accent-blue); }
+.log-entry.log-result   { background: rgba(167, 139, 250, 0.06); border-left-color: var(--accent-purple); }
+.log-entry.log-system   { background: transparent; }
+.log-entry.log-warning  { background: var(--warning-bg); border-left-color: var(--accent-amber); }
+.log-entry.log-danger   { background: var(--danger-bg); border-left-color: var(--accent-red); }
+.log-entry.log-success  { background: var(--success-bg); border-left-color: var(--accent-green); }
+.log-entry.log-info     { background: var(--info-bg); border-left-color: var(--accent-blue); }
+
+/* ─── History Tab ─────────────────────────────────────────────────────────── */
+.history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.info-card.full-width { grid-column: 1 / -1; }
+
+.card-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.card-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.card-value.big {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+.detail-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-list li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding-left: 10px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.detail-list li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--accent-green);
+}
+
+.vitals-grid-small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vital-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg-elevated);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  min-width: 60px;
+}
+
+.vital-item span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.vital-item strong {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.exam-sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.exam-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.symptom-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.symptom-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: rgba(13, 189, 139, 0.08);
+  border: 1px solid rgba(13, 189, 139, 0.2);
+  border-radius: 99px;
+  color: var(--accent-green);
+  font-family: var(--font-mono);
+}
+
+/* ─── Tests Tab ───────────────────────────────────────────────────────────── */
+.tests-container, .mgmt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.test-category, .mgmt-category { display: flex; flex-direction: column; gap: 10px; }
+
+.category-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.test-grid, .mgmt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.test-card, .mgmt-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.test-card:hover, .mgmt-card:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+}
+
+.test-card.test-pending {
+  border-color: rgba(245, 166, 35, 0.3);
+  background: rgba(245, 166, 35, 0.04);
+}
+
+.test-card.test-done {
+  border-color: rgba(13, 189, 139, 0.25);
+  background: rgba(13, 189, 139, 0.04);
+  opacity: 0.7;
+}
+
+.test-name, .mgmt-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.test-fullname, .mgmt-fullname {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.test-meta, .mgmt-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+
+.test-meta span, .mgmt-meta span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.test-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-amber);
+  margin-top: 6px;
+}
+
+.test-card.test-done .test-status { color: var(--accent-green); }
+
+.btn-order, .btn-give {
+  width: 100%;
+  padding: 7px;
+  margin-top: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(13, 189, 139, 0.3);
+  background: rgba(13, 189, 139, 0.08);
+  color: var(--accent-green);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.15s;
+}
+
+.btn-order:hover, .btn-give:hover {
+  background: rgba(13, 189, 139, 0.18);
+  border-color: rgba(13, 189, 139, 0.5);
+}
+
+/* Mgmt special */
+.mgmt-card.mgmt-curative {
+  border-color: rgba(245, 166, 35, 0.3);
+  background: rgba(245, 166, 35, 0.03);
+}
+
+.mgmt-card.mgmt-curative .btn-give {
+  border-color: rgba(245, 166, 35, 0.4);
+  background: rgba(245, 166, 35, 0.1);
+  color: var(--accent-amber);
+}
+
+.mgmt-card.mgmt-curative .btn-give:hover {
+  background: rgba(245, 166, 35, 0.2);
+}
+
+.mgmt-card.mgmt-given {
+  opacity: 0.6;
+  border-color: rgba(13, 189, 139, 0.2);
+}
+
+.mgmt-done {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-green);
+  margin-top: 6px;
+}
+
+.badge-curative {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: rgba(245, 166, 35, 0.15);
+  color: var(--accent-amber);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+}
+
+/* ─── Results Tab ─────────────────────────────────────────────────────────── */
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.results-section-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.result-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.result-card.pending {
+  border-color: rgba(245, 166, 35, 0.25);
+  background: rgba(245, 166, 35, 0.03);
+}
+
+.result-card.done {
+  border-color: rgba(167, 139, 250, 0.2);
+}
+
+.result-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.result-eta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-amber);
+}
+
+.result-time {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.result-text {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  background: var(--bg-elevated);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+}
+
+/* ─── Diagnosis Tab ───────────────────────────────────────────────────────── */
+.diagnosis-container {
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.diagnosis-prompt {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.diagnosis-warning {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-amber);
+  background: var(--warning-bg);
+  border: 1px solid rgba(245, 166, 35, 0.25);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.04em;
+}
+
+.diagnosis-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.diagnosis-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.diagnosis-option:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+}
+
+.diagnosis-option.selected {
+  border-color: rgba(61, 168, 245, 0.5);
+  background: rgba(61, 168, 245, 0.06);
+}
+
+.diagnosis-option.correct {
+  border-color: rgba(13, 189, 139, 0.5);
+  background: rgba(13, 189, 139, 0.08);
+}
+
+.diagnosis-option.wrong {
+  border-color: rgba(232, 68, 90, 0.5);
+  background: rgba(232, 68, 90, 0.08);
+}
+
+.diag-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.diagnosis-option.selected .diag-radio {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(61, 168, 245, 0.2);
+}
+
+.diagnosis-option.correct .diag-radio {
+  border-color: var(--accent-green);
+  background: var(--accent-green);
+}
+
+.diagnosis-option.wrong .diag-radio {
+  border-color: var(--accent-red);
+  background: var(--accent-red);
+}
+
+.diag-label {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+.btn-submit-diag {
+  padding: 12px 24px;
+  background: var(--accent-blue);
+  color: var(--bg-deep);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-submit-diag:hover:not(:disabled) { background: #5cb8f7; }
+
+.btn-submit-diag:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Empty State ─────────────────────────────────────────────────────────── */
+.empty-state {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 40px 20px;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Modals ──────────────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.modal-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.jump-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.jump-btn {
+  padding: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--accent-blue);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.jump-btn:hover {
+  background: rgba(61, 168, 245, 0.1);
+  border-color: rgba(61, 168, 245, 0.4);
+}
+
+.modal-close {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.modal-close:hover { color: var(--text-secondary); border-color: var(--border-light); }
+
+/* Score Modal */
+.modal-score {
+  max-width: 480px;
+  padding: 32px;
+}
+
+.score-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.score-grade {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.score-number {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.score-number span {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.score-msg {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 8px;
+  font-style: italic;
+  font-family: var(--font-display);
+}
+
+.score-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+}
+
+.score-label {
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+.score-pts {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.score-pts.pos { color: var(--accent-green); }
+.score-pts.neg { color: var(--accent-red); }
+.score-pts.zero { color: var(--text-dim); }
+
+.score-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.83rem;
+}
+
+.stat-row span { color: var(--text-muted); }
+.stat-row strong { color: var(--text-primary); font-family: var(--font-mono); font-size: 12px; }
+
+.btn-home {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent-green);
+  color: var(--bg-deep);
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-home:hover { background: var(--accent-green2); }
+
+/* ─── Stage Flash ─────────────────────────────────────────────────────────── */
+.stage-flash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  pointer-events: none;
+  animation: flashFade 2.5s ease-out forwards;
+}
+
+.stage-flash-localized { background: rgba(245, 166, 35, 0.12); }
+.stage-flash-perforation { background: rgba(232, 68, 90, 0.15); }
+
+.stage-flash-content {
+  text-align: center;
+  background: var(--bg-panel);
+  border: 2px solid var(--accent-amber);
+  border-radius: var(--radius-xl);
+  padding: 32px 48px;
+  box-shadow: 0 0 60px rgba(245, 166, 35, 0.3);
+}
+
+.stage-flash-perforation .stage-flash-content {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 60px rgba(232, 68, 90, 0.4);
+}
+
+.stage-flash-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+.stage-flash-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  margin-bottom: 4px;
+}
+
+.stage-flash-perforation .stage-flash-text { color: var(--accent-red); }
+
+.stage-flash-sub {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+@keyframes flashFade {
+  0%   { opacity: 0; transform: scale(0.95); }
+  15%  { opacity: 1; transform: scale(1); }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ─── Toast ───────────────────────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 300;
+}
+
+.toast {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  max-width: 300px;
+  transform: translateX(110%);
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.toast.toast-show { transform: translateX(0); }
+.toast.toast-success { border-color: rgba(13, 189, 139, 0.4); background: var(--success-bg); }
+.toast.toast-danger  { border-color: rgba(232, 68, 90, 0.4);  background: var(--danger-bg); }
+.toast.toast-warning { border-color: rgba(245, 166, 35, 0.4); background: var(--warning-bg); }
+.toast.toast-info    { border-color: rgba(61, 168, 245, 0.4); background: var(--info-bg); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  MOBILE RESPONSIVE                                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  /* Home */
+  .home-topbar { padding: 14px 16px; }
+  .home-hero { padding: 36px 16px 24px; }
+  .home-stats { gap: 20px; padding: 16px; }
+  .home-cases-section { padding: 20px 16px; }
+  .cases-grid { grid-template-columns: 1fr; }
+
+  /* Game layout: stack vertically */
+  .game-layout {
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "patient"
+      "body"
+      "log";
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .game-body {
+    height: auto;
+    overflow: visible;
+  }
+
+  .tab-content { overflow: visible; }
+  .tab-panel { height: auto; }
+
+  .log-panel {
+    max-height: 200px;
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Header adjustments */
+  .hud-vitals { display: none; }
+  .case-title-small { max-width: 120px; }
+  .hud-stat { min-width: 60px; padding: 5px 8px; }
+  .hud-label { font-size: 7px; }
+  .hud-value { font-size: 11px; }
+  .btn-jump { padding: 5px 8px; font-size: 10px; }
+  .btn-end { padding: 5px 8px; font-size: 10px; }
+
+  /* History */
+  .history-grid { grid-template-columns: 1fr; }
+  .exam-sections { grid-template-columns: 1fr; }
+
+  /* Tests */
+  .test-grid, .mgmt-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Jump modal */
+  .jump-options { grid-template-columns: 1fr 1fr; }
+
+  /* Toast */
+  .toast-container { left: 12px; right: 12px; bottom: 12px; }
+  .toast { max-width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .test-grid, .mgmt-grid { grid-template-columns: 1fr; }
+  .header-left { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .case-title-small { max-width: 160px; font-size: 0.8rem; }
+  .hud-stats { gap: 0; }
+}
+
+/* ─── Animations ──────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.home-screen { animation: fadeIn 0.4s ease; }
+.game-layout { animation: fadeIn 0.3s ease; }
+.info-card, .test-card, .mgmt-card, .result-card, .diagnosis-option {
+  animation: fadeIn 0.25s ease both;
+}
+
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="loading-screen" style="height:100vh;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#3d5470;letter-spacing:0.12em;">
+      INITIALISING CLINICAL OS…
+    </div>
+  </div>
+
+  <script>
+  window.__CASE_DATA__ = [
+  {
+    "id": "appendicitis_case_1",
+    "title": "Acute Abdominal Pain",
+    "subtitle": "Emergency Department · Triage Level 2",
+    "difficulty": "Intermediate",
+    "estimatedTime": "20–30 min",
+    "tags": ["Surgery", "Abdomen", "Emergency"],
+
+    "clinicalPresentation": {
+      "patientParticulars": {
+        "age": 24,
+        "sex": "Male",
+        "occupation": "Student"
+      },
+      "chiefComplaint": "Abdominal pain for 12 hours",
+      "HOPI": {
+        "onset": "Periumbilical colicky pain starting 12 hours ago",
+        "progression": "Pain has migrated to the right lower quadrant and is now constant and sharp",
+        "associatedSymptoms": ["Nausea", "Loss of appetite", "Low-grade fever"]
+      },
+      "pastHistory": ["No chronic illness", "No prior surgeries", "No known drug allergies"],
+      "vitals": {
+        "temp": 37.5,
+        "pulse": 92,
+        "bp": "120/80",
+        "rr": 18,
+        "spo2": 98
+      },
+      "exam": {
+        "general": ["Mild distress", "Alert and oriented"],
+        "abdominal": ["RLQ tenderness at McBurney's point", "Voluntary guarding", "Rovsing's sign positive", "No rebound tenderness yet"],
+        "others": ["Psoas sign equivocal"]
+      }
+    },
+
+    "initialState": {
+      "time": 0,
+      "stage": "early",
+      "budget": 10000,
+      "cost": 0,
+      "penalty": 0,
+      "cured": false,
+      "vitals": {
+        "hr": 92,
+        "bp": "120/80",
+        "temp": 37.5,
+        "rr": 18,
+        "spo2": 98
+      },
+      "activeSymptoms": ["Periumbilical pain migrating to RLQ", "Nausea", "Anorexia"],
+      "completedTests": [],
+      "givenManagement": [],
+      "pendingResults": [],
+      "notes": []
+    },
+
+    "stages": {
+      "early":       { "next": "localized",    "afterTime": 2,  "label": "Early Appendicitis" },
+      "localized":   { "next": "perforation",  "afterTime": 6,  "label": "Localized Peritonitis" },
+      "perforation": { "next": null,            "afterTime": null, "label": "Perforated Appendix" }
+    },
+
+    "progressionRules": [
+      {
+        "from": "early",
+        "to": "localized",
+        "condition": "no_surgery",
+        "effects": {
+          "symptoms": ["RLQ pain worsening", "Fever", "Rebound tenderness"],
+          "vitals": { "temp": 38.2, "hr": 102 },
+          "penaltyMsg": "Disease progressed to localized peritonitis due to delay."
+        }
+      },
+      {
+        "from": "localized",
+        "to": "perforation",
+        "condition": "no_surgery",
+        "effects": {
+          "symptoms": ["Generalised abdominal pain", "Rigidity", "Patient looks toxic"],
+          "vitals": { "bp": "90/60", "hr": 124, "temp": 39.1 },
+          "penaltyMsg": "Appendix has perforated! Patient is in septic shock.",
+          "penalty": 25
+        }
+      }
+    ],
+
+    "tests": [
+      {
+        "id": "cbc",
+        "name": "CBC",
+        "fullName": "Complete Blood Count",
+        "time": 1,
+        "cost": 500,
+        "type": "useful",
+        "category": "Blood",
+        "results": {
+          "early":       "WBC: 12,400/μL (mild leukocytosis). Neutrophils 78%. Hb 14.2 g/dL. Platelets normal.",
+          "localized":   "WBC: 18,200/μL (significant leukocytosis). Neutrophils 85% with left shift. Hb 13.8 g/dL.",
+          "perforation": "WBC: 24,600/μL (severe leukocytosis). Bands 20%. Hb 13.0 g/dL. Thrombocytopenia."
+        }
+      },
+      {
+        "id": "usg",
+        "name": "USG Abdomen",
+        "fullName": "Ultrasound Abdomen & Pelvis",
+        "time": 2,
+        "cost": 1500,
+        "type": "useful",
+        "category": "Imaging",
+        "results": {
+          "early":       "Non-compressible tubular structure at RLQ, diameter 8mm. Consistent with early appendicitis.",
+          "localized":   "Dilated appendix 11mm with periappendiceal fat stranding. Appendicolith seen.",
+          "perforation": "Perforated appendix. Free fluid in RIF. Complex collection forming."
+        }
+      },
+      {
+        "id": "urine_re",
+        "name": "Urine R/E",
+        "fullName": "Urine Routine Examination",
+        "time": 0.5,
+        "cost": 300,
+        "type": "useful",
+        "category": "Urine",
+        "results": {
+          "early":       "Normal. No RBCs, WBCs, or casts. Rules out UTI/renal colic.",
+          "localized":   "Trace WBCs (sterile pyuria from adjacent inflammation). No bacteria.",
+          "perforation": "Trace WBCs. No casts."
+        }
+      },
+      {
+        "id": "crp",
+        "name": "CRP",
+        "fullName": "C-Reactive Protein",
+        "time": 1,
+        "cost": 600,
+        "type": "useful",
+        "category": "Blood",
+        "results": {
+          "early":       "CRP: 18 mg/L (mildly elevated, upper limit normal 10).",
+          "localized":   "CRP: 87 mg/L (significantly elevated).",
+          "perforation": "CRP: 224 mg/L (markedly elevated, consistent with sepsis)."
+        }
+      },
+      {
+        "id": "lft",
+        "name": "LFT",
+        "fullName": "Liver Function Tests",
+        "time": 1,
+        "cost": 800,
+        "type": "dummy",
+        "category": "Blood",
+        "results": {
+          "early":       "All values within normal limits. Bilirubin, AST, ALT, ALP – all normal.",
+          "localized":   "All values within normal limits.",
+          "perforation": "Mildly elevated ALP (non-specific, secondary to sepsis)."
+        }
+      },
+      {
+        "id": "ecg",
+        "name": "ECG",
+        "fullName": "12-Lead ECG",
+        "time": 0.5,
+        "cost": 400,
+        "type": "dummy",
+        "category": "Cardiac",
+        "results": {
+          "early":       "Sinus tachycardia 94 bpm. No ST changes. Normal axis.",
+          "localized":   "Sinus tachycardia 104 bpm. No ischaemic changes.",
+          "perforation": "Sinus tachycardia 126 bpm. No specific changes."
+        }
+      },
+      {
+        "id": "ct_abdomen",
+        "name": "CT Abdomen",
+        "fullName": "CT Scan Abdomen with Contrast",
+        "time": 2,
+        "cost": 5000,
+        "type": "useful",
+        "category": "Imaging",
+        "results": {
+          "early":       "Appendix 9mm, no perforation. Mild periappendiceal fat stranding. Consistent with appendicitis.",
+          "localized":   "Appendix 13mm with appendicolith. Localized periappendiceal fluid. No free air.",
+          "perforation": "Perforated appendix with extraluminal free air. Pelvic abscess 4×3cm forming."
+        }
+      },
+      {
+        "id": "xray",
+        "name": "X-ray Abdomen",
+        "fullName": "X-ray Abdomen (Erect + Supine)",
+        "time": 1,
+        "cost": 600,
+        "type": "dummy",
+        "category": "Imaging",
+        "results": {
+          "early":       "No gas under diaphragm. No obstruction. Non-specific gas pattern.",
+          "localized":   "Sentinel loop at RLQ. No pneumoperitoneum.",
+          "perforation": "Free gas under right dome of diaphragm. Evidence of perforation."
+        }
+      }
+    ],
+
+    "managementOptions": [
+      {
+        "id": "iv_fluids",
+        "name": "IV Fluids",
+        "fullName": "IV Crystalloids (Normal Saline / Ringer's Lactate)",
+        "cost": 800,
+        "type": "supportive",
+        "effect": {
+          "vitals": { "bp": "+5" },
+          "note": "Haemodynamic stabilisation initiated."
+        }
+      },
+      {
+        "id": "antibiotics",
+        "name": "IV Antibiotics",
+        "fullName": "IV Antibiotics (Ceftriaxone + Metronidazole)",
+        "cost": 1200,
+        "type": "supportive",
+        "effect": {
+          "delayProgression": 1,
+          "note": "Antibiotics slow bacterial progression. Not a cure."
+        }
+      },
+      {
+        "id": "npo",
+        "name": "NPO + NG Tube",
+        "fullName": "Nil Per Oral + Nasogastric Tube",
+        "cost": 300,
+        "type": "preop",
+        "effect": {
+          "note": "Patient prepared for surgery. Pre-operative measure."
+        }
+      },
+      {
+        "id": "analgesic",
+        "name": "IV Analgesic",
+        "fullName": "IV Analgesic (Tramadol / Morphine)",
+        "cost": 500,
+        "type": "supportive",
+        "effect": {
+          "note": "Pain relief administered. Does not alter disease course."
+        }
+      },
+      {
+        "id": "surgery",
+        "name": "Appendectomy",
+        "fullName": "Emergency Appendectomy (Laparoscopic)",
+        "cost": 6000,
+        "type": "curative",
+        "condition": "stage != perforation",
+        "effect": {
+          "cure": true,
+          "note": "Laparoscopic appendectomy performed successfully."
+        }
+      },
+      {
+        "id": "surgery_open",
+        "name": "Open Laparotomy",
+        "fullName": "Emergency Open Laparotomy + Washout",
+        "cost": 8000,
+        "type": "curative",
+        "condition": "stage == perforation",
+        "effect": {
+          "cure": true,
+          "note": "Open surgery performed for peritonitis. Washout and drain placed."
+        }
+      },
+      {
+        "id": "antacid",
+        "name": "Antacid",
+        "fullName": "Oral Antacid (Pantoprazole)",
+        "cost": 200,
+        "type": "dummy",
+        "effect": {
+          "note": "No effect on appendicitis."
+        }
+      },
+      {
+        "id": "obs",
+        "name": "Observe & Wait",
+        "fullName": "Conservative Observation Only",
+        "cost": 0,
+        "type": "harmful",
+        "effect": {
+          "penalty": 5,
+          "note": "Watchful waiting without intervention accelerates deterioration."
+        }
+      }
+    ],
+
+    "diagnosisOptions": [
+      { "id": "appendicitis", "label": "Acute Appendicitis" },
+      { "id": "gastritis", "label": "Acute Gastritis" },
+      { "id": "gastroenteritis", "label": "Gastroenteritis" },
+      { "id": "renal_colic", "label": "Right-sided Renal Colic" },
+      { "id": "meckels", "label": "Meckel's Diverticulitis" },
+      { "id": "ibs", "label": "Irritable Bowel Syndrome" }
+    ],
+
+    "correctDiagnosis": "appendicitis",
+
+    "scoringRubric": {
+      "correctDiagnosis": 30,
+      "timelyCure": 30,
+      "costEfficiency": 20,
+      "correctTests": 10,
+      "penaltyPerPoint": -1
+    },
+
+    "endMessages": {
+      "perfect":    "Outstanding! Rapid diagnosis and definitive surgery with no complications. You would make an excellent surgeon.",
+      "good":       "Good clinical decision making. Some delays or extra costs, but the patient recovered well.",
+      "average":    "Adequate outcome but room for improvement. Review your test selection and timing.",
+      "poor":       "The patient suffered due to delayed or incorrect management. Review appendicitis guidelines."
+    }
+  }
+];
+  </script>
+  <script>
+/**
+ * Clinical Simulation Engine
+ * State machine driving patient progression, actions, and scoring
+ */
+
+class ClinicalEngine {
+  constructor(caseData) {
+    this.case = caseData;
+    this.state = JSON.parse(JSON.stringify(caseData.initialState));
+    this.listeners = {};
+    this.tickInterval = null;
+    this.tickRate = 1000; // ms per simulated tick (1 tick = configurable sim-minutes)
+    this.simMinutesPerTick = 6; // Each real second = 6 sim-minutes = 0.1 sim-hours
+    this.paused = false;
+    this.ended = false;
+    this.log = [];
+    this.progressionDelayBonus = 0; // hours added by antibiotics
+  }
+
+  // ─── Event system ─────────────────────────────────────────────────────────
+  on(event, cb) {
+    if (!this.listeners[event]) this.listeners[event] = [];
+    this.listeners[event].push(cb);
+  }
+  emit(event, data) {
+    (this.listeners[event] || []).forEach(cb => cb(data));
+  }
+
+  // ─── Start engine ─────────────────────────────────────────────────────────
+  start() {
+    this.tickInterval = setInterval(() => this._tick(), this.tickRate);
+    this.emit('started', this.state);
+    this.addLog('system', 'Patient arrived at Emergency Department. Assessment initiated.');
+  }
+
+  pause() {
+    this.paused = true;
+    this.emit('paused');
+  }
+
+  resume() {
+    this.paused = false;
+    this.emit('resumed');
+  }
+
+  stop() {
+    clearInterval(this.tickInterval);
+  }
+
+  // ─── Jump forward in time ──────────────────────────────────────────────────
+  jumpTime(hours) {
+    const steps = Math.ceil((hours * 60) / this.simMinutesPerTick);
+    for (let i = 0; i < steps; i++) {
+      this._advanceTime(this.simMinutesPerTick);
+    }
+    this.addLog('system', `⏩ Time advanced by ${hours} hour${hours !== 1 ? 's' : ''}.`);
+    this.emit('stateChanged', this.state);
+  }
+
+  // ─── Core tick ────────────────────────────────────────────────────────────
+  _tick() {
+    if (this.paused || this.ended) return;
+    this._advanceTime(this.simMinutesPerTick);
+    this.emit('tick', this.state);
+  }
+
+  _advanceTime(minutes) {
+    this.state.time += minutes / 60; // stored in hours
+    this._processPendingResults();
+    this._checkProgression();
+  }
+
+  // ─── Pending test results delivery ────────────────────────────────────────
+  _processPendingResults() {
+    const ready = this.state.pendingResults.filter(r => this.state.time >= r.readyAt);
+    const remaining = this.state.pendingResults.filter(r => this.state.time < r.readyAt);
+    this.state.pendingResults = remaining;
+
+    ready.forEach(r => {
+      const test = this.case.tests.find(t => t.id === r.testId);
+      if (!test) return;
+      const resultText = test.results[this.state.stage] || test.results['early'];
+      const result = { testId: r.testId, name: test.name, result: resultText, time: this.state.time };
+      this.state.completedTests.push(result);
+      this.addLog('result', `📋 <strong>${test.name}</strong> result ready: ${resultText}`);
+      this.emit('testResult', result);
+    });
+  }
+
+  // ─── Disease progression ──────────────────────────────────────────────────
+  _checkProgression() {
+    if (this.state.cured || this.ended) return;
+    const currentStage = this.case.stages[this.state.stage];
+    if (!currentStage || !currentStage.next) return;
+
+    const effectiveProgressionTime = currentStage.afterTime + this.progressionDelayBonus;
+
+    if (this.state.time >= effectiveProgressionTime) {
+      const rule = this.case.progressionRules.find(
+        r => r.from === this.state.stage && r.condition === 'no_surgery'
+      );
+      const nextStage = currentStage.next;
+      this.progressionDelayBonus = 0; // reset after use
+      this._transitionStage(nextStage, rule);
+    }
+  }
+
+  _transitionStage(newStage, rule) {
+    const oldStage = this.state.stage;
+    this.state.stage = newStage;
+
+    if (rule) {
+      // Apply vitals changes
+      if (rule.effects.vitals) {
+        Object.assign(this.state.vitals, rule.effects.vitals);
+      }
+      // Apply new symptoms
+      if (rule.effects.symptoms) {
+        this.state.activeSymptoms = [
+          ...new Set([...this.state.activeSymptoms, ...rule.effects.symptoms])
+        ];
+      }
+      // Apply penalty
+      if (rule.effects.penalty) {
+        this.state.penalty += rule.effects.penalty;
+      }
+      if (rule.effects.penaltyMsg) {
+        this.addLog('danger', `⚠️ ${rule.effects.penaltyMsg}`);
+      }
+    }
+
+    this.addLog('warning', `🔴 Stage advanced: <strong>${this.case.stages[newStage]?.label || newStage}</strong>`);
+    this.emit('stageChanged', { from: oldStage, to: newStage, state: this.state });
+
+    // Auto-end on perforation after delay
+    if (newStage === 'perforation') {
+      this.addLog('danger', '💀 Critical: Appendix has perforated. Immediate surgical intervention required.');
+    }
+  }
+
+  // ─── Order a test ─────────────────────────────────────────────────────────
+  orderTest(testId) {
+    if (this.ended) return { success: false, msg: 'Case has ended.' };
+    const test = this.case.tests.find(t => t.id === testId);
+    if (!test) return { success: false, msg: 'Test not found.' };
+
+    const alreadyOrdered = this.state.completedTests.some(t => t.testId === testId)
+      || this.state.pendingResults.some(t => t.testId === testId);
+    if (alreadyOrdered) return { success: false, msg: `${test.name} already ordered.` };
+
+    if (this.state.cost + test.cost > this.state.budget) {
+      return { success: false, msg: 'Insufficient budget.' };
+    }
+
+    this.state.cost += test.cost;
+    const readyAt = this.state.time + test.time;
+    this.state.pendingResults.push({ testId, readyAt });
+
+    this.addLog('action', `🔬 Ordered: <strong>${test.name}</strong> — Results in ${test.time}h — ₹${test.cost.toLocaleString()}`);
+    this.emit('stateChanged', this.state);
+    return { success: true };
+  }
+
+  // ─── Apply management ─────────────────────────────────────────────────────
+  applyManagement(managementId) {
+    if (this.ended) return { success: false, msg: 'Case has ended.' };
+    const mgmt = this.case.managementOptions.find(m => m.id === managementId);
+    if (!mgmt) return { success: false, msg: 'Option not found.' };
+
+    const alreadyGiven = this.state.givenManagement.some(m => m.id === managementId);
+    if (alreadyGiven) return { success: false, msg: `${mgmt.name} already administered.` };
+
+    // Check condition
+    if (mgmt.condition) {
+      const conditionMet = this._evalCondition(mgmt.condition);
+      if (!conditionMet) {
+        const msg = mgmt.condition.includes('perforation')
+          ? 'Laparoscopic surgery not possible after perforation. Consider open laparotomy.'
+          : 'Condition not met for this intervention.';
+        return { success: false, msg };
+      }
+    }
+
+    if (this.state.cost + mgmt.cost > this.state.budget) {
+      return { success: false, msg: 'Insufficient budget.' };
+    }
+
+    this.state.cost += mgmt.cost;
+    this.state.givenManagement.push({ id: managementId, name: mgmt.name, time: this.state.time });
+
+    // Apply effects
+    const eff = mgmt.effect;
+    if (eff.vitals) {
+      Object.entries(eff.vitals).forEach(([key, val]) => {
+        if (typeof val === 'string' && val.startsWith('+')) {
+          const num = parseInt(val);
+          if (key === 'bp') {
+            const parts = this.state.vitals.bp.split('/');
+            this.state.vitals.bp = `${parseInt(parts[0]) + num}/${parseInt(parts[1]) + num}`;
+          } else {
+            this.state.vitals[key] = (this.state.vitals[key] || 0) + num;
+          }
+        } else {
+          this.state.vitals[key] = val;
+        }
+      });
+    }
+
+    if (eff.delayProgression) {
+      this.progressionDelayBonus += eff.delayProgression;
+      this.addLog('info', `💊 Antibiotics slow disease progression by ${eff.delayProgression} hour(s).`);
+    }
+
+    if (eff.penalty) {
+      this.state.penalty += eff.penalty;
+      this.addLog('warning', `⚠️ Penalty applied for suboptimal management.`);
+    }
+
+    if (eff.cure) {
+      this._cure(mgmt);
+      return { success: true };
+    }
+
+    this.addLog('action', `💉 Administered: <strong>${mgmt.name}</strong> — ₹${mgmt.cost.toLocaleString()}${eff.note ? ' — ' + eff.note : ''}`);
+    this.emit('stateChanged', this.state);
+    return { success: true };
+  }
+
+  _cure(mgmt) {
+    this.state.cured = true;
+    this.stop();
+    this.ended = true;
+    this.addLog('success', `✅ <strong>${mgmt.fullName}</strong> performed successfully. Patient is recovering.`);
+    this.emit('cured', { state: this.state, mgmt });
+  }
+
+  // ─── Submit diagnosis ──────────────────────────────────────────────────────
+  submitDiagnosis(diagnosisId) {
+    const correct = diagnosisId === this.case.correctDiagnosis;
+    this.state.diagnosis = diagnosisId;
+    this.state.diagnosisCorrect = correct;
+
+    if (!correct) {
+      this.state.penalty += 15;
+      this.addLog('danger', `❌ Incorrect diagnosis submitted. Penalty applied.`);
+    } else {
+      this.addLog('success', `✅ Correct diagnosis: <strong>${this.case.correctDiagnosis}</strong>`);
+    }
+
+    this.emit('diagnosisSubmitted', { correct, diagnosisId });
+    return correct;
+  }
+
+  // ─── End case and score ───────────────────────────────────────────────────
+  endCase() {
+    this.stop();
+    this.ended = true;
+    const score = this._calculateScore();
+    this.emit('ended', score);
+    return score;
+  }
+
+  _calculateScore() {
+    const rubric = this.case.scoringRubric;
+    let score = 0;
+    const breakdown = [];
+
+    // Diagnosis
+    if (this.state.diagnosisCorrect) {
+      score += rubric.correctDiagnosis;
+      breakdown.push({ label: 'Correct Diagnosis', points: rubric.correctDiagnosis, earned: rubric.correctDiagnosis });
+    } else {
+      breakdown.push({ label: 'Correct Diagnosis', points: rubric.correctDiagnosis, earned: 0 });
+    }
+
+    // Cure
+    if (this.state.cured) {
+      const timeBonus = this.state.stage === 'early' ? 30 : this.state.stage === 'localized' ? 20 : 10;
+      score += timeBonus;
+      breakdown.push({ label: 'Timely Cure', points: rubric.timelyCure, earned: timeBonus });
+    } else {
+      breakdown.push({ label: 'Timely Cure', points: rubric.timelyCure, earned: 0 });
+    }
+
+    // Cost efficiency
+    const spent = this.state.cost;
+    const budget = this.state.budget;
+    const pct = spent / budget;
+    const costScore = pct < 0.5 ? rubric.costEfficiency : pct < 0.7 ? Math.round(rubric.costEfficiency * 0.7) : pct < 0.9 ? Math.round(rubric.costEfficiency * 0.4) : 0;
+    score += costScore;
+    breakdown.push({ label: 'Cost Efficiency', points: rubric.costEfficiency, earned: costScore });
+
+    // Useful tests ordered
+    const usefulTests = this.case.tests.filter(t => t.type === 'useful').map(t => t.id);
+    const orderedUseful = this.state.completedTests.filter(t => usefulTests.includes(t.testId)).length;
+    const testScore = Math.min(rubric.correctTests, Math.round((orderedUseful / usefulTests.length) * rubric.correctTests));
+    score += testScore;
+    breakdown.push({ label: 'Relevant Tests', points: rubric.correctTests, earned: testScore });
+
+    // Penalties
+    const penaltyPoints = this.state.penalty * Math.abs(rubric.penaltyPerPoint);
+    score -= penaltyPoints;
+    breakdown.push({ label: 'Penalties', points: 0, earned: -penaltyPoints });
+
+    score = Math.max(0, Math.min(100, score));
+
+    const grade = score >= 90 ? 'A+' : score >= 80 ? 'A' : score >= 70 ? 'B' : score >= 60 ? 'C' : 'F';
+    const msg = score >= 90 ? this.case.endMessages.perfect
+      : score >= 70 ? this.case.endMessages.good
+      : score >= 50 ? this.case.endMessages.average
+      : this.case.endMessages.poor;
+
+    return {
+      score: Math.round(score),
+      grade,
+      msg,
+      breakdown,
+      time: this.state.time,
+      stage: this.state.stage,
+      cost: this.state.cost,
+      budget: this.state.budget,
+      cured: this.state.cured,
+      penalty: this.state.penalty
+    };
+  }
+
+  // ─── Helpers ───────────────────────────────────────────────────────────────
+  _evalCondition(condition) {
+    // e.g. "stage != perforation"
+    const stageMatch = condition.match(/stage\s*(!=|==)\s*(\w+)/);
+    if (stageMatch) {
+      const [, op, val] = stageMatch;
+      if (op === '!=') return this.state.stage !== val;
+      if (op === '==') return this.state.stage === val;
+    }
+    return true;
+  }
+
+  addLog(type, msg) {
+    const entry = {
+      type,
+      msg,
+      time: this.state.time,
+      timeLabel: this._formatTime(this.state.time)
+    };
+    this.log.push(entry);
+    this.emit('log', entry);
+  }
+
+  _formatTime(hours) {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  getCurrentStageLabel() {
+    return this.case.stages[this.state.stage]?.label || this.state.stage;
+  }
+}
+
+  </script>
+  <script>
+/**
+ * Case Loader
+ * Loads and validates case data from JSON
+ */
+
+class CaseLoader {
+  constructor() {
+    this.cases = [];
+  }
+
+  async loadAll() {
+    this.cases = window.__CASE_DATA__;
+    return this.cases;
+  }
+
+  getById(id) {
+    return this.cases.find(c => c.id === id) || null;
+  }
+
+  getAll() {
+    return this.cases;
+  }
+}
+
+  </script>
+  <script>
+/**
+ * UI Controller
+ * All DOM rendering, panels, modals, and user interactions
+ */
+
+class ClinicalUI {
+  constructor(engine, caseData) {
+    this.engine = engine;
+    this.case = caseData;
+    this.activeTab = 'history';
+    this.diagnosisSubmitted = false;
+    this._bindEngineEvents();
+  }
+
+  // ─── Bind engine events ───────────────────────────────────────────────────
+  _bindEngineEvents() {
+    this.engine.on('tick', () => this._updateHUD());
+    this.engine.on('stateChanged', () => this._updateHUD());
+    this.engine.on('stageChanged', (d) => {
+      this._updateHUD();
+      this._flashStageAlert(d);
+    });
+    this.engine.on('testResult', (result) => {
+      this._showToast(`📋 Result Ready: ${result.name}`, 'info');
+      this._refreshResultsTab();
+    });
+    this.engine.on('log', (entry) => this._appendLog(entry));
+    this.engine.on('cured', () => {
+      this._updateHUD();
+      this._showToast('✅ Patient successfully treated!', 'success');
+      this._enableEndCase();
+    });
+    this.engine.on('diagnosisSubmitted', ({ correct }) => {
+      if (correct) this._showToast('✅ Correct Diagnosis!', 'success');
+      else this._showToast('❌ Wrong Diagnosis — 15 point penalty', 'danger');
+    });
+  }
+
+  // ─── Initial render ───────────────────────────────────────────────────────
+  renderGame() {
+    document.getElementById('app').innerHTML = this._buildGameHTML();
+    this._bindUIEvents();
+    this._updateHUD();
+    this._renderHistoryTab();
+    this._renderTestsTab();
+    this._renderManagementTab();
+    this._renderDiagnosisTab();
+    this._refreshResultsTab();
+  }
+
+  _buildGameHTML() {
+    const c = this.case;
+    const p = c.clinicalPresentation.patientParticulars;
+    return `
+    <div class="game-layout">
+      <!-- Header HUD -->
+      <header class="game-header">
+        <div class="header-left">
+          <button class="btn-back" id="btn-back">← Cases</button>
+          <div class="case-title-small">${c.title}</div>
+        </div>
+        <div class="hud-vitals" id="hud-vitals"></div>
+        <div class="header-right">
+          <div class="hud-stats">
+            <div class="hud-stat" id="hud-time">
+              <span class="hud-label">TIME</span>
+              <span class="hud-value" id="stat-time">00:00</span>
+            </div>
+            <div class="hud-stat" id="hud-stage">
+              <span class="hud-label">STAGE</span>
+              <span class="hud-value" id="stat-stage">—</span>
+            </div>
+            <div class="hud-stat" id="hud-budget">
+              <span class="hud-label">BUDGET</span>
+              <span class="hud-value" id="stat-budget">—</span>
+            </div>
+          </div>
+          <div class="hud-actions">
+            <button class="btn-jump" id="btn-jump" title="Fast-forward time">⏩ Jump</button>
+            <button class="btn-end" id="btn-end">End Case</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Patient Banner -->
+      <div class="patient-banner">
+        <div class="patient-avatar">
+          <svg viewBox="0 0 60 60" fill="none"><circle cx="30" cy="20" r="12" fill="currentColor" opacity="0.6"/><path d="M10 55c0-11 8.95-20 20-20s20 8.95 20 20" fill="currentColor" opacity="0.4"/></svg>
+        </div>
+        <div class="patient-info">
+          <div class="patient-name">${p.age}y ${p.sex} · ${p.occupation}</div>
+          <div class="patient-complaint">"${c.clinicalPresentation.chiefComplaint}"</div>
+        </div>
+        <div class="patient-stage-badge" id="stage-badge">
+          <span id="stage-badge-text">Early</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="game-body">
+        <!-- Tabs -->
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="history">📋 History</button>
+          <button class="tab-btn" data-tab="tests">🔬 Order Tests</button>
+          <button class="tab-btn" data-tab="results">📊 Results <span class="badge" id="results-badge">0</span></button>
+          <button class="tab-btn" data-tab="management">💊 Management</button>
+          <button class="tab-btn" data-tab="diagnosis">🩺 Diagnosis</button>
+        </div>
+
+        <!-- Tab panels -->
+        <div class="tab-content">
+          <div class="tab-panel active" id="tab-history"></div>
+          <div class="tab-panel" id="tab-tests"></div>
+          <div class="tab-panel" id="tab-results"></div>
+          <div class="tab-panel" id="tab-management"></div>
+          <div class="tab-panel" id="tab-diagnosis"></div>
+        </div>
+      </div>
+
+      <!-- Log sidebar -->
+      <aside class="log-panel">
+        <div class="log-header">Activity Log</div>
+        <div class="log-entries" id="log-entries"></div>
+      </aside>
+    </div>
+
+    <!-- Jump Time Modal -->
+    <div class="modal-overlay hidden" id="modal-jump">
+      <div class="modal">
+        <div class="modal-title">⏩ Fast-Forward Time</div>
+        <p class="modal-desc">Jump ahead in simulation time. Disease will progress accordingly.</p>
+        <div class="jump-options">
+          <button class="jump-btn" data-hours="0.5">+30 min</button>
+          <button class="jump-btn" data-hours="1">+1 hour</button>
+          <button class="jump-btn" data-hours="2">+2 hours</button>
+          <button class="jump-btn" data-hours="4">+4 hours</button>
+          <button class="jump-btn" data-hours="6">+6 hours</button>
+          <button class="jump-btn" data-hours="12">+12 hours</button>
+        </div>
+        <button class="modal-close" id="modal-jump-close">Cancel</button>
+      </div>
+    </div>
+
+    <!-- End Case / Score Modal -->
+    <div class="modal-overlay hidden" id="modal-score">
+      <div class="modal modal-score" id="score-content"></div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toast-container"></div>
+    `;
+  }
+
+  // ─── Tab: History ─────────────────────────────────────────────────────────
+  _renderHistoryTab() {
+    const cp = this.case.clinicalPresentation;
+    const p = cp.patientParticulars;
+    document.getElementById('tab-history').innerHTML = `
+      <div class="history-grid">
+        <div class="info-card">
+          <div class="card-label">Chief Complaint</div>
+          <div class="card-value big">${cp.chiefComplaint}</div>
+        </div>
+        <div class="info-card">
+          <div class="card-label">Patient</div>
+          <div class="card-value">${p.age} years · ${p.sex} · ${p.occupation}</div>
+        </div>
+        <div class="info-card full-width">
+          <div class="card-label">History of Presenting Illness</div>
+          <ul class="detail-list">
+            <li><strong>Onset:</strong> ${cp.HOPI.onset}</li>
+            <li><strong>Progression:</strong> ${cp.HOPI.progression}</li>
+            <li><strong>Associated Symptoms:</strong> ${cp.HOPI.associatedSymptoms.join(', ')}</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <div class="card-label">Past History</div>
+          <ul class="detail-list">${cp.pastHistory.map(h => `<li>${h}</li>`).join('')}</ul>
+        </div>
+        <div class="info-card">
+          <div class="card-label">Vitals on Arrival</div>
+          <div class="vitals-grid-small">
+            <div class="vital-item"><span>Temp</span><strong>${cp.vitals.temp}°C</strong></div>
+            <div class="vital-item"><span>Pulse</span><strong>${cp.vitals.pulse} bpm</strong></div>
+            <div class="vital-item"><span>BP</span><strong>${cp.vitals.bp} mmHg</strong></div>
+            <div class="vital-item"><span>RR</span><strong>${cp.vitals.rr}/min</strong></div>
+            <div class="vital-item"><span>SpO₂</span><strong>${cp.vitals.spo2}%</strong></div>
+          </div>
+        </div>
+        <div class="info-card full-width">
+          <div class="card-label">Physical Examination</div>
+          <div class="exam-sections">
+            <div class="exam-section">
+              <div class="exam-label">General</div>
+              <ul class="detail-list">${cp.exam.general.map(e => `<li>${e}</li>`).join('')}</ul>
+            </div>
+            <div class="exam-section">
+              <div class="exam-label">Abdominal</div>
+              <ul class="detail-list">${cp.exam.abdominal.map(e => `<li>${e}</li>`).join('')}</ul>
+            </div>
+          </div>
+        </div>
+        <div class="info-card full-width">
+          <div class="card-label">Current Active Symptoms</div>
+          <div class="symptom-tags" id="active-symptoms"></div>
+        </div>
+      </div>
+    `;
+    this._updateActiveSymptoms();
+  }
+
+  _updateActiveSymptoms() {
+    const el = document.getElementById('active-symptoms');
+    if (!el) return;
+    el.innerHTML = this.engine.state.activeSymptoms.map(s =>
+      `<span class="symptom-tag">${s}</span>`
+    ).join('');
+  }
+
+  // ─── Tab: Tests ───────────────────────────────────────────────────────────
+  _renderTestsTab() {
+    const categories = [...new Set(this.case.tests.map(t => t.category))];
+    const html = categories.map(cat => {
+      const tests = this.case.tests.filter(t => t.category === cat);
+      return `
+        <div class="test-category">
+          <div class="category-label">${cat}</div>
+          <div class="test-grid">
+            ${tests.map(t => this._buildTestCard(t)).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('tab-tests').innerHTML = `<div class="tests-container">${html}</div>`;
+    this._bindTestButtons();
+  }
+
+  _buildTestCard(t) {
+    const pending = this.engine.state.pendingResults.some(r => r.testId === t.id);
+    const done = this.engine.state.completedTests.some(r => r.testId === t.id);
+    const statusClass = pending ? 'test-pending' : done ? 'test-done' : '';
+    const statusLabel = pending ? '⏳ Pending' : done ? '✅ Done' : '';
+    return `
+      <div class="test-card ${statusClass}" id="test-card-${t.id}">
+        <div class="test-name">${t.name}</div>
+        <div class="test-fullname">${t.fullName}</div>
+        <div class="test-meta">
+          <span>⏱ ${t.time}h</span>
+          <span>₹${t.cost.toLocaleString()}</span>
+        </div>
+        ${statusLabel ? `<div class="test-status">${statusLabel}</div>` : `<button class="btn-order" data-test="${t.id}">Order</button>`}
+      </div>
+    `;
+  }
+
+  _bindTestButtons() {
+    document.querySelectorAll('.btn-order[data-test]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const result = this.engine.orderTest(btn.dataset.test);
+        if (result.success) {
+          this._renderTestsTab(); // refresh
+        } else {
+          this._showToast(result.msg, 'danger');
+        }
+      });
+    });
+  }
+
+  // ─── Tab: Results ─────────────────────────────────────────────────────────
+  _refreshResultsTab() {
+    const done = this.engine.state.completedTests;
+    const pending = this.engine.state.pendingResults;
+
+    const badge = document.getElementById('results-badge');
+    if (badge) badge.textContent = done.length;
+
+    const panel = document.getElementById('tab-results');
+    if (!panel) return;
+
+    if (done.length === 0 && pending.length === 0) {
+      panel.innerHTML = `<div class="empty-state">No tests ordered yet. Go to Order Tests.</div>`;
+      return;
+    }
+
+    let html = '';
+
+    if (pending.length > 0) {
+      html += `<div class="results-section-label">⏳ Pending Results</div>`;
+      html += pending.map(r => {
+        const test = this.case.tests.find(t => t.id === r.testId);
+        const eta = Math.max(0, r.readyAt - this.engine.state.time);
+        return `<div class="result-card pending">
+          <div class="result-name">${test?.name || r.testId}</div>
+          <div class="result-eta">ETA: ~${this._fmtHours(eta)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    if (done.length > 0) {
+      html += `<div class="results-section-label">✅ Available Results</div>`;
+      html += done.map(r => `
+        <div class="result-card done">
+          <div class="result-name">${r.name}</div>
+          <div class="result-time">@ ${r.timeLabel || this.engine._formatTime(r.time)}</div>
+          <div class="result-text">${r.result}</div>
+        </div>
+      `).join('');
+    }
+
+    panel.innerHTML = `<div class="results-container">${html}</div>`;
+  }
+
+  _fmtHours(h) {
+    if (h < 0.1) return '< 5 min';
+    if (h < 1) return `${Math.round(h * 60)} min`;
+    return `${h.toFixed(1)} hr`;
+  }
+
+  // ─── Tab: Management ─────────────────────────────────────────────────────
+  _renderManagementTab() {
+    const options = this.case.managementOptions;
+    const categories = {
+      supportive: 'Supportive Care',
+      preop: 'Pre-operative',
+      curative: 'Definitive Treatment',
+      dummy: 'Other'
+    };
+
+    const grouped = {};
+    options.forEach(opt => {
+      const cat = opt.type || 'other';
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(opt);
+    });
+
+    const html = Object.entries(grouped).map(([cat, items]) => `
+      <div class="mgmt-category">
+        <div class="category-label">${categories[cat] || cat}</div>
+        <div class="mgmt-grid">
+          ${items.map(m => this._buildMgmtCard(m)).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('tab-management').innerHTML = `<div class="mgmt-container">${html}</div>`;
+    this._bindMgmtButtons();
+  }
+
+  _buildMgmtCard(m) {
+    const given = this.engine.state.givenManagement.some(g => g.id === m.id);
+    const isCurative = m.type === 'curative';
+    const isDummy = m.type === 'dummy' || m.type === 'harmful';
+    return `
+      <div class="mgmt-card ${given ? 'mgmt-given' : ''} ${isCurative ? 'mgmt-curative' : ''}" id="mgmt-card-${m.id}">
+        <div class="mgmt-name">${m.name}</div>
+        <div class="mgmt-fullname">${m.fullName}</div>
+        <div class="mgmt-meta">
+          <span>₹${m.cost.toLocaleString()}</span>
+          ${isCurative ? '<span class="badge-curative">CURATIVE</span>' : ''}
+        </div>
+        ${given ? '<div class="mgmt-done">✅ Administered</div>'
+          : `<button class="btn-give" data-mgmt="${m.id}">Administer</button>`}
+      </div>
+    `;
+  }
+
+  _bindMgmtButtons() {
+    document.querySelectorAll('.btn-give[data-mgmt]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const result = this.engine.applyManagement(btn.dataset.mgmt);
+        if (result.success) {
+          this._renderManagementTab();
+          this._updateHUD();
+        } else {
+          this._showToast(result.msg, 'warning');
+        }
+      });
+    });
+  }
+
+  // ─── Tab: Diagnosis ───────────────────────────────────────────────────────
+  _renderDiagnosisTab() {
+    const opts = this.case.diagnosisOptions;
+    const html = `
+      <div class="diagnosis-container">
+        <div class="diagnosis-prompt">Based on the clinical findings and test results, what is your diagnosis?</div>
+        <div class="diagnosis-warning">⚠️ Wrong diagnosis carries a 15-point penalty.</div>
+        <div class="diagnosis-options" id="diagnosis-options">
+          ${opts.map(opt => `
+            <div class="diagnosis-option" id="diag-${opt.id}" data-diag="${opt.id}">
+              <div class="diag-radio"></div>
+              <div class="diag-label">${opt.label}</div>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-submit-diag" id="btn-submit-diag" disabled>Submit Diagnosis</button>
+      </div>
+    `;
+    document.getElementById('tab-diagnosis').innerHTML = html;
+    this._bindDiagnosisEvents();
+  }
+
+  _bindDiagnosisEvents() {
+    let selected = null;
+    document.querySelectorAll('.diagnosis-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (this.diagnosisSubmitted) return;
+        document.querySelectorAll('.diagnosis-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        selected = opt.dataset.diag;
+        document.getElementById('btn-submit-diag').disabled = false;
+      });
+    });
+
+    document.getElementById('btn-submit-diag')?.addEventListener('click', () => {
+      if (!selected || this.diagnosisSubmitted) return;
+      this.diagnosisSubmitted = true;
+      const correct = this.engine.submitDiagnosis(selected);
+      document.querySelectorAll('.diagnosis-option').forEach(opt => {
+        if (opt.dataset.diag === this.case.correctDiagnosis) opt.classList.add('correct');
+        else if (opt.dataset.diag === selected && !correct) opt.classList.add('wrong');
+      });
+      document.getElementById('btn-submit-diag').textContent = correct ? '✅ Correct!' : '❌ Incorrect';
+      document.getElementById('btn-submit-diag').disabled = true;
+    });
+  }
+
+  // ─── HUD Update ───────────────────────────────────────────────────────────
+  _updateHUD() {
+    const s = this.engine.state;
+    const timeEl = document.getElementById('stat-time');
+    if (timeEl) timeEl.textContent = this.engine._formatTime(s.time);
+
+    const stageEl = document.getElementById('stat-stage');
+    if (stageEl) {
+      stageEl.textContent = this.engine.getCurrentStageLabel();
+      stageEl.className = 'hud-value stage-' + s.stage;
+    }
+
+    const budgetEl = document.getElementById('stat-budget');
+    if (budgetEl) {
+      const rem = s.budget - s.cost;
+      budgetEl.textContent = `₹${rem.toLocaleString()}`;
+      budgetEl.className = 'hud-value' + (rem < 2000 ? ' budget-low' : '');
+    }
+
+    // Vitals HUD
+    const vitalsEl = document.getElementById('hud-vitals');
+    if (vitalsEl) {
+      vitalsEl.innerHTML = `
+        <div class="vital-hud-item ${s.vitals.hr > 110 ? 'vital-warn' : ''}">❤️ ${s.vitals.hr}</div>
+        <div class="vital-hud-item ${this._isBPLow(s.vitals.bp) ? 'vital-warn' : ''}">🫀 ${s.vitals.bp}</div>
+        <div class="vital-hud-item ${s.vitals.temp > 38 ? 'vital-warn' : ''}">🌡️ ${s.vitals.temp}°C</div>
+      `;
+    }
+
+    // Stage badge
+    const badge = document.getElementById('stage-badge-text');
+    if (badge) {
+      badge.textContent = this.engine.getCurrentStageLabel();
+      const stageBadge = document.getElementById('stage-badge');
+      if (stageBadge) {
+        stageBadge.className = 'patient-stage-badge stage-badge-' + s.stage;
+      }
+    }
+
+    // Refresh symptoms
+    this._updateActiveSymptoms();
+    // Refresh pending results ETA
+    this._refreshResultsTab();
+    // Refresh test cards statuses
+    this._refreshTestCardStatuses();
+  }
+
+  _refreshTestCardStatuses() {
+    this.case.tests.forEach(t => {
+      const card = document.getElementById(`test-card-${t.id}`);
+      if (!card) return;
+      const pending = this.engine.state.pendingResults.some(r => r.testId === t.id);
+      const done = this.engine.state.completedTests.some(r => r.testId === t.id);
+      card.className = `test-card ${pending ? 'test-pending' : done ? 'test-done' : ''}`;
+    });
+  }
+
+  _isBPLow(bp) {
+    if (!bp || !bp.includes('/')) return false;
+    const sys = parseInt(bp.split('/')[0]);
+    return sys < 100;
+  }
+
+  // ─── Log ──────────────────────────────────────────────────────────────────
+  _appendLog(entry) {
+    const container = document.getElementById('log-entries');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = `log-entry log-${entry.type}`;
+    div.innerHTML = `<span class="log-time">${entry.timeLabel}</span><span class="log-msg">${entry.msg}</span>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // ─── Toasts ───────────────────────────────────────────────────────────────
+  _showToast(msg, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = msg;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('toast-show'));
+    setTimeout(() => {
+      toast.classList.remove('toast-show');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  // ─── Stage flash alert ────────────────────────────────────────────────────
+  _flashStageAlert(d) {
+    const overlay = document.createElement('div');
+    overlay.className = `stage-flash stage-flash-${d.to}`;
+    const label = this.case.stages[d.to]?.label || d.to;
+    overlay.innerHTML = `<div class="stage-flash-content"><div class="stage-flash-icon">⚠️</div><div class="stage-flash-text">Disease Progressed</div><div class="stage-flash-sub">${label}</div></div>`;
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.remove(), 2500);
+  }
+
+  // ─── Enable End Case ─────────────────────────────────────────────────────
+  _enableEndCase() {
+    const btn = document.getElementById('btn-end');
+    if (btn) btn.classList.add('btn-end-ready');
+  }
+
+  // ─── Score Modal ──────────────────────────────────────────────────────────
+  showScoreModal(score) {
+    const modal = document.getElementById('modal-score');
+    const content = document.getElementById('score-content');
+    if (!modal || !content) return;
+
+    const gradeColor = score.grade === 'A+' || score.grade === 'A' ? '#10b981'
+      : score.grade === 'B' ? '#f59e0b'
+      : score.grade === 'C' ? '#f97316' : '#ef4444';
+
+    content.innerHTML = `
+      <div class="score-header">
+        <div class="score-grade" style="color:${gradeColor}">${score.grade}</div>
+        <div class="score-number">${score.score}<span>/100</span></div>
+        <div class="score-msg">${score.msg}</div>
+      </div>
+      <div class="score-breakdown">
+        ${score.breakdown.map(b => `
+          <div class="score-row">
+            <span class="score-label">${b.label}</span>
+            <span class="score-pts ${b.earned < 0 ? 'neg' : b.earned === 0 ? 'zero' : 'pos'}">${b.earned > 0 ? '+' : ''}${b.earned}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="score-stats">
+        <div class="stat-row"><span>Time Taken</span><strong>${this.engine._formatTime(score.time)}</strong></div>
+        <div class="stat-row"><span>Final Stage</span><strong>${this.case.stages[score.stage]?.label || score.stage}</strong></div>
+        <div class="stat-row"><span>Total Spent</span><strong>₹${score.cost.toLocaleString()}</strong></div>
+        <div class="stat-row"><span>Patient Cured</span><strong>${score.cured ? '✅ Yes' : '❌ No'}</strong></div>
+      </div>
+      <button class="btn-home" id="btn-score-home">Back to Cases</button>
+    `;
+
+    modal.classList.remove('hidden');
+    document.getElementById('btn-score-home')?.addEventListener('click', () => {
+      window.location.reload();
+    });
+  }
+
+  // ─── Bind UI events ───────────────────────────────────────────────────────
+  _bindUIEvents() {
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`tab-${tab}`)?.classList.add('active');
+        this.activeTab = tab;
+        if (tab === 'results') this._refreshResultsTab();
+        if (tab === 'management') this._renderManagementTab();
+      });
+    });
+
+    // Back button
+    document.getElementById('btn-back')?.addEventListener('click', () => {
+      if (confirm('Exit this case? Progress will be lost.')) {
+        this.engine.stop();
+        window.location.reload();
+      }
+    });
+
+    // Jump time
+    document.getElementById('btn-jump')?.addEventListener('click', () => {
+      document.getElementById('modal-jump')?.classList.remove('hidden');
+    });
+    document.getElementById('modal-jump-close')?.addEventListener('click', () => {
+      document.getElementById('modal-jump')?.classList.add('hidden');
+    });
+    document.querySelectorAll('.jump-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const hours = parseFloat(btn.dataset.hours);
+        this.engine.jumpTime(hours);
+        document.getElementById('modal-jump')?.classList.add('hidden');
+        this._renderTestsTab();
+        this._renderManagementTab();
+      });
+    });
+
+    // End case
+    document.getElementById('btn-end')?.addEventListener('click', () => {
+      if (!this.engine.state.diagnosisCorrect && !this.diagnosisSubmitted) {
+        if (!confirm('You haven\'t submitted a diagnosis yet. End anyway?')) return;
+      }
+      this.engine.stop();
+      this.engine.ended = true;
+      const score = this.engine._calculateScore();
+      this.showScoreModal(score);
+    });
+  }
+}
+
+  </script>
+  <script>
+/**
+ * App Bootstrap
+ * Home screen, case selection, and game launch
+ */
+
+const loader = new CaseLoader();
+
+async function init() {
+  const cases = await loader.loadAll('./data/case.json');
+  if (!cases || cases.length === 0) {
+    document.getElementById('app').innerHTML = `
+      <div style="height:100vh;display:flex;align-items:center;justify-content:center;font-family:monospace;color:#e8445a;text-align:center;padding:20px;">
+        Error: Could not load case data.<br><small style="color:#3d5470;margin-top:8px;display:block;">Make sure data/case.json is accessible.</small>
+      </div>`;
+    return;
+  }
+  renderHome(cases);
+}
+
+// ─── Home Screen ─────────────────────────────────────────────────────────────
+
+function renderHome(cases) {
+  document.getElementById('app').innerHTML = buildHomeHTML(cases);
+  document.querySelectorAll('.case-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.caseId;
+      const caseData = loader.getById(id);
+      if (caseData) launchGame(caseData);
+    });
+  });
+}
+
+function buildHomeHTML(cases) {
+  return `
+  <div class="home-screen">
+    <!-- Topbar -->
+    <nav class="home-topbar">
+      <div class="topbar-logo">
+        <div class="logo-icon">🩺</div>
+        <div>
+          <div class="logo-text">Clinical Simulation OS</div>
+          <div class="logo-sub">Medical Decision Engine</div>
+        </div>
+      </div>
+      <div class="topbar-badge">● SYSTEM ONLINE</div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="home-hero">
+      <div class="hero-eyebrow">MBBS Clinical Training Platform</div>
+      <h1 class="hero-title">
+        Make decisions.<br/>
+        <em>Watch consequences unfold.</em>
+      </h1>
+      <p class="hero-sub">
+        A real-time patient simulation engine. Order tests, prescribe management,
+        and race against disease progression — every choice changes outcomes.
+      </p>
+    </section>
+
+    <!-- Stats -->
+    <div class="home-stats">
+      <div class="home-stat">
+        <div class="home-stat-value">${cases.length}</div>
+        <div class="home-stat-label">Cases Available</div>
+      </div>
+      <div class="home-stat">
+        <div class="home-stat-value">Real-time</div>
+        <div class="home-stat-label">Simulation</div>
+      </div>
+      <div class="home-stat">
+        <div class="home-stat-value">Dynamic</div>
+        <div class="home-stat-label">Progression</div>
+      </div>
+      <div class="home-stat">
+        <div class="home-stat-value">AI-Graded</div>
+        <div class="home-stat-label">Scoring</div>
+      </div>
+    </div>
+
+    <!-- Cases -->
+    <section class="home-cases-section">
+      <div class="section-header">
+        <div class="section-title">Active Cases</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="cases-grid">
+        ${cases.map(c => buildCaseCard(c)).join('')}
+        ${buildLockedCard()}
+      </div>
+    </section>
+
+    <footer class="home-footer">
+      FOR EDUCATIONAL PURPOSES ONLY · NOT FOR CLINICAL USE · CLINICAL SIM OS v1.0
+    </footer>
+  </div>
+  `;
+}
+
+function buildCaseCard(c) {
+  const diffClass = `diff-${c.difficulty?.toLowerCase() || 'intermediate'}`;
+  return `
+    <div class="case-card" data-case-id="${c.id}" tabindex="0" role="button" aria-label="Start case: ${c.title}">
+      <div class="card-top">
+        <span class="card-difficulty ${diffClass}">${c.difficulty || 'Intermediate'}</span>
+        <span class="card-id">#${c.id}</span>
+      </div>
+      <div class="card-title">${c.title}</div>
+      <div class="card-subtitle">${c.subtitle || ''}</div>
+      <div class="card-tags">
+        ${(c.tags || []).map(t => `<span class="card-tag">${t}</span>`).join('')}
+      </div>
+      <div class="card-footer">
+        <span class="card-time">⏱ ${c.estimatedTime || '20–30 min'}</span>
+        <span class="card-cta">Start Case →</span>
+      </div>
+    </div>
+  `;
+}
+
+function buildLockedCard() {
+  return `
+    <div class="case-card" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">
+      <div class="card-top">
+        <span class="card-difficulty diff-advanced">Advanced</span>
+        <span class="card-id">LOCKED</span>
+      </div>
+      <div class="card-title">Chest Pain — ACS vs PE</div>
+      <div class="card-subtitle">ICU · Critical Care</div>
+      <div class="card-tags">
+        <span class="card-tag">Cardiology</span>
+        <span class="card-tag">Pulmonology</span>
+        <span class="card-tag">Critical</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">⏱ 30–45 min</span>
+        <span class="card-cta">Coming Soon</span>
+      </div>
+    </div>
+    <div class="case-card" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">
+      <div class="card-top">
+        <span class="card-difficulty diff-intermediate">Intermediate</span>
+        <span class="card-id">LOCKED</span>
+      </div>
+      <div class="card-title">Fever with Altered Sensorium</div>
+      <div class="card-subtitle">Medicine Ward · Triage Level 1</div>
+      <div class="card-tags">
+        <span class="card-tag">Neurology</span>
+        <span class="card-tag">Infectious</span>
+      </div>
+      <div class="card-footer">
+        <span class="card-time">⏱ 25–35 min</span>
+        <span class="card-cta">Coming Soon</span>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Launch Game ──────────────────────────────────────────────────────────────
+
+function launchGame(caseData) {
+  // Transition
+  const app = document.getElementById('app');
+  app.style.opacity = '0';
+  app.style.transition = 'opacity 0.25s ease';
+
+  setTimeout(() => {
+    // Create engine
+    const engine = new ClinicalEngine(caseData);
+
+    // Create UI
+    const ui = new ClinicalUI(engine, caseData);
+    ui.renderGame();
+
+    app.style.opacity = '1';
+
+    // Start engine after a tiny delay for DOM to settle
+    setTimeout(() => engine.start(), 150);
+  }, 250);
+}
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+init();
+
+  </script>
+</body>
+</html>

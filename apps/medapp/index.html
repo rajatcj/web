@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clinical Reasoning OS — GI Module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN SYSTEM — CLINICAL DARK INDUSTRIAL AESTHETIC
+   ============================================================ */
+:root {
+  --bg-0: #0a0c0e;
+  --bg-1: #0f1215;
+  --bg-2: #141820;
+  --bg-3: #1c2330;
+  --bg-4: #222d3d;
+  --border: rgba(99,144,185,0.15);
+  --border-bright: rgba(99,144,185,0.35);
+  --text-0: #e8edf2;
+  --text-1: #b0bfcc;
+  --text-2: #7a8fa0;
+  --text-3: #4a5f70;
+  --accent-blue: #4a90d9;
+  --accent-cyan: #00d4b8;
+  --accent-amber: #f5a623;
+  --accent-red: #e85d5d;
+  --accent-green: #4caf7d;
+  --accent-purple: #8b7ff5;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-serif: 'DM Serif Display', serif;
+  --font-sans: 'DM Sans', sans-serif;
+  --radius: 6px;
+  --radius-lg: 12px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 15px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-0);
+  color: var(--text-0);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Grid noise overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(74,144,217,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74,144,217,0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* ============================================================ LAYOUT */
+.app-shell {
+  position: relative; z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ============================================================ HEADER */
+.app-header {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+}
+.app-header-left { display: flex; flex-direction: column; gap: 4px; }
+.app-logo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--accent-cyan);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.app-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  color: var(--text-0);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.app-subtitle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-2);
+  letter-spacing: 0.08em;
+}
+.module-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+  background: rgba(245,166,35,0.1);
+  border: 1px solid rgba(245,166,35,0.25);
+  padding: 5px 12px;
+  border-radius: var(--radius);
+}
+
+/* ============================================================ PROGRESS BAR */
+.progress-track {
+  display: flex; gap: 0; margin-bottom: 36px; position: relative;
+}
+.progress-track::before {
+  content: '';
+  position: absolute;
+  top: 18px; left: 0; right: 0; height: 1px;
+  background: var(--border);
+  z-index: 0;
+}
+.prog-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 8px; position: relative; z-index: 1; cursor: default;
+}
+.prog-step-dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-3);
+  background: var(--bg-2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600;
+  color: var(--text-3);
+  transition: all 0.3s ease;
+}
+.prog-step.active .prog-step-dot {
+  border-color: var(--accent-cyan);
+  background: rgba(0,212,184,0.1);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 16px rgba(0,212,184,0.3);
+}
+.prog-step.done .prog-step-dot {
+  border-color: var(--accent-green);
+  background: rgba(76,175,125,0.15);
+  color: var(--accent-green);
+}
+.prog-step-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: center;
+  max-width: 70px;
+}
+.prog-step.active .prog-step-label { color: var(--accent-cyan); }
+.prog-step.done .prog-step-label { color: var(--accent-green); }
+
+/* ============================================================ PANELS / CARDS */
+.panel {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.panel-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.panel-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  border: 1px solid var(--border-bright);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent-blue);
+}
+.panel-step-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--text-3);
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+/* ============================================================ FORM ELEMENTS */
+.field-group { margin-bottom: 18px; }
+.field-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+.field-hint {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+
+select, input[type="text"], input[type="number"], textarea {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  color: var(--text-0);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+}
+select:focus, input:focus, textarea:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(74,144,217,0.15);
+}
+select option { background: var(--bg-2); }
+
+/* Radio / checkbox grid */
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.choice-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+  color: var(--text-1);
+  user-select: none;
+}
+.choice-item:hover { border-color: var(--border-bright); background: var(--bg-3); }
+.choice-item.selected {
+  border-color: var(--accent-blue);
+  background: rgba(74,144,217,0.1);
+  color: var(--text-0);
+}
+.choice-item.selected-yes { border-color: var(--accent-green); background: rgba(76,175,125,0.1); }
+.choice-item.selected-no { border-color: var(--accent-red); background: rgba(232,93,93,0.1); }
+.choice-check {
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1.5px solid var(--text-3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 10px; font-weight: 700;
+  transition: all 0.2s;
+}
+.choice-item.selected .choice-check,
+.choice-item.selected-yes .choice-check { border-color: var(--accent-green); color: var(--accent-green); background: rgba(76,175,125,0.15); }
+.choice-item.selected-no .choice-check { border-color: var(--accent-red); color: var(--accent-red); background: rgba(232,93,93,0.15); }
+
+/* Y/N toggle per symptom */
+.symptom-row {
+  display: flex; align-items: center;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 6px;
+  gap: 12px;
+  transition: border-color 0.2s;
+}
+.symptom-row:hover { border-color: var(--border-bright); }
+.symptom-name { flex: 1; font-size: 13px; color: var(--text-1); }
+.symptom-qualifier { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+.yn-group { display: flex; gap: 6px; }
+.yn-btn {
+  padding: 4px 14px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+  border: 1.5px solid var(--border);
+  cursor: pointer; background: transparent;
+  color: var(--text-2); transition: all 0.2s;
+}
+.yn-btn.yes.active { border-color: var(--accent-green); background: rgba(76,175,125,0.15); color: var(--accent-green); }
+.yn-btn.no.active { border-color: var(--accent-red); background: rgba(232,93,93,0.12); color: var(--accent-red); }
+.yn-btn:hover { border-color: var(--border-bright); color: var(--text-0); }
+
+/* Duration/severity sub-row */
+.symptom-details {
+  padding: 8px 14px 12px 28px;
+  background: rgba(74,144,217,0.04);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  display: none; gap: 12px;
+}
+.symptom-details.visible { display: flex; flex-wrap: wrap; }
+.detail-field { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+.detail-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; border: 1.5px solid transparent;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+.btn-primary:hover { background: #5ba0e8; box-shadow: 0 4px 20px rgba(74,144,217,0.4); transform: translateY(-1px); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-1);
+  border-color: var(--border-bright);
+}
+.btn-secondary:hover { border-color: var(--text-2); color: var(--text-0); }
+.btn-cyan {
+  background: rgba(0,212,184,0.12);
+  color: var(--accent-cyan);
+  border-color: rgba(0,212,184,0.3);
+}
+.btn-cyan:hover { background: rgba(0,212,184,0.2); box-shadow: 0 4px 20px rgba(0,212,184,0.25); }
+.btn-danger {
+  background: rgba(232,93,93,0.1);
+  color: var(--accent-red);
+  border-color: rgba(232,93,93,0.3);
+}
+.btn-danger:hover { background: rgba(232,93,93,0.2); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap; }
+
+/* ============================================================ SECTIONS */
+.screen { display: none; animation: fadeSlideIn 0.35s ease; }
+.screen.active { display: block; }
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section dividers */
+.section-divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 24px 0 16px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-label {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ============================================================ DISEASE CARD */
+.complaint-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;
+}
+.complaint-card {
+  padding: 16px;
+  background: var(--bg-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer; transition: all 0.25s;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.complaint-card:hover { border-color: var(--accent-blue); background: var(--bg-3); transform: translateY(-2px); }
+.complaint-card.active { border-color: var(--accent-cyan); background: rgba(0,212,184,0.07); }
+.complaint-card-icon { font-size: 22px; }
+.complaint-card-name { font-size: 13px; font-weight: 600; color: var(--text-0); }
+.complaint-card-system {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-3);
+}
+
+/* ============================================================ RESULT SECTION */
+.result-header {
+  text-align: center; padding: 24px 0 32px;
+  border-bottom: 1px solid var(--border); margin-bottom: 32px;
+}
+.result-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--text-0);
+  margin-bottom: 6px;
+}
+.result-subtitle { font-family: var(--font-mono); font-size: 11px; color: var(--text-2); letter-spacing: 0.1em; }
+
+/* Differential bar */
+.diff-list { display: flex; flex-direction: column; gap: 12px; }
+.diff-item {
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.diff-item:hover { border-color: var(--border-bright); }
+.diff-item.rank-1 { border-color: rgba(0,212,184,0.3); }
+.diff-item.rank-2 { border-color: rgba(74,144,217,0.25); }
+.diff-item-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+.diff-rank {
+  font-family: var(--font-mono); font-size: 22px; font-weight: 600;
+  color: var(--text-3); width: 30px; flex-shrink: 0; text-align: center;
+}
+.diff-item.rank-1 .diff-rank { color: var(--accent-cyan); }
+.diff-item.rank-2 .diff-rank { color: var(--accent-blue); }
+.diff-item.rank-3 .diff-rank { color: var(--accent-purple); }
+
+.diff-name { font-size: 15px; font-weight: 600; color: var(--text-0); flex: 1; }
+.diff-score-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 120px; }
+.diff-score-pct {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+  color: var(--text-1);
+}
+.diff-bar-track {
+  width: 120px; height: 5px; background: var(--bg-3); border-radius: 100px; overflow: hidden;
+}
+.diff-bar-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.diff-item.rank-1 .diff-bar-fill { background: linear-gradient(90deg, var(--accent-cyan), #00f0d0); }
+.diff-confidence-badge {
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+}
+.conf-high { background: rgba(76,175,125,0.15); color: var(--accent-green); border: 1px solid rgba(76,175,125,0.3); }
+.conf-medium { background: rgba(245,166,35,0.15); color: var(--accent-amber); border: 1px solid rgba(245,166,35,0.3); }
+.conf-low { background: rgba(232,93,93,0.12); color: var(--accent-red); border: 1px solid rgba(232,93,93,0.3); }
+
+.diff-body {
+  padding: 0 18px 16px 18px; display: none;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.diff-body.open { display: block; }
+
+.reasoning-block {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.reasoning-title {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-2); margin-bottom: 8px;
+}
+.reasoning-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  font-family: var(--font-mono); font-size: 11px;
+  padding: 3px 10px; border-radius: 100px;
+}
+.chip-support { background: rgba(76,175,125,0.12); color: var(--accent-green); border: 1px solid rgba(76,175,125,0.25); }
+.chip-against { background: rgba(232,93,93,0.1); color: var(--accent-red); border: 1px solid rgba(232,93,93,0.2); }
+.chip-neutral { background: var(--bg-3); color: var(--text-2); border: 1px solid var(--border); }
+
+/* Investigations / Management */
+.inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; margin-top: 8px; }
+.inv-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+  font-size: 13px; color: var(--text-1);
+}
+.inv-priority {
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 4px;
+  flex-shrink: 0;
+}
+.priority-urgent { background: rgba(232,93,93,0.15); color: var(--accent-red); }
+.priority-routine { background: rgba(74,144,217,0.12); color: var(--accent-blue); }
+.priority-optional { background: var(--bg-3); color: var(--text-3); }
+
+.mgmt-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.mgmt-step {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 9px 12px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.mgmt-step-num {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+  color: var(--accent-amber); flex-shrink: 0; margin-top: 2px;
+}
+.mgmt-step-text { font-size: 13px; color: var(--text-1); line-height: 1.5; }
+
+/* Warning banner */
+.warning-banner {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 16px 18px;
+  background: rgba(245,166,35,0.07);
+  border: 1px solid rgba(245,166,35,0.3);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+}
+.warning-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.warning-text { font-size: 13px; color: var(--accent-amber); line-height: 1.6; }
+.warning-text strong { font-weight: 700; display: block; margin-bottom: 3px; }
+
+/* Info boxes */
+.info-row {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px; margin-bottom: 20px;
+}
+.info-box {
+  padding: 14px 16px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+}
+.info-box-label {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 6px;
+}
+.info-box-value {
+  font-family: var(--font-mono); font-size: 15px; font-weight: 600; color: var(--text-0);
+}
+.info-box-value.cyan { color: var(--accent-cyan); }
+.info-box-value.amber { color: var(--accent-amber); }
+.info-box-value.green { color: var(--accent-green); }
+.info-box-value.red { color: var(--accent-red); }
+
+/* Alternate reality mode */
+.ar-mode-bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 18px;
+  background: rgba(139,127,245,0.07);
+  border: 1px solid rgba(139,127,245,0.25);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.ar-label {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent-purple);
+}
+.ar-desc { font-size: 12px; color: var(--text-2); flex: 1; }
+.toggle-switch {
+  width: 42px; height: 24px; background: var(--bg-4);
+  border-radius: 100px; cursor: pointer; position: relative;
+  border: 1.5px solid var(--border-bright); transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: rgba(139,127,245,0.3); border-color: var(--accent-purple); }
+.toggle-switch::after {
+  content: '';
+  position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; background: var(--text-3);
+  border-radius: 50%; transition: all 0.2s;
+}
+.toggle-switch.on::after { left: 20px; background: var(--accent-purple); }
+
+/* Tooltip */
+.tooltip-text {
+  font-size: 12px; color: var(--text-2);
+  font-style: italic; margin-top: 6px;
+}
+
+/* Expandable chevron */
+.chevron {
+  font-size: 12px; color: var(--text-3);
+  transition: transform 0.25s;
+  flex-shrink: 0;
+}
+.chevron.open { transform: rotate(90deg); }
+
+/* Collapsible */
+.collapsible-trigger { cursor: pointer; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-1); }
+::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* ============================================================ INVESTIGATION INPUT */
+.inv-input-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px;
+}
+.inv-input-item {
+  padding: 10px 14px;
+  background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-1);
+}
+.inv-input-item:hover { border-color: var(--border-bright); }
+.inv-input-item.selected { border-color: var(--accent-cyan); background: rgba(0,212,184,0.08); color: var(--text-0); }
+.inv-input-item .inv-check {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--text-3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.inv-input-item.selected .inv-check { border-color: var(--accent-cyan); background: rgba(0,212,184,0.15); color: var(--accent-cyan); }
+
+/* Separator */
+.sep { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Print-like case sheet */
+.case-sheet {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.case-sheet-header {
+  background: var(--bg-3);
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.case-sheet-title {
+  font-family: var(--font-serif); font-size: 18px; color: var(--text-0);
+}
+.case-sheet-meta {
+  font-family: var(--font-mono); font-size: 10px; color: var(--text-3);
+  text-align: right; line-height: 1.8;
+}
+.case-sheet-body { padding: 24px; }
+.cs-section { margin-bottom: 22px; }
+.cs-section-title {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent-amber); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.cs-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(245,166,35,0.2); }
+.cs-text { font-size: 13px; color: var(--text-1); line-height: 1.7; }
+
+/* Responsive */
+@media (max-width: 680px) {
+  .app-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .prog-step-label { display: none; }
+  .choice-grid { grid-template-columns: 1fr 1fr; }
+  .inv-grid { grid-template-columns: 1fr; }
+  .info-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="app-header-left">
+      <div class="app-logo">⚕ Clinical Reasoning OS</div>
+      <div class="app-title">Differential Diagnosis Engine</div>
+      <div class="app-subtitle">Rule-based · Explainable · Offline-capable</div>
+    </div>
+    <div class="module-badge">GI Module v1.0</div>
+  </header>
+
+  <!-- PROGRESS -->
+  <div class="progress-track" id="progressTrack">
+    <div class="prog-step active" id="ps-1"><div class="prog-step-dot">01</div><div class="prog-step-label">Chief Complaint</div></div>
+    <div class="prog-step" id="ps-2"><div class="prog-step-dot">02</div><div class="prog-step-label">History</div></div>
+    <div class="prog-step" id="ps-3"><div class="prog-step-dot">03</div><div class="prog-step-label">Examination</div></div>
+    <div class="prog-step" id="ps-4"><div class="prog-step-dot">04</div><div class="prog-step-label">Investigations</div></div>
+    <div class="prog-step" id="ps-5"><div class="prog-step-dot">05</div><div class="prog-step-label">Diagnosis</div></div>
+  </div>
+
+  <!-- ================================================================
+       SCREEN 1 — CHIEF COMPLAINT
+  ================================================================ -->
+  <div class="screen active" id="screen-1">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">🩺</div>
+        <div class="panel-title">Chief Complaint Selection</div>
+        <div class="panel-step-badge">Step 1 of 5</div>
+      </div>
+
+      <div class="field-group">
+        <div class="field-label">Patient presents with</div>
+        <div class="field-hint">Select the primary complaint the patient is presenting with</div>
+        <div class="complaint-grid" id="complaintGrid"></div>
+      </div>
+
+      <div class="field-group" style="margin-top:20px;">
+        <div class="field-label">Patient Demographics (optional)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div>
+            <div class="field-label" style="font-size:10px">Age</div>
+            <input type="number" id="patientAge" placeholder="e.g. 28" min="1" max="120">
+          </div>
+          <div>
+            <div class="field-label" style="font-size:10px">Sex</div>
+            <select id="patientSex">
+              <option value="">Not specified</option>
+              <option value="M">Male</option>
+              <option value="F">Female</option>
+            </select>
+          </div>
+          <div>
+            <div class="field-label" style="font-size:10px">Duration of Illness</div>
+            <select id="illnessDuration">
+              <option value="">Not specified</option>
+              <option value="hours">&lt; 24 hours</option>
+              <option value="days">1–7 days</option>
+              <option value="weeks">1–4 weeks</option>
+              <option value="months">&gt; 1 month</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="goToScreen(2)" id="btn-s1-next" disabled>Continue to History →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SCREEN 2 — HISTORY TAKING (HOPI + ROS)
+  ================================================================ -->
+  <div class="screen" id="screen-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">📋</div>
+        <div class="panel-title">History of Presenting Illness</div>
+        <div class="panel-step-badge">Step 2 of 5</div>
+      </div>
+
+      <div id="hopiContainer"></div>
+
+      <div class="section-divider">
+        <div class="section-divider-line"></div>
+        <div class="section-divider-label">Review of Systems</div>
+        <div class="section-divider-line"></div>
+      </div>
+
+      <div id="rosContainer"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goToScreen(3)">Continue to Examination →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SCREEN 3 — PHYSICAL EXAMINATION
+  ================================================================ -->
+  <div class="screen" id="screen-3">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">🔍</div>
+        <div class="panel-title">Physical Examination Findings</div>
+        <div class="panel-step-badge">Step 3 of 5</div>
+      </div>
+
+      <div id="examContainer"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goToScreen(4)">Continue to Investigations →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SCREEN 4 — INVESTIGATIONS
+  ================================================================ -->
+  <div class="screen" id="screen-4">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">🧪</div>
+        <div class="panel-title">Investigations Available</div>
+        <div class="panel-step-badge">Step 4 of 5</div>
+      </div>
+
+      <div class="field-hint" style="margin-bottom:14px">Select investigations that have been ordered and mark their results</div>
+      <div id="invContainer"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goToScreen(3)">← Back</button>
+        <button class="btn btn-cyan" onclick="runDiagnosis()">⚡ Run Diagnostic Engine →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================
+       SCREEN 5 — RESULTS
+  ================================================================ -->
+  <div class="screen" id="screen-5">
+
+    <!-- Summary Info Row -->
+    <div class="info-row" id="summaryInfoRow"></div>
+
+    <!-- Warning Banner (shown only if needed) -->
+    <div class="warning-banner" id="lowCoverageWarning" style="display:none">
+      <div class="warning-icon">⚠️</div>
+      <div class="warning-text">
+        <strong>Low Confidence / Open-World Warning</strong>
+        The symptom profile does not closely match any known condition in this module. Consider rare diagnoses, atypical presentations, or conditions outside the GI module scope. Do not force a diagnosis.
+      </div>
+    </div>
+
+    <!-- Alternate Reality Mode -->
+    <div class="ar-mode-bar">
+      <div class="ar-label">🔬 Alternate Reality</div>
+      <div class="ar-desc">Toggle to modify symptoms and recompute the diagnosis dynamically</div>
+      <div class="toggle-switch" id="arToggle" onclick="toggleAR()"></div>
+    </div>
+
+    <!-- AR Panel (hidden by default) -->
+    <div id="arPanel" style="display:none">
+      <div class="panel" style="border-color:rgba(139,127,245,0.25)">
+        <div class="panel-header">
+          <div class="panel-icon">🔬</div>
+          <div class="panel-title" style="color:var(--accent-purple)">Modify Symptom Profile</div>
+        </div>
+        <div class="field-hint" style="margin-bottom:12px">Toggle symptoms to see how the diagnosis changes</div>
+        <div id="arSymptomsGrid"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="resetARSymptoms()">Reset to Original</button>
+          <button class="btn" style="background:rgba(139,127,245,0.15);color:var(--accent-purple);border-color:rgba(139,127,245,0.3)" onclick="rerunWithAR()">⚡ Recompute Diagnosis</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Differential Diagnoses -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">🎯</div>
+        <div class="panel-title">Differential Diagnosis — Ranked</div>
+      </div>
+      <div class="diff-list" id="diffList"></div>
+    </div>
+
+    <!-- Case Sheet -->
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-icon">📄</div>
+        <div class="panel-title">Generated Case Sheet</div>
+      </div>
+      <div class="case-sheet" id="caseSheet"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="startOver()">← Start New Case</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 Print Case Sheet</button>
+    </div>
+
+  </div><!-- /screen-5 -->
+
+</div><!-- /app-shell -->
+
+<script>
+/* ============================================================
+   ██████╗  █████╗ ████████╗ █████╗
+   ██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗
+   ██║  ██║███████║   ██║   ███████║
+   ██║  ██║██╔══██║   ██║   ██╔══██║
+   ██████╔╝██║  ██║   ██║   ██║  ██║
+   ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝
+   /data/symptoms.json  — Symptom Knowledge Base
+   ============================================================ */
+const SYMPTOMS_DB = {
+  // ─── PAIN ───
+  "abdominal_pain":         { id:"abdominal_pain",        label:"Abdominal Pain",          category:"pain",        hasDetails:true },
+  "rlq_pain":               { id:"rlq_pain",               label:"Right Lower Quadrant Pain",category:"pain",       hasDetails:true },
+  "epigastric_pain":        { id:"epigastric_pain",        label:"Epigastric Pain",          category:"pain",       hasDetails:true },
+  "ruq_pain":               { id:"ruq_pain",               label:"Right Upper Quadrant Pain",category:"pain",       hasDetails:true },
+  "periumbilical_pain":     { id:"periumbilical_pain",     label:"Periumbilical Pain",        category:"pain",      hasDetails:true },
+  "pain_radiation_back":    { id:"pain_radiation_back",    label:"Pain Radiating to Back",   category:"pain",       hasDetails:false },
+  "pain_radiation_shoulder":{ id:"pain_radiation_shoulder",label:"Pain Radiating to Shoulder",category:"pain",     hasDetails:false },
+  "colicky_pain":           { id:"colicky_pain",           label:"Colicky/Crampy Pain",      category:"pain",       hasDetails:false },
+  "burning_pain":           { id:"burning_pain",           label:"Burning/Gnawing Epigastric Pain",category:"pain", hasDetails:false },
+  // ─── GI SYMPTOMS ───
+  "nausea":                 { id:"nausea",                 label:"Nausea",                   category:"gi",         hasDetails:false },
+  "vomiting":               { id:"vomiting",               label:"Vomiting",                 category:"gi",         hasDetails:true },
+  "diarrhea":               { id:"diarrhea",               label:"Diarrhea",                 category:"gi",         hasDetails:true },
+  "anorexia":               { id:"anorexia",               label:"Anorexia / Loss of Appetite",category:"gi",      hasDetails:false },
+  "constipation":           { id:"constipation",           label:"Constipation",             category:"gi",         hasDetails:false },
+  "melena":                 { id:"melena",                 label:"Melena (Dark Stools)",     category:"gi",         hasDetails:false },
+  "hematemesis":            { id:"hematemesis",            label:"Hematemesis (Vomiting Blood)",category:"gi",      hasDetails:false },
+  "heartburn":              { id:"heartburn",              label:"Heartburn / Acid Reflux",  category:"gi",         hasDetails:false },
+  "bloating":               { id:"bloating",               label:"Abdominal Bloating",       category:"gi",         hasDetails:false },
+  // ─── SYSTEMIC ───
+  "fever":                  { id:"fever",                  label:"Fever",                    category:"systemic",   hasDetails:true },
+  "chills":                 { id:"chills",                 label:"Chills / Rigors",          category:"systemic",   hasDetails:false },
+  "weight_loss":            { id:"weight_loss",            label:"Weight Loss",              category:"systemic",   hasDetails:false },
+  "fatigue":                { id:"fatigue",                label:"Fatigue / Malaise",        category:"systemic",   hasDetails:false },
+  // ─── SIGNS / EXAMINATION ───
+  "rebound_tenderness":     { id:"rebound_tenderness",     label:"Rebound Tenderness",       category:"sign",       hasDetails:false },
+  "guarding":               { id:"guarding",               label:"Abdominal Guarding / Rigidity",category:"sign",   hasDetails:false },
+  "rovsing_sign":           { id:"rovsing_sign",           label:"Rovsing's Sign (+)",       category:"sign",       hasDetails:false },
+  "psoas_sign":             { id:"psoas_sign",             label:"Psoas Sign (+)",           category:"sign",       hasDetails:false },
+  "obturator_sign":         { id:"obturator_sign",         label:"Obturator Sign (+)",       category:"sign",       hasDetails:false },
+  "murphys_sign":           { id:"murphys_sign",           label:"Murphy's Sign (+)",        category:"sign",       hasDetails:false },
+  "epigastric_tenderness":  { id:"epigastric_tenderness",  label:"Epigastric Tenderness",    category:"sign",       hasDetails:false },
+  "rlq_tenderness":         { id:"rlq_tenderness",         label:"RLQ Tenderness (McBurney's)",category:"sign",     hasDetails:false },
+  "ruq_tenderness":         { id:"ruq_tenderness",         label:"RUQ Tenderness",           category:"sign",       hasDetails:false },
+  "distension":             { id:"distension",             label:"Abdominal Distension",     category:"sign",       hasDetails:false },
+  "jaundice":               { id:"jaundice",               label:"Jaundice / Icterus",       category:"sign",       hasDetails:false },
+  "tachycardia":            { id:"tachycardia",            label:"Tachycardia (HR >100)",    category:"sign",       hasDetails:false },
+  "hypotension":            { id:"hypotension",            label:"Hypotension (BP <90/60)",  category:"sign",       hasDetails:false },
+};
+
+/* ============================================================
+   /data/diseases.json — Disease Knowledge Base (GI Module)
+   ============================================================ */
+const DISEASES_DB = {
+
+  "appendicitis": {
+    id: "appendicitis",
+    name: "Acute Appendicitis",
+    icd: "K37",
+    category: "surgical",
+    // Symptoms/signs that SUPPORT the diagnosis (positive weights)
+    supportingFeatures: {
+      "rlq_pain":            { weight: 25, note: "Classic RLQ pain at McBurney's point" },
+      "periumbilical_pain":  { weight: 10, note: "Pain often starts periumbilical then migrates to RLQ" },
+      "rebound_tenderness":  { weight: 20, note: "Peritoneal irritation hallmark" },
+      "rovsing_sign":        { weight: 18, note: "Highly specific for appendicitis" },
+      "psoas_sign":          { weight: 15, note: "Retrocaecal appendix irritates psoas" },
+      "obturator_sign":      { weight: 14, note: "Pelvic appendix irritation" },
+      "rlq_tenderness":      { weight: 22, note: "McBurney's point tenderness — pathognomonic" },
+      "guarding":            { weight: 15, note: "Muscle guarding suggests peritoneal involvement" },
+      "fever":               { weight: 12, note: "Low-grade fever common; high fever suggests perforation" },
+      "nausea":              { weight: 8,  note: "Common associated symptom" },
+      "vomiting":            { weight: 8,  note: "Usually after pain onset (unlike gastroenteritis)" },
+      "anorexia":            { weight: 12, note: "Very characteristic — almost always present" },
+      "tachycardia":         { weight: 8,  note: "Systemic inflammatory response" },
+    },
+    // Symptoms that make this diagnosis LESS likely (negative weights)
+    againstFeatures: {
+      "epigastric_pain":     { weight: -10, note: "Pain not localized to RLQ" },
+      "ruq_pain":            { weight: -12, note: "Inconsistent with appendiceal location" },
+      "murphys_sign":        { weight: -15, note: "Murphy's sign suggests cholecystitis, not appendicitis" },
+      "melena":              { weight: -12, note: "GI bleed uncommon in pure appendicitis" },
+      "diarrhea":            { weight: -5,  note: "Loose stool more typical of gastroenteritis (can occur in pelvic appendicitis)" },
+      "heartburn":           { weight: -8,  note: "Heartburn suggests upper GI pathology" },
+      "pain_radiation_back": { weight: -5,  note: "Back radiation more consistent with pancreatitis/renal" },
+    },
+    investigations: [
+      { name: "CBC with differential", priority: "urgent", note: "Leukocytosis (>10,000) with neutrophilia expected" },
+      { name: "CRP / ESR", priority: "urgent", note: "Elevated inflammatory markers" },
+      { name: "Urinalysis", priority: "urgent", note: "Rule out UTI / renal colic; mild pyuria can occur in appendicitis" },
+      { name: "Ultrasound Abdomen", priority: "urgent", note: "Non-compressible appendix >6mm; periappendiceal fluid" },
+      { name: "CT Abdomen/Pelvis (IV contrast)", priority: "routine", note: "Sensitivity 94–98%; diagnostic if USS equivocal" },
+      { name: "Alvarado Score", priority: "routine", note: "Score ≥7 strongly suggests appendicitis" },
+      { name: "Beta-HCG (females of reproductive age)", priority: "urgent", note: "Rule out ectopic pregnancy" },
+    ],
+    management: [
+      "NPO (Nil per os) — keep patient fasting immediately",
+      "IV access + IV fluid resuscitation (Normal saline / Hartmann's)",
+      "IV analgesia (morphine/tramadol) — titrated to pain",
+      "IV antibiotics: Ceftriaxone 1g + Metronidazole 500mg 8-hourly",
+      "Urgent surgical consultation for appendectomy",
+      "Laparoscopic appendectomy (gold standard) or open depending on findings",
+      "Monitor for perforation: worsening pain, fever spike, board-like rigidity",
+      "Post-op care: antibiotics, early mobilization, wound care",
+    ],
+    differentials: ["cholecystitis", "gastroenteritis", "peptic_ulcer"],
+    maxPossibleScore: 169,
+    emergencyFlag: true,
+  },
+
+  "gastroenteritis": {
+    id: "gastroenteritis",
+    name: "Acute Gastroenteritis",
+    icd: "A09",
+    category: "medical",
+    supportingFeatures: {
+      "diarrhea":            { weight: 28, note: "Hallmark — watery/loose stools multiple times per day" },
+      "nausea":              { weight: 18, note: "Almost always present" },
+      "vomiting":            { weight: 18, note: "Vomiting may precede diarrhea" },
+      "abdominal_pain":      { weight: 12, note: "Diffuse crampy pain; not localized" },
+      "colicky_pain":        { weight: 14, note: "Colicky nature typical of intestinal hyperperistalsis" },
+      "fever":               { weight: 10, note: "Present in bacterial/viral causes" },
+      "anorexia":            { weight: 8,  note: "Common" },
+      "fatigue":             { weight: 8,  note: "Dehydration-related fatigue" },
+      "chills":              { weight: 6,  note: "Especially in bacterial gastroenteritis" },
+    },
+    againstFeatures: {
+      "rlq_pain":            { weight: -8,  note: "Localized RLQ pain suggests appendicitis" },
+      "rebound_tenderness":  { weight: -18, note: "Peritoneal signs NOT expected in simple gastroenteritis" },
+      "rovsing_sign":        { weight: -15, note: "Specific for appendicitis" },
+      "murphys_sign":        { weight: -12, note: "Murphy's sign suggests cholecystitis" },
+      "melena":              { weight: -10, note: "Significant GI bleed not expected (unless EHEC)" },
+      "hematemesis":         { weight: -12, note: "Hematemesis suggests upper GI pathology" },
+      "jaundice":            { weight: -12, note: "Jaundice not expected in simple gastroenteritis" },
+    },
+    investigations: [
+      { name: "Stool microscopy and culture", priority: "routine", note: "Identify bacteria, parasites, ova" },
+      { name: "CBC", priority: "routine", note: "Leukocytosis in bacterial cause; eosinophilia in parasites" },
+      { name: "Serum electrolytes", priority: "urgent", note: "Assess hyponatremia, hypokalemia from losses" },
+      { name: "Blood urea / creatinine", priority: "routine", note: "Pre-renal AKI from dehydration" },
+      { name: "Stool for C. difficile toxin", priority: "optional", note: "If post-antibiotic or hospitalized patient" },
+    ],
+    management: [
+      "Oral rehydration therapy (ORS) — first line for mild-moderate dehydration",
+      "IV fluids if unable to tolerate oral intake or severe dehydration (Hartmann's/NS)",
+      "Electrolyte replacement (Potassium supplementation if hypokalaemic)",
+      "Antiemetics: Ondansetron 4mg IV/oral as needed",
+      "Antibiotics ONLY if confirmed bacterial cause (Ciprofloxacin for Salmonella/Shigella)",
+      "Avoid antidiarrheals (Loperamide) in febrile or bloody diarrhea",
+      "Monitor vitals, urine output, and hydration status",
+      "Dietary advice: BRAT diet (Banana, Rice, Applesauce, Toast) initially",
+    ],
+    differentials: ["appendicitis", "peptic_ulcer", "pancreatitis"],
+    maxPossibleScore: 122,
+    emergencyFlag: false,
+  },
+
+  "peptic_ulcer": {
+    id: "peptic_ulcer",
+    name: "Peptic Ulcer Disease",
+    icd: "K27",
+    category: "medical",
+    supportingFeatures: {
+      "epigastric_pain":     { weight: 28, note: "Burning/gnawing epigastric pain — hallmark symptom" },
+      "burning_pain":        { weight: 24, note: "Burning quality strongly suggests mucosal acid injury" },
+      "heartburn":           { weight: 16, note: "Acid reflux/waterbrash common in PUD" },
+      "nausea":              { weight: 10, note: "Common in active ulcer" },
+      "melena":              { weight: 22, note: "Black tarry stool = upper GI bleeding (posterior duodenal ulcer)" },
+      "hematemesis":         { weight: 20, note: "Coffee-ground or frank blood — GI bleed complication" },
+      "epigastric_tenderness":{ weight: 18, note: "Tenderness localized to epigastrium" },
+      "anorexia":            { weight: 6,  note: "Pain may worsen with eating (gastric ulcer)" },
+      "weight_loss":         { weight: 8,  note: "Chronic PUD with fear of eating" },
+      "vomiting":            { weight: 6,  note: "Can occur, especially in pyloric channel ulcer" },
+    },
+    againstFeatures: {
+      "rlq_pain":            { weight: -15, note: "RLQ localization not typical of PUD" },
+      "rlq_tenderness":      { weight: -15, note: "McBurney's tenderness suggests appendicitis" },
+      "rovsing_sign":        { weight: -18, note: "Not a feature of PUD" },
+      "diarrhea":            { weight: -8,  note: "Diarrhea uncommon in simple PUD" },
+      "murphys_sign":        { weight: -10, note: "Murphy's sign is biliary, not PUD" },
+      "ruq_pain":            { weight: -8,  note: "RUQ pain more consistent with biliary pathology" },
+    },
+    investigations: [
+      { name: "Upper GI Endoscopy (OGD)", priority: "urgent", note: "Gold standard — visualizes ulcer, biopsy for H. pylori and malignancy" },
+      { name: "H. pylori testing (Urea breath test / stool antigen)", priority: "urgent", note: "Present in 70–90% of duodenal ulcers" },
+      { name: "CBC", priority: "urgent", note: "Anaemia suggests chronic bleeding" },
+      { name: "Serum iron / ferritin", priority: "routine", note: "Iron deficiency anaemia pattern" },
+      { name: "Coagulation studies (PT/INR, APTT)", priority: "urgent", note: "If active bleeding" },
+      { name: "Blood group and crossmatch", priority: "urgent", note: "If haemodynamically compromised" },
+      { name: "Erect CXR / AXR", priority: "urgent", note: "Free air under diaphragm if perforation suspected" },
+    ],
+    management: [
+      "NPO if active bleeding or perforation suspected",
+      "Proton Pump Inhibitor (PPI): Omeprazole 40mg IV bd or oral od",
+      "H. pylori eradication if positive: Triple therapy (PPI + Amoxicillin 1g + Clarithromycin 500mg) × 14 days",
+      "IV fluid resuscitation if haemodynamically unstable",
+      "Urgent endoscopy if active bleeding: hemostasis (injection, clipping, APC)",
+      "Avoid NSAIDs, Aspirin, steroids, smoking, alcohol",
+      "Surgical intervention if perforation: emergency laparotomy, Graham's patch repair",
+      "Follow-up endoscopy at 6–8 weeks to confirm ulcer healing",
+    ],
+    differentials: ["gastroenteritis", "cholecystitis", "pancreatitis"],
+    maxPossibleScore: 158,
+    emergencyFlag: false,
+  },
+
+  "pancreatitis": {
+    id: "pancreatitis",
+    name: "Acute Pancreatitis",
+    icd: "K85",
+    category: "medical-surgical",
+    supportingFeatures: {
+      "epigastric_pain":     { weight: 22, note: "Severe epigastric pain — classically 'boring' through to back" },
+      "pain_radiation_back": { weight: 28, note: "Radiation to back is the HALLMARK of pancreatitis" },
+      "nausea":              { weight: 14, note: "Almost universally present" },
+      "vomiting":            { weight: 14, note: "Often severe — does NOT relieve pain (unlike peptic ulcer)" },
+      "anorexia":            { weight: 8,  note: "Patients typically refuse food" },
+      "fever":               { weight: 10, note: "Present in necrotizing pancreatitis or secondary infection" },
+      "tachycardia":         { weight: 10, note: "SIRS response; fluid sequestration" },
+      "hypotension":         { weight: 12, note: "Severe pancreatitis — third-space losses" },
+      "distension":          { weight: 8,  note: "Paralytic ileus — sentinel loop on AXR" },
+      "guarding":            { weight: 10, note: "Epigastric guarding in severe disease" },
+      "epigastric_tenderness":{ weight: 14, note: "Epigastric/central tenderness" },
+      "jaundice":            { weight: 8,  note: "Gallstone pancreatitis — obstructive jaundice possible" },
+      "weight_loss":         { weight: 4,  note: "Chronic pancreatitis presentation" },
+    },
+    againstFeatures: {
+      "rlq_pain":            { weight: -14, note: "RLQ localization points to appendicitis" },
+      "rlq_tenderness":      { weight: -14, note: "Not consistent with pancreatic location" },
+      "rovsing_sign":        { weight: -16, note: "Appendiceal sign, not pancreatic" },
+      "murphys_sign":        { weight: -8,  note: "Murphy's sign suggests cholecystitis (though can coexist if gallstone cause)" },
+      "diarrhea":            { weight: -6,  note: "Less prominent than in gastroenteritis" },
+      "heartburn":           { weight: -8,  note: "Heartburn more consistent with GORD/PUD" },
+    },
+    investigations: [
+      { name: "Serum Amylase", priority: "urgent", note: ">3× upper limit of normal — elevated in acute pancreatitis" },
+      { name: "Serum Lipase", priority: "urgent", note: "More sensitive and specific than amylase; stays elevated longer" },
+      { name: "CBC", priority: "urgent", note: "Leukocytosis in infected necrosis; haematocrit rise from haemoconcentration" },
+      { name: "LFTs + GGT", priority: "urgent", note: "Elevated if gallstone pancreatitis causing biliary obstruction" },
+      { name: "Serum calcium", priority: "urgent", note: "Hypocalcaemia indicates severity (saponification)" },
+      { name: "Blood glucose", priority: "urgent", note: "Hyperglycaemia — exocrine/endocrine dysfunction" },
+      { name: "CECT Abdomen (Pancreatic Protocol)", priority: "routine", note: "Gold standard for staging; assesses necrosis, complications. Do at 48–72 hours." },
+      { name: "Ultrasound Abdomen", priority: "urgent", note: "Look for gallstones — commonest cause. Limited for pancreas itself." },
+      { name: "ERCP", priority: "optional", note: "Therapeutic if gallstone pancreatitis with CBD stone" },
+    ],
+    management: [
+      "ICU/HDU admission for severe pancreatitis (APACHE II ≥8 or Ranson's ≥3)",
+      "Aggressive IV fluid resuscitation: Hartmann's 250–500ml/hr initially",
+      "NPO — bowel rest in early phase; transition to enteral nutrition (nasojejunal tube) within 24–48 hours",
+      "IV analgesia: Morphine infusion or PCA; NSAIDs if renal function preserved",
+      "Monitor: Urine output >0.5ml/kg/hr, ABG for respiratory compromise, BGL",
+      "IV antibiotics only if infected necrosis confirmed (Imipenem or Meropenem)",
+      "Treat underlying cause: ERCP for gallstone pancreatitis; cease alcohol",
+      "Surgical/radiological drainage of abscess or infected necrosis if indicated",
+    ],
+    differentials: ["peptic_ulcer", "cholecystitis", "appendicitis"],
+    maxPossibleScore: 162,
+    emergencyFlag: true,
+  },
+
+  "cholecystitis": {
+    id: "cholecystitis",
+    name: "Acute Cholecystitis",
+    icd: "K81.0",
+    category: "surgical",
+    supportingFeatures: {
+      "ruq_pain":            { weight: 28, note: "RUQ pain — signature of gallbladder pathology" },
+      "murphys_sign":        { weight: 30, note: "Murphy's sign is PATHOGNOMONIC — inspiratory arrest on RUQ palpation" },
+      "ruq_tenderness":      { weight: 24, note: "RUQ tenderness at gallbladder fossa" },
+      "fever":               { weight: 14, note: "Bacterial infection of inflamed gallbladder" },
+      "nausea":              { weight: 12, note: "Very common with biliary pathology" },
+      "vomiting":            { weight: 10, note: "Biliary colic often causes nausea and vomiting" },
+      "pain_radiation_shoulder":{ weight: 20, note: "Referred pain to right shoulder/scapula — diaphragmatic irritation" },
+      "anorexia":            { weight: 8,  note: "Common" },
+      "jaundice":            { weight: 12, note: "If associated CBD stone (choledocholithiasis)" },
+      "chills":              { weight: 10, note: "Ascending cholangitis — Charcot's triad" },
+      "tachycardia":         { weight: 8,  note: "Systemic inflammatory response" },
+    },
+    againstFeatures: {
+      "rlq_pain":            { weight: -18, note: "RLQ pain inconsistent with gallbladder location" },
+      "rlq_tenderness":      { weight: -18, note: "McBurney's tenderness suggests appendicitis" },
+      "rovsing_sign":        { weight: -18, note: "Appendiceal sign, not biliary" },
+      "psoas_sign":          { weight: -12, note: "Not a feature of cholecystitis" },
+      "epigastric_pain":     { weight: -5,  note: "Can overlap but primarily RUQ in cholecystitis" },
+      "diarrhea":            { weight: -8,  note: "Diarrhea uncommon in cholecystitis" },
+      "heartburn":           { weight: -8,  note: "Heartburn suggests GORD/PUD" },
+    },
+    investigations: [
+      { name: "Ultrasound RUQ (Gallbladder)", priority: "urgent", note: "First-line — gallstones, wall thickening >4mm, pericholecystic fluid, sonographic Murphy's" },
+      { name: "CBC", priority: "urgent", note: "Leukocytosis (WBC >10,000); elevated in acute cholecystitis" },
+      { name: "LFTs (Bilirubin, ALP, GGT, ALT, AST)", priority: "urgent", note: "Elevated bilirubin/ALP suggests CBD involvement" },
+      { name: "Serum amylase / lipase", priority: "urgent", note: "Rule out concurrent gallstone pancreatitis" },
+      { name: "Blood cultures × 2", priority: "urgent", note: "If septic — cholangitis or gangrenous cholecystitis" },
+      { name: "MRCP", priority: "routine", note: "Non-invasive CBD stone assessment if USS inconclusive" },
+      { name: "HIDA scan", priority: "optional", note: "If USS equivocal; functional assessment of cystic duct patency" },
+    ],
+    management: [
+      "NPO and IV fluid resuscitation (Hartmann's solution)",
+      "IV antibiotics: Piperacillin-tazobactam 4.5g 8-hourly OR Cefuroxime + Metronidazole",
+      "IV analgesia: NSAIDs (Diclofenac) ± Opioids (avoid Morphine — may cause Oddi spasm)",
+      "Antiemetics: Ondansetron or Metoclopramide",
+      "Surgical consultation: Laparoscopic cholecystectomy — ideally within 72 hours (Tokyo Guidelines)",
+      "If Tokyo Grade III (severe): ICU, IV antibiotics, biliary drainage (PTGBD or EUS-guided)",
+      "ERCP with sphincterotomy if CBD stone identified",
+      "Interval cholecystectomy (6 weeks) if patient unfit for emergency surgery",
+    ],
+    differentials: ["pancreatitis", "peptic_ulcer", "appendicitis"],
+    maxPossibleScore: 176,
+    emergencyFlag: true,
+  },
+
+};
+
+/* ============================================================
+   /data/complaints.json — Chief Complaints Map
+   ============================================================ */
+const CHIEF_COMPLAINTS = [
+  { id:"cc_abdomen",   label:"Abdominal Pain",         icon:"🫁",  symptoms:["abdominal_pain","rlq_pain","epigastric_pain","ruq_pain","periumbilical_pain","colicky_pain","burning_pain","pain_radiation_back","pain_radiation_shoulder"], diseases:Object.keys(DISEASES_DB) },
+  { id:"cc_rlq",       label:"Right Lower Quadrant Pain",icon:"📍",symptoms:["rlq_pain","periumbilical_pain","rebound_tenderness","rovsing_sign","anorexia","nausea","fever"], diseases:["appendicitis","gastroenteritis","peptic_ulcer"] },
+  { id:"cc_nv",        label:"Nausea & Vomiting",      icon:"🤢",  symptoms:["nausea","vomiting","abdominal_pain","diarrhea","fever","anorexia"], diseases:["gastroenteritis","pancreatitis","peptic_ulcer","cholecystitis"] },
+  { id:"cc_fever_abd", label:"Fever + Abdominal Pain", icon:"🌡️",  symptoms:["fever","abdominal_pain","chills","nausea","vomiting","rlq_pain","ruq_pain"], diseases:Object.keys(DISEASES_DB) },
+  { id:"cc_diarrhea",  label:"Diarrhea",               icon:"💧",  symptoms:["diarrhea","nausea","vomiting","abdominal_pain","colicky_pain","fever"], diseases:["gastroenteritis","peptic_ulcer"] },
+  { id:"cc_ruq",       label:"Right Upper Quadrant Pain",icon:"🫀", symptoms:["ruq_pain","murphys_sign","jaundice","fever","pain_radiation_shoulder","nausea"], diseases:["cholecystitis","pancreatitis","peptic_ulcer"] },
+];
+
+/* ============================================================
+   /data/exam_items.json — Physical Examination Checklist
+   ============================================================ */
+const EXAM_SECTIONS = [
+  {
+    title: "Vital Signs",
+    items: ["fever","tachycardia","hypotension"]
+  },
+  {
+    title: "Abdominal Inspection",
+    items: ["distension","jaundice"]
+  },
+  {
+    title: "Abdominal Palpation",
+    items: ["guarding","rebound_tenderness","epigastric_tenderness","rlq_tenderness","ruq_tenderness","murphys_sign"]
+  },
+  {
+    title: "Special Tests",
+    items: ["rovsing_sign","psoas_sign","obturator_sign"]
+  },
+];
+
+const HOPI_QUESTIONS = {
+  "pain_character": {
+    id:"pain_character", question:"How would you describe the character of the pain?",
+    type:"choice", options:["Sharp/stabbing","Burning/gnawing","Colicky/crampy","Dull/aching","Boring/pressing"],
+    mapping:{ "Burning/gnawing":["burning_pain"], "Colicky/crampy":["colicky_pain"] }
+  },
+  "pain_location": {
+    id:"pain_location", question:"Where exactly is the pain?",
+    type:"choice", options:["Epigastric (upper middle)","Right upper quadrant","Right lower quadrant","Central/periumbilical","Diffuse/generalised"],
+    mapping:{ "Epigastric (upper middle)":["epigastric_pain"], "Right upper quadrant":["ruq_pain"], "Right lower quadrant":["rlq_pain"], "Central/periumbilical":["periumbilical_pain"], "Diffuse/generalised":["abdominal_pain"] }
+  },
+  "pain_radiation": {
+    id:"pain_radiation", question:"Does the pain radiate anywhere?",
+    type:"choice", options:["No radiation","Radiates to back","Radiates to right shoulder","Radiates to groin"],
+    mapping:{ "Radiates to back":["pain_radiation_back"], "Radiates to right shoulder":["pain_radiation_shoulder"] }
+  },
+  "assoc_symptoms": {
+    id:"assoc_symptoms", question:"Select all associated symptoms present:",
+    type:"multi", options:["Nausea","Vomiting","Diarrhea","Fever / Chills","Loss of appetite","Heartburn / Acid taste","Dark/tarry stools","Vomiting blood","Bloating"],
+    mapping:{ "Nausea":["nausea"], "Vomiting":["vomiting"], "Diarrhea":["diarrhea"], "Fever / Chills":["fever","chills"], "Loss of appetite":["anorexia"], "Heartburn / Acid taste":["heartburn"], "Dark/tarry stools":["melena"], "Vomiting blood":["hematemesis"], "Bloating":["bloating"] }
+  },
+  "aggravating": {
+    id:"aggravating", question:"What makes the pain WORSE?",
+    type:"choice", options:["Eating / food","Movement / coughing","Lying flat","Fatty food","Nothing specific"],
+    mapping:{}
+  },
+  "relieving": {
+    id:"relieving", question:"What makes the pain BETTER?",
+    type:"choice", options:["Food / milk","Antacids","Vomiting","Position change","Nothing"],
+    mapping:{}
+  }
+};
+
+const ROS_SYMPTOMS = ["weight_loss","fatigue","chills","constipation"];
+const INV_OPTIONS = [
+  { id:"inv_cbc",          label:"CBC with differential",         findings:["leukocytosis","anemia","normal"] },
+  { id:"inv_lft",          label:"Liver Function Tests",          findings:["elevated_bilirubin","elevated_enzymes","normal"] },
+  { id:"inv_amylase",      label:"Serum Amylase / Lipase",        findings:["elevated_3x","mildly_elevated","normal"] },
+  { id:"inv_usg",          label:"Ultrasound Abdomen",            findings:["appendicitis_usg","gallstones","pancreatitis_usg","normal"] },
+  { id:"inv_ct",           label:"CT Abdomen/Pelvis",             findings:["appendicitis_ct","cholecystitis_ct","pancreatitis_ct","normal"] },
+  { id:"inv_urinalysis",   label:"Urinalysis",                    findings:["pyuria","hematuria","normal"] },
+  { id:"inv_erect_cxr",    label:"Erect CXR",                     findings:["free_air","normal"] },
+  { id:"inv_ogd",          label:"Upper GI Endoscopy (OGD)",      findings:["ulcer_seen","normal","esophagitis"] },
+];
+
+/* Bonus score for investigations confirming diagnosis */
+const INV_DISEASE_BOOST = {
+  "appendicitis_usg":   { disease:"appendicitis",  bonus:30 },
+  "appendicitis_ct":    { disease:"appendicitis",  bonus:40 },
+  "gallstones":         { disease:"cholecystitis", bonus:25 },
+  "cholecystitis_ct":   { disease:"cholecystitis", bonus:35 },
+  "elevated_3x":        { disease:"pancreatitis",  bonus:35 },
+  "pancreatitis_usg":   { disease:"pancreatitis",  bonus:20 },
+  "pancreatitis_ct":    { disease:"pancreatitis",  bonus:40 },
+  "ulcer_seen":         { disease:"peptic_ulcer",  bonus:45 },
+  "elevated_bilirubin": { disease:"cholecystitis", bonus:10 },
+  "free_air":           { disease:"peptic_ulcer",  bonus:30 },
+};
+
+/* ============================================================
+   /engine/scoringEngine.js — Core Rule-Based Scoring Logic
+   ============================================================ */
+const ScoringEngine = {
+
+  /**
+   * Main scoring function.
+   * @param {Object} collectedFindings - { symptomId: true/false }
+   * @param {Object} investigations    - { invResultId: true }
+   * @returns {Array} Ranked array of { disease, score, normalizedScore, positiveMatches, negativeMatches }
+   */
+  compute(collectedFindings, investigations) {
+    const results = [];
+
+    for (const [diseaseId, disease] of Object.entries(DISEASES_DB)) {
+      let rawScore = 0;
+      const positiveMatches = [];
+      const negativeMatches = [];
+
+      // --- Supporting features (positive scoring) ---
+      for (const [symptomId, feature] of Object.entries(disease.supportingFeatures)) {
+        const found = collectedFindings[symptomId];
+        if (found === true) {
+          rawScore += feature.weight;
+          positiveMatches.push({ symptomId, weight: feature.weight, note: feature.note });
+        }
+      }
+
+      // --- Against features (penalize) ---
+      for (const [symptomId, feature] of Object.entries(disease.againstFeatures)) {
+        const found = collectedFindings[symptomId];
+        if (found === true) {
+          rawScore += feature.weight; // weight is negative
+          negativeMatches.push({ symptomId, weight: feature.weight, note: feature.note });
+        }
+      }
+
+      // --- Investigation bonus ---
+      let invBonus = 0;
+      for (const [findingId, boost] of Object.entries(INV_DISEASE_BOOST)) {
+        if (investigations[findingId] && boost.disease === diseaseId) {
+          invBonus += boost.bonus;
+        }
+      }
+      rawScore += invBonus;
+
+      // Normalize to percentage of max possible score (excluding investigations bonus)
+      const maxScore = disease.maxPossibleScore;
+      const normalizedScore = Math.max(0, Math.min(100, (rawScore / maxScore) * 100));
+
+      results.push({
+        disease,
+        rawScore,
+        normalizedScore: Math.round(normalizedScore),
+        positiveMatches,
+        negativeMatches,
+        invBonus
+      });
+    }
+
+    // Sort by normalizedScore descending
+    results.sort((a, b) => b.normalizedScore - a.normalizedScore);
+
+    return results;
+  },
+
+  /**
+   * Compute confidence metrics
+   */
+  computeConfidence(results) {
+    if (!results.length) return { level: "unknown", gap: 0, topScore: 0 };
+
+    const top = results[0];
+    const second = results[1];
+    const gap = top.normalizedScore - (second ? second.normalizedScore : 0);
+    const topScore = top.normalizedScore;
+
+    let level;
+    if (topScore < 15)          level = "very_low";
+    else if (topScore < 30)     level = "low";
+    else if (topScore < 50)     level = "moderate";
+    else if (topScore < 70)     level = "good";
+    else                        level = "high";
+
+    const isLowCoverage = topScore < 20 || (topScore < 35 && gap < 10);
+
+    return { level, gap: Math.round(gap), topScore, isLowCoverage };
+  },
+
+  /**
+   * Generate plain-text reasoning for a disease result
+   */
+  generateReasoning(result) {
+    const lines = [];
+    const { disease, positiveMatches, negativeMatches, normalizedScore, invBonus } = result;
+
+    if (positiveMatches.length > 0) {
+      const strong = positiveMatches.filter(m => m.weight >= 15);
+      const moderate = positiveMatches.filter(m => m.weight >= 8 && m.weight < 15);
+      if (strong.length) {
+        lines.push(`Strong supporting evidence: ${strong.map(m => SYMPTOMS_DB[m.symptomId]?.label || m.symptomId).join(", ")}.`);
+      }
+      if (moderate.length) {
+        lines.push(`Moderate support from: ${moderate.map(m => SYMPTOMS_DB[m.symptomId]?.label || m.symptomId).join(", ")}.`);
+      }
+    }
+    if (negativeMatches.length > 0) {
+      lines.push(`Against: ${negativeMatches.map(m => SYMPTOMS_DB[m.symptomId]?.label || m.symptomId).join(", ")} reduce likelihood.`);
+    }
+    if (invBonus > 0) {
+      lines.push(`Investigation findings provide additional confirmatory evidence (+${invBonus} pts).`);
+    }
+    if (positiveMatches.length === 0) {
+      lines.push("No key features present for this diagnosis.");
+    }
+    return lines.join(" ");
+  }
+};
+
+/* ============================================================
+   /engine/reportGenerator.js — Case Sheet Generator
+   ============================================================ */
+const ReportGenerator = {
+  generate(state, results, confidence) {
+    const top = results[0];
+    const timestamp = new Date().toLocaleString();
+    const patientInfo = `${state.age ? state.age + 'yr' : '?yr'} ${state.sex || '?'} | Duration: ${state.duration || 'not specified'}`;
+
+    const positiveSymptoms = Object.entries(state.findings)
+      .filter(([,v]) => v === true)
+      .map(([k]) => SYMPTOMS_DB[k]?.label || k);
+
+    const negativeSymptoms = Object.entries(state.findings)
+      .filter(([,v]) => v === false)
+      .map(([k]) => SYMPTOMS_DB[k]?.label || k);
+
+    return {
+      timestamp,
+      patientInfo,
+      chiefComplaint: CHIEF_COMPLAINTS.find(c => c.id === state.complaint)?.label || state.complaint,
+      positiveSymptoms,
+      negativeSymptoms,
+      primaryDiagnosis: top?.disease.name || "No diagnosis established",
+      primaryScore: top?.normalizedScore || 0,
+      confidence,
+      topDifferentials: results.slice(0, 3).map(r => ({
+        name: r.disease.name,
+        score: r.normalizedScore
+      })),
+      reasoning: ScoringEngine.generateReasoning(top),
+      investigations: top?.disease.investigations || [],
+      management: top?.disease.management || [],
+    };
+  }
+};
+
+/* ============================================================
+   STATE MANAGEMENT
+   ============================================================ */
+const AppState = {
+  currentScreen: 1,
+  complaint: null,
+  age: null,
+  sex: null,
+  duration: null,
+  findings: {},      // symptomId → true/false
+  investigations: {},// finding_id → true
+  hopiAnswers: {},   // questionId → selected option(s)
+  arMode: false,
+  arFindings: {},
+  results: [],
+  confidence: {},
+  report: null,
+};
+
+/* ============================================================
+   UI CONTROLLER — Screen Navigation
+   ============================================================ */
+function goToScreen(n) {
+  // Validate
+  if (n === 2 && !AppState.complaint) return;
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${n}`).classList.add('active');
+  AppState.currentScreen = n;
+  updateProgressBar(n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (n === 2) buildHOPIScreen();
+  if (n === 3) buildExamScreen();
+  if (n === 4) buildInvScreen();
+}
+
+function updateProgressBar(n) {
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById(`ps-${i}`);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    if (i === n) el.classList.add('active');
+  }
+  // Update done indicators
+  document.querySelectorAll('.prog-step.done .prog-step-dot').forEach(d => {
+    if (!d.textContent.includes('✓')) d.textContent = '✓';
+  });
+}
+
+/* ============================================================
+   SCREEN 1 — Chief Complaint
+   ============================================================ */
+function buildComplaintGrid() {
+  const grid = document.getElementById('complaintGrid');
+  CHIEF_COMPLAINTS.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'complaint-card';
+    card.innerHTML = `<div class="complaint-card-icon">${c.icon}</div>
+      <div class="complaint-card-name">${c.label}</div>
+      <div class="complaint-card-system">GI System</div>`;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.complaint-card').forEach(x => x.classList.remove('active'));
+      card.classList.add('active');
+      AppState.complaint = c.id;
+      document.getElementById('btn-s1-next').disabled = false;
+    });
+    grid.appendChild(card);
+  });
+}
+
+/* ============================================================
+   SCREEN 2 — HOPI
+   ============================================================ */
+function buildHOPIScreen() {
+  // Build HOPI questions
+  const hopiContainer = document.getElementById('hopiContainer');
+  hopiContainer.innerHTML = '';
+  Object.values(HOPI_QUESTIONS).forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'field-group';
+    div.innerHTML = `<div class="field-label">${q.question}</div>`;
+
+    if (q.type === 'choice') {
+      const grid = document.createElement('div');
+      grid.className = 'choice-grid';
+      q.options.forEach(opt => {
+        const item = document.createElement('div');
+        item.className = 'choice-item';
+        item.innerHTML = `<div class="choice-check"></div><span>${opt}</span>`;
+        item.addEventListener('click', () => {
+          // Single select
+          grid.querySelectorAll('.choice-item').forEach(x => x.classList.remove('selected'));
+          item.classList.add('selected');
+          item.querySelector('.choice-check').textContent = '✓';
+          // Record in findings
+          AppState.hopiAnswers[q.id] = opt;
+          // Map to symptoms
+          if (q.mapping[opt]) {
+            q.mapping[opt].forEach(sid => { AppState.findings[sid] = true; });
+          }
+          // Clear other mappings for this question
+          Object.entries(q.mapping).forEach(([option, symptoms]) => {
+            if (option !== opt) symptoms.forEach(sid => { if (AppState.findings[sid] === true && !isSymptomSetElsewhere(sid, q.id)) delete AppState.findings[sid]; });
+          });
+        });
+        grid.appendChild(item);
+      });
+      div.appendChild(grid);
+    } else if (q.type === 'multi') {
+      const grid = document.createElement('div');
+      grid.className = 'choice-grid';
+      q.options.forEach(opt => {
+        const item = document.createElement('div');
+        item.className = 'choice-item';
+        item.innerHTML = `<div class="choice-check"></div><span>${opt}</span>`;
+        item.addEventListener('click', () => {
+          item.classList.toggle('selected');
+          const check = item.querySelector('.choice-check');
+          if (item.classList.contains('selected')) {
+            check.textContent = '✓';
+            if (!AppState.hopiAnswers[q.id]) AppState.hopiAnswers[q.id] = [];
+            AppState.hopiAnswers[q.id].push(opt);
+            if (q.mapping[opt]) q.mapping[opt].forEach(sid => { AppState.findings[sid] = true; });
+          } else {
+            check.textContent = '';
+            AppState.hopiAnswers[q.id] = (AppState.hopiAnswers[q.id] || []).filter(x => x !== opt);
+            if (q.mapping[opt]) q.mapping[opt].forEach(sid => { delete AppState.findings[sid]; });
+          }
+        });
+        grid.appendChild(item);
+      });
+      div.appendChild(grid);
+    }
+    hopiContainer.appendChild(div);
+  });
+
+  // ROS
+  const rosContainer = document.getElementById('rosContainer');
+  rosContainer.innerHTML = '';
+  ROS_SYMPTOMS.forEach(sid => {
+    const sym = SYMPTOMS_DB[sid];
+    if (!sym) return;
+    const row = document.createElement('div');
+    row.className = 'symptom-row';
+    row.innerHTML = `
+      <span class="symptom-name">${sym.label}</span>
+      <div class="yn-group">
+        <button class="yn-btn yes" data-sid="${sid}" data-val="yes">YES</button>
+        <button class="yn-btn no" data-sid="${sid}" data-val="no">NO</button>
+      </div>`;
+    row.querySelectorAll('.yn-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        row.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        AppState.findings[sid] = btn.dataset.val === 'yes';
+      });
+    });
+    rosContainer.appendChild(row);
+  });
+}
+
+function isSymptomSetElsewhere(sid, excludeQid) { return false; } // simplified
+
+/* ============================================================
+   SCREEN 3 — Examination
+   ============================================================ */
+function buildExamScreen() {
+  const container = document.getElementById('examContainer');
+  container.innerHTML = '';
+  EXAM_SECTIONS.forEach(section => {
+    const sectionEl = document.createElement('div');
+    sectionEl.innerHTML = `<div class="section-divider"><div class="section-divider-line"></div><div class="section-divider-label">${section.title}</div><div class="section-divider-line"></div></div>`;
+
+    section.items.forEach(sid => {
+      const sym = SYMPTOMS_DB[sid];
+      if (!sym) return;
+      const row = document.createElement('div');
+      row.className = 'symptom-row';
+      row.innerHTML = `
+        <span class="symptom-name">${sym.label}</span>
+        <span class="symptom-qualifier">${sym.category === 'sign' ? 'sign' : 'symptom'}</span>
+        <div class="yn-group">
+          <button class="yn-btn yes" data-sid="${sid}">+VE</button>
+          <button class="yn-btn no" data-sid="${sid}">-VE</button>
+        </div>`;
+      row.querySelectorAll('.yn-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          row.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          AppState.findings[sid] = btn.classList.contains('yes');
+        });
+      });
+      sectionEl.appendChild(row);
+    });
+    container.appendChild(sectionEl);
+  });
+}
+
+/* ============================================================
+   SCREEN 4 — Investigations
+   ============================================================ */
+function buildInvScreen() {
+  const container = document.getElementById('invContainer');
+  container.innerHTML = '';
+  INV_OPTIONS.forEach(inv => {
+    const block = document.createElement('div');
+    block.innerHTML = `
+      <div class="field-label" style="margin-bottom:8px">${inv.label}</div>
+      <div class="inv-input-grid" id="inv-grid-${inv.id}"></div>
+      <div style="margin-bottom:18px"></div>`;
+    const grid = block.querySelector(`#inv-grid-${inv.id}`);
+
+    // "Not done" option
+    const notDoneItem = document.createElement('div');
+    notDoneItem.className = 'inv-input-item selected';
+    notDoneItem.innerHTML = `<div class="inv-check">•</div><span>Not Ordered</span>`;
+    notDoneItem.dataset.val = 'not_done';
+    grid.appendChild(notDoneItem);
+
+    inv.findings.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'inv-input-item';
+      item.innerHTML = `<div class="inv-check"></div><span>${formatFindingLabel(f)}</span>`;
+      item.dataset.val = f;
+      grid.appendChild(item);
+    });
+
+    grid.querySelectorAll('.inv-input-item').forEach(item => {
+      item.addEventListener('click', () => {
+        grid.querySelectorAll('.inv-input-item').forEach(x => {
+          x.classList.remove('selected');
+          x.querySelector('.inv-check').textContent = '';
+        });
+        item.classList.add('selected');
+        item.querySelector('.inv-check').textContent = '✓';
+        const val = item.dataset.val;
+        // Clear previous findings for this investigation
+        inv.findings.forEach(f => { delete AppState.investigations[f]; });
+        if (val !== 'not_done') AppState.investigations[val] = true;
+      });
+    });
+
+    container.appendChild(block);
+  });
+}
+
+function formatFindingLabel(f) {
+  const map = {
+    leukocytosis:"Leukocytosis (WBC >10k)", anemia:"Anaemia", normal:"Normal/Unremarkable",
+    elevated_bilirubin:"Elevated Bilirubin", elevated_enzymes:"Elevated Transaminases",
+    elevated_3x:"Elevated >3× ULN", mildly_elevated:"Mildly Elevated",
+    appendicitis_usg:"Non-compressible appendix", gallstones:"Gallstones present",
+    pancreatitis_usg:"Pancreatic oedema/fluid", appendicitis_ct:"Appendicitis confirmed",
+    cholecystitis_ct:"Cholecystitis confirmed", pancreatitis_ct:"Pancreatitis confirmed",
+    pyuria:"Pyuria (pus cells)", hematuria:"Haematuria",
+    free_air:"Free air under diaphragm", ulcer_seen:"Ulcer visualized",
+    esophagitis:"Oesophagitis/GORD",
+  };
+  return map[f] || f.replace(/_/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+}
+
+/* ============================================================
+   SCREEN 5 — DIAGNOSIS ENGINE + RESULTS
+   ============================================================ */
+function runDiagnosis() {
+  // Collect demographics
+  AppState.age = parseInt(document.getElementById('patientAge').value) || null;
+  AppState.sex = document.getElementById('patientSex').value || null;
+  AppState.duration = document.getElementById('illnessDuration').value || null;
+
+  // Run engine
+  const results = ScoringEngine.compute(AppState.findings, AppState.investigations);
+  const confidence = ScoringEngine.computeConfidence(results);
+
+  AppState.results = results;
+  AppState.confidence = confidence;
+  AppState.report = ReportGenerator.generate(AppState, results, confidence);
+
+  goToScreen(5);
+  renderResults(results, confidence, AppState.report);
+}
+
+function renderResults(results, confidence, report) {
+  // Summary info row
+  const summaryRow = document.getElementById('summaryInfoRow');
+  const topScore = results[0]?.normalizedScore || 0;
+  const confMap = { very_low:'red', low:'red', moderate:'amber', good:'green', high:'cyan' };
+  const confLabel = { very_low:'Very Low', low:'Low', moderate:'Moderate', good:'Good', high:'High' };
+  summaryRow.innerHTML = `
+    <div class="info-box"><div class="info-box-label">Primary Diagnosis</div><div class="info-box-value" style="font-size:12px;font-family:var(--font-sans)">${results[0]?.disease.name || '—'}</div></div>
+    <div class="info-box"><div class="info-box-label">Match Score</div><div class="info-box-value ${confMap[confidence.level]}">${topScore}%</div></div>
+    <div class="info-box"><div class="info-box-label">Confidence</div><div class="info-box-value ${confMap[confidence.level]}">${confLabel[confidence.level]}</div></div>
+    <div class="info-box"><div class="info-box-label">Score Gap (1st–2nd)</div><div class="info-box-value">${confidence.gap}%</div></div>
+    <div class="info-box"><div class="info-box-label">Differentials Scored</div><div class="info-box-value">${results.length}</div></div>
+    <div class="info-box"><div class="info-box-label">Symptoms Collected</div><div class="info-box-value">${Object.values(AppState.findings).filter(v=>v===true).length} +ve</div></div>`;
+
+  // Low coverage warning
+  document.getElementById('lowCoverageWarning').style.display = confidence.isLowCoverage ? 'flex' : 'none';
+
+  // AR symptoms grid
+  buildARPanel();
+
+  // Differential list
+  renderDiffList(results, 'diffList');
+
+  // Case sheet
+  renderCaseSheet(report);
+}
+
+function renderDiffList(results, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const topScore = results[0]?.normalizedScore || 1;
+
+  results.forEach((r, i) => {
+    if (r.normalizedScore <= 0 && i > 2) return; // Skip truly zero scorers past top 3
+    const rank = i + 1;
+    const confClass = r.normalizedScore >= 50 ? 'conf-high' : r.normalizedScore >= 25 ? 'conf-medium' : 'conf-low';
+    const confText = r.normalizedScore >= 50 ? 'High' : r.normalizedScore >= 25 ? 'Moderate' : 'Low';
+    const barWidth = topScore > 0 ? Math.round((r.normalizedScore / topScore) * 100) : 0;
+
+    const item = document.createElement('div');
+    item.className = `diff-item ${rank<=3?'rank-'+rank:''}`;
+    item.innerHTML = `
+      <div class="diff-item-header collapsible-trigger" onclick="toggleDiffBody(this)">
+        <div class="diff-rank">${rank}</div>
+        <div>
+          <div class="diff-name">${r.disease.name}</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--text-3);margin-top:2px">ICD: ${r.disease.icd} · ${r.disease.category}</div>
+        </div>
+        <div class="diff-score-wrap">
+          <div class="diff-score-pct">${r.normalizedScore}%</div>
+          <div class="diff-bar-track"><div class="diff-bar-fill" style="width:0%"></div></div>
+          <div class="diff-confidence-badge ${confClass}">${confText}</div>
+        </div>
+        <div class="chevron">▶</div>
+      </div>
+      <div class="diff-body" id="db-${r.disease.id}">
+        ${renderDiffBody(r)}
+      </div>`;
+    container.appendChild(item);
+
+    // Animate bar
+    setTimeout(() => {
+      item.querySelector('.diff-bar-fill').style.width = barWidth + '%';
+    }, 100 * rank);
+
+    // Auto-open top result
+    if (rank === 1) {
+      setTimeout(() => {
+        item.querySelector('.diff-body').classList.add('open');
+        item.querySelector('.chevron').classList.add('open');
+      }, 300);
+    }
+  });
+}
+
+function renderDiffBody(r) {
+  const posChips = r.positiveMatches.map(m =>
+    `<div class="chip chip-support" title="${m.note}">+${m.weight} ${SYMPTOMS_DB[m.symptomId]?.label || m.symptomId}</div>`
+  ).join('');
+  const negChips = r.negativeMatches.map(m =>
+    `<div class="chip chip-against" title="${m.note}">${m.weight} ${SYMPTOMS_DB[m.symptomId]?.label || m.symptomId}</div>`
+  ).join('');
+
+  const invHtml = r.disease.investigations.slice(0,4).map(i => `
+    <div class="inv-item">
+      <span class="inv-priority priority-${i.priority}">${i.priority}</span>
+      <span>${i.name}</span>
+    </div>`).join('');
+
+  const mgmtHtml = r.disease.management.slice(0,4).map((m,i) => `
+    <div class="mgmt-step">
+      <span class="mgmt-step-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="mgmt-step-text">${m}</span>
+    </div>`).join('');
+
+  return `
+    <div class="reasoning-block">
+      <div class="reasoning-title">Supporting Evidence</div>
+      <div class="reasoning-chips">${posChips || '<span style="font-size:12px;color:var(--text-3)">No matching features found</span>'}</div>
+    </div>
+    ${negChips ? `<div class="reasoning-block">
+      <div class="reasoning-title">Against This Diagnosis</div>
+      <div class="reasoning-chips">${negChips}</div>
+    </div>` : ''}
+    ${r.invBonus > 0 ? `<div class="reasoning-block"><div class="reasoning-title">Investigation Confirmation</div><div style="font-size:13px;color:var(--accent-cyan)">+${r.invBonus} pts from investigation findings</div></div>` : ''}
+    <div class="reasoning-block" style="margin-top:8px">
+      <div class="reasoning-title">Suggested Investigations</div>
+      <div class="inv-grid">${invHtml}</div>
+    </div>
+    <div class="reasoning-block" style="margin-top:8px">
+      <div class="reasoning-title">Management Outline</div>
+      <div class="mgmt-steps">${mgmtHtml}</div>
+    </div>`;
+}
+
+function toggleDiffBody(header) {
+  const body = header.nextElementSibling;
+  const chevron = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function renderCaseSheet(report) {
+  const cs = document.getElementById('caseSheet');
+  const confMap = { very_low:'⚠️ Very Low', low:'⚠️ Low', moderate:'~ Moderate', good:'✓ Good', high:'✓✓ High' };
+
+  cs.innerHTML = `
+    <div class="case-sheet-header">
+      <div class="case-sheet-title">Clinical Case Summary</div>
+      <div class="case-sheet-meta">Generated: ${report.timestamp}<br>Module: GI System · ClinROS v1.0</div>
+    </div>
+    <div class="case-sheet-body">
+      <div class="cs-section">
+        <div class="cs-section-title">Patient Details</div>
+        <div class="cs-text">${report.patientInfo} | Chief Complaint: <strong>${report.chiefComplaint}</strong></div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Positive Findings</div>
+        <div class="cs-text">${report.positiveSymptoms.length ? report.positiveSymptoms.join(' · ') : 'None documented'}</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Negative Findings</div>
+        <div class="cs-text">${report.negativeSymptoms.length ? report.negativeSymptoms.join(' · ') : 'None documented'}</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Primary Diagnosis</div>
+        <div class="cs-text"><strong>${report.primaryDiagnosis}</strong> (Match score: ${report.primaryScore}% | Confidence: ${confMap[report.confidence.level]})</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Differential Diagnoses</div>
+        <div class="cs-text">${report.topDifferentials.map((d,i)=>`${i+1}. ${d.name} (${d.score}%)`).join(' | ')}</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Clinical Reasoning</div>
+        <div class="cs-text">${report.reasoning}</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Suggested Investigations</div>
+        <div class="cs-text">${report.investigations.map(i=>`<strong>${i.name}</strong> [${i.priority}] — ${i.note}`).join('<br>')}</div>
+      </div>
+      <div class="cs-section">
+        <div class="cs-section-title">Management Plan</div>
+        <div class="cs-text">${report.management.map((m,i)=>`${i+1}. ${m}`).join('<br>')}</div>
+      </div>
+      ${report.confidence.isLowCoverage ? `<div class="cs-section"><div class="cs-section-title">⚠ Open World Warning</div><div class="cs-text" style="color:var(--accent-amber)">Low confidence match. Consider rare diagnoses, atypical presentations, or conditions outside the current module scope.</div></div>` : ''}
+    </div>`;
+}
+
+/* ============================================================
+   ALTERNATE REALITY MODE
+   ============================================================ */
+function buildARPanel() {
+  // Clone current findings into AR state
+  AppState.arFindings = { ...AppState.findings };
+  const grid = document.getElementById('arSymptomsGrid');
+  grid.innerHTML = '';
+  const cgrid = document.createElement('div');
+  cgrid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px';
+
+  // Show all symptoms that were answered + key ones
+  const keySymptoms = [...new Set([
+    ...Object.keys(AppState.findings),
+    ...Object.keys(DISEASES_DB).flatMap(d => Object.keys(DISEASES_DB[d].supportingFeatures))
+  ])].slice(0, 20);
+
+  keySymptoms.forEach(sid => {
+    const sym = SYMPTOMS_DB[sid];
+    if (!sym) return;
+    const isActive = AppState.arFindings[sid] === true;
+    const item = document.createElement('div');
+    item.className = `choice-item ${isActive ? 'selected-yes' : 'selected-no'}`;
+    item.dataset.sid = sid;
+    item.innerHTML = `<div class="choice-check">${isActive ? '✓' : '✗'}</div><span style="font-size:12px">${sym.label}</span>`;
+    item.addEventListener('click', () => {
+      const current = AppState.arFindings[sid];
+      if (current === true) {
+        AppState.arFindings[sid] = false;
+        item.className = 'choice-item selected-no';
+        item.querySelector('.choice-check').textContent = '✗';
+      } else {
+        AppState.arFindings[sid] = true;
+        item.className = 'choice-item selected-yes';
+        item.querySelector('.choice-check').textContent = '✓';
+      }
+    });
+    cgrid.appendChild(item);
+  });
+  grid.appendChild(cgrid);
+}
+
+function toggleAR() {
+  AppState.arMode = !AppState.arMode;
+  const toggle = document.getElementById('arToggle');
+  const panel = document.getElementById('arPanel');
+  toggle.classList.toggle('on', AppState.arMode);
+  panel.style.display = AppState.arMode ? 'block' : 'none';
+}
+
+function resetARSymptoms() {
+  AppState.arFindings = { ...AppState.findings };
+  buildARPanel();
+}
+
+function rerunWithAR() {
+  const results = ScoringEngine.compute(AppState.arFindings, AppState.investigations);
+  const confidence = ScoringEngine.computeConfidence(results);
+
+  // Insert AR results above main results
+  let arPanel = document.getElementById('ar-results-panel');
+  if (!arPanel) {
+    arPanel = document.createElement('div');
+    arPanel.id = 'ar-results-panel';
+    arPanel.className = 'panel';
+    arPanel.style.borderColor = 'rgba(139,127,245,0.35)';
+    document.getElementById('arPanel').after(arPanel);
+  }
+
+  arPanel.innerHTML = `
+    <div class="panel-header">
+      <div class="panel-icon">🔬</div>
+      <div class="panel-title" style="color:var(--accent-purple)">Alternate Reality — Recomputed Diagnosis</div>
+    </div>
+    <div class="info-row" style="margin-bottom:16px">
+      <div class="info-box"><div class="info-box-label">New Primary Dx</div><div class="info-box-value" style="font-size:11px;font-family:var(--font-sans)">${results[0]?.disease.name||'—'}</div></div>
+      <div class="info-box"><div class="info-box-label">Match Score</div><div class="info-box-value cyan">${results[0]?.normalizedScore||0}%</div></div>
+      <div class="info-box"><div class="info-box-label">Score Gap</div><div class="info-box-value">${confidence.gap}%</div></div>
+    </div>
+    <div class="diff-list" id="ar-diff-list"></div>`;
+
+  renderDiffList(results, 'ar-diff-list');
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+function startOver() {
+  // Reset state
+  Object.assign(AppState, {
+    currentScreen:1, complaint:null, age:null, sex:null, duration:null,
+    findings:{}, investigations:{}, hopiAnswers:{}, arMode:false, arFindings:{}, results:[], confidence:{}, report:null
+  });
+  document.querySelectorAll('.complaint-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('btn-s1-next').disabled = true;
+
+  // Remove AR results if present
+  const arRes = document.getElementById('ar-results-panel');
+  if (arRes) arRes.remove();
+
+  document.getElementById('arPanel').style.display = 'none';
+  document.getElementById('arToggle').classList.remove('on');
+  AppState.arMode = false;
+
+  goToScreen(1);
+  updateProgressBar(1);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildComplaintGrid();
+});
+</script>
+</body>
+</html>
