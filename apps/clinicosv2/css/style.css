@@ -164,7 +164,7 @@ button{cursor:pointer;font-family:inherit}
 .header-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
 .btn-back{font-family:var(--mono);font-size:10px;letter-spacing:.04em;color:var(--text-mid);background:none;border:1px solid var(--border);padding:5px 10px;border-radius:var(--r1);transition:all .15s;white-space:nowrap}
 .btn-back:hover{color:var(--text-hi);border-color:var(--border-lo)}
-.case-title-small{font-family:var(--display);font-size:.88rem;font-style:italic;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.case-title-small{font-family:var(--display);font-size:.88rem;font-style:italic;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* vitals strip */
 .hud-vitals{display:flex;gap:5px;flex-wrap:wrap}
@@ -173,7 +173,7 @@ button{cursor:pointer;font-family:inherit}
 @keyframes warnPulse{from{opacity:.65}to{opacity:1}}
 
 /* hud stats */
-.hud-stats{display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.hud-stats{display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden; margin:2px}
 .hud-stat{display:flex;flex-direction:column;align-items:center;padding:5px 11px;min-width:70px;border-right:1px solid var(--border)}
 .hud-stat:last-child{border-right:none}
 .hud-label{font-family:var(--mono);font-size:7px;letter-spacing:.14em;color:var(--text-lo);text-transform:uppercase}
@@ -196,7 +196,7 @@ button{cursor:pointer;font-family:inherit}
 .btn-end:hover{color:var(--text-mid);border-color:var(--border-lo)}
 
 /* patient banner */
-.patient-banner{grid-area:ban;display:flex;align-items:center;gap:13px;padding:0 16px;background:var(--bg-panel);border-bottom:1px solid var(--border)}
+.patient-banner{grid-area:ban;display:flex;align-items:center;gap:13px;padding:5px 16px;background:var(--bg-panel);border-bottom:1px solid var(--border)}
 .patient-avatar{width:38px;height:38px;flex-shrink:0;background:var(--bg-up);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-mid)}
 .patient-avatar svg{width:26px;height:26px}
 .patient-info{flex:1;width:0}
@@ -220,9 +220,18 @@ button{cursor:pointer;font-family:inherit}
 
 /* game body */
 .game-body{grid-area:body;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-base)}
-.tab-bar{display:flex;background:var(--bg-panel);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.tab-bar{display:flex;background:var(--bg-panel);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;}
 .tab-bar::-webkit-scrollbar{height:2px}
-.tab-btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.04em;padding:0 15px;height:var(--tab);background:none;border:none;border-bottom:2px solid transparent;color:var(--text-lo);white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px}
+.tab-btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.04em;padding:0 15px;height:var(--tab);background:none;border:none;border-bottom:2px solid transparent;color:var(--text-lo);white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px;  flex: 1;              /* 👈 each button grows equally */
+  text-align: center; align-items: center;
+  flex: 1;
+
+  display: flex;              /* 👈 make button a flex container */
+  align-items: center;       /* vertical centering */
+  justify-content: center;   /* horizontal centering */
+
+  gap: 6px;                  /* space between text + badge */
+  text-align: center;}
 .tab-btn:hover{color:var(--text-mid)}
 .tab-btn.active{color:var(--green);border-bottom-color:var(--green);background:rgba(13,189,139,.04)}
 .badge{font-size:8px;background:var(--green);color:var(--bg-deep);padding:1px 5px;border-radius:99px;font-weight:700;min-width:15px;text-align:center}
@@ -443,11 +452,11 @@ button{cursor:pointer;font-family:inherit}
   .game-body{height:auto;overflow:visible}
   .tab-content{overflow:visible}
   .tab-panel{height:auto}
-  .log-panel{max-height:180px;border-left:none;border-top:1px solid var(--border)}
+  .log-panel{max-height:180px;border-left:none;border-top:1px solid var(--border); margin-bottom:50px;}
 
   .patient-info{display:none}
   .patient-avatar{display: none;}
-  .case-title-small{max-width:100px}
+  .case-title-small{max-width:150px}
   .hud-stat{min-width:58px;padding:4px 7px}
   .hud-label{font-size:6px}
   .hud-value{font-size:10px}
@@ -480,6 +489,36 @@ button{cursor:pointer;font-family:inherit}
     z-index: 1000; /* keeps it above content */
   }
 
+.tab-bar{flex-shrink:0;height:50px;padding-bottom:0px;background:var(--border-lo);border-top:1px solid 5px;display:flex;align-items:stretch;z-index:10}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;color:var(--blue);font-family:monospace;font-size:8px;letter-spacing:.04em;text-transform:uppercase;transition:color .15s;position:relative}
+.tab-btn.active{color:var(--green)}
+.tab-btn.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--green);border-radius:0 0 99px 99px}
+.tab-btn-icon{font-size:18px;line-height:1}
+.tab-btn-badge{position:absolute;top:6px;right:calc(50% - 14px);background:var(--green);color:var(--bg);font-size:7px;font-weight:700;min-width:14px;height:14px;border-radius:99px;display:flex;align-items:center;justify-content:center;padding:0 3px}
+.tab-btn-badge.locked{background:var(--purple);color:var(--t3)}
+
+.game-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  z-index: 1000;
+}
+
+.patient-banner{
+  position: fixed;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  z-index: 999;
+}
+
+/* push content down so it doesn't hide */
+.game-body{
+  margin-top: 60px;
+}
 }
 @media(max-width:420px){
   .test-grid,.mgmt-grid{grid-template-columns:1fr}
@@ -492,47 +531,6 @@ button{cursor:pointer;font-family:inherit}
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* ── Tab bar: no overflow scroll, wrap prevented, shrink to fit ───────── */
-.tab-bar {
-  display: flex;
-  background: var(--bg-panel);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  overflow: hidden;          /* ← no horizontal scroll bar */
-  width: 100%;
-}
-
-.tab-btn {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: .04em;
-  padding: 0 15px;
-  height: var(--tab);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text-lo);
-  white-space: nowrap;
-  transition: all .15s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex: 1;                   /* ← each tab takes equal share of bar width */
-  justify-content: center;
-  min-width: 0;              /* ← allow shrinking below content size */
-}
-
-.tab-btn:hover  { color: var(--text-mid); }
-.tab-btn.active {
-  color: var(--green);
-  border-bottom-color: var(--green);
-  background: rgba(13,189,139,.04);
-}
-
-/* Full label — visible by default */
-.tab-label-full  { display: inline; }
-/* Emoji — hidden by default */
-.tab-label-emoji { display: none; font-size: 15px; line-height: 1; }
 
 /* ── Mobile: swap to emoji-only labels ───────────────────────────────── */
 @media (max-width: 800px) {

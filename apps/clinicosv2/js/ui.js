@@ -41,7 +41,7 @@ class ClinicalUI {
     <div class="game-layout">
       <header class="game-header">
         <div class="header-left">
-          <button class="btn-back" id="btn-back">← Cases</button>
+          <button class="btn-back" id="btn-back">←</button>
           <div class="case-title-small">${c.title}</div>
         </div>
         <div class="hud-vitals" id="///hud-vitals"></div>
@@ -77,20 +77,23 @@ class ClinicalUI {
       <div class="game-body">
         <div class="tab-content">
           <div class="tab-panel active" id="tab-history"></div>
-          <div class="tab-panel" id="tab-tests"></div>
-          <div class="tab-panel" id="tab-results"></div>
+          <div class="tab-panel" id="tab-tests">
+            <div id="tab-results"></div>
+            <div id="tab-testss"></div>
+          </div>
           <div class="tab-panel" id="tab-general"></div>
-          <div class="tab-panel" id="tab-diagnosis"></div>
-          <div class="tab-panel" id="tab-disease"></div>
+          <div class="tab-panel" id="tab-diagnosis">
+            <div id="tab-diagnosiss"></div>
+            <div id="tab-disease"></div>
+          </div>
         </div>
         <div class="tab-bar">
-          <button class="tab-btn active" data-tab="history">📋 History</button>
-          <button class="tab-btn" data-tab="tests">🔬 Tests</button>
-          <button class="tab-btn" data-tab="results">📊 Results <span class="badge" id="results-badge">0</span></button>
-          <button class="tab-btn" data-tab="general">🏥 General Mgmt</button>
-          <button class="tab-btn" data-tab="diagnosis">🩺 Diagnosis</button>
-          <button class="tab-btn" data-tab="disease" id="tab-btn-disease">💊 Treatment <span class="badge badge-locked" id="treatment-lock">🔒</span></button>
-        </div>
+          <button class="tab-btn active" data-tab="history">CASE</button>
+          <button class="tab-btn" data-tab="tests">TESTS<span class="badge" id="results-badge">0</span></button>
+          <!--<button class="tab-btn" data-tab="results">RESULTS<span class="badge" id="results-badge">0</span></button>-->
+          <button class="tab-btn" data-tab="general">MANAGEMENET</button>
+          <button class="tab-btn" data-tab="diagnosis">DIAGNOSIS</button>
+          </div>
       </div>
 
       <aside class="log-panel">
@@ -202,7 +205,7 @@ class ClinicalUI {
   _renderTestsTab() {
     const cats = [...new Set(this.case.tests.map(t=>t.category))];
     const stage = this.engine.state.stage;
-    document.getElementById('tab-tests').innerHTML = `<div class="tests-container">` +
+    document.getElementById('tab-testss').innerHTML = `<div class="tests-container">` +
       cats.map(cat => {
         const tests = this.case.tests.filter(t=>t.category===cat);
         return `<div class="test-category"><div class="category-label">${cat}</div><div class="test-grid">
@@ -289,7 +292,7 @@ class ClinicalUI {
   _renderDiagnosisTab() {
     const cur  = this.engine.state.selectedDiagnosis;
     const opts = this.case.diagnosisOptions;
-    document.getElementById('tab-diagnosis').innerHTML = `
+    document.getElementById('tab-diagnosiss').innerHTML = `
       <div class="diagnosis-container">
         <div class="diagnosis-prompt">Select your working diagnosis. You can change it at any time — the final selection at case end is scored.</div>
         <div class="diagnosis-info-box">🔒 The <strong>Treatment</strong> tab unlocks after you select a diagnosis.</div>
