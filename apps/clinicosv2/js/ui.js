@@ -44,15 +44,14 @@ class ClinicalUI {
           <button class="btn-back" id="btn-back">← Cases</button>
           <div class="case-title-small">${c.title}</div>
         </div>
-        <div class="hud-vitals" id="hud-vitals"></div>
+        <div class="hud-vitals" id="///hud-vitals"></div>
         <div class="header-right">
           <div class="hud-stats">
-            <div class="hud-stat"><span class="hud-label">TIME</span><span class="hud-value mono" id="stat-time">00h 00m</span></div>
-            <div class="hud-stat"><span class="hud-label">STAGE</span><span class="hud-value mono" id="stat-stage">—</span></div>
+            <div class="hud-stat btn-jump" id="btn-jump"><span class="hud-label">TIME</span><span class="hud-value mono" id="stat-time">00h 00m</span></div>
+            <!--<div class="hud-stat"><span class="hud-label">STAGE</span><span class="hud-value mono" id="stat-stage">—</span></div>-->
             <div class="hud-stat"><span class="hud-label">COINS</span><span class="hud-value mono" id="stat-budget">🪙—</span></div>
           </div>
           <div class="hud-actions">
-            <button class="btn-jump" id="btn-jump">⏩ Skip</button>
             <button class="btn-resign" id="btn-resign">🚑 Transfer</button>
             <button class="btn-end" id="btn-end">End & Score</button>
           </div>
@@ -68,20 +67,14 @@ class ClinicalUI {
           <div class="patient-complaint">"${c.clinicalPresentation.chiefComplaint}"</div>
         </div>
         <div class="stage-glow-wrap">
+        
+        <div class="hud-vitals" id="hud-vitals"></div>
           <div class="stage-glow glow-yellow" id="stage-glow"></div>
           <div class="patient-stage-badge stage-badge-yellow" id="stage-badge"><span id="stage-badge-text">—</span></div>
         </div>
       </div>
 
       <div class="game-body">
-        <div class="tab-bar">
-          <button class="tab-btn active" data-tab="history">📋 History</button>
-          <button class="tab-btn" data-tab="tests">🔬 Investigations</button>
-          <button class="tab-btn" data-tab="results">📊 Results <span class="badge" id="results-badge">0</span></button>
-          <button class="tab-btn" data-tab="general">🏥 General Mgmt</button>
-          <button class="tab-btn" data-tab="diagnosis">🩺 Diagnosis</button>
-          <button class="tab-btn" data-tab="disease" id="tab-btn-disease">💊 Treatment <span class="badge badge-locked" id="treatment-lock">🔒</span></button>
-        </div>
         <div class="tab-content">
           <div class="tab-panel active" id="tab-history"></div>
           <div class="tab-panel" id="tab-tests"></div>
@@ -89,6 +82,14 @@ class ClinicalUI {
           <div class="tab-panel" id="tab-general"></div>
           <div class="tab-panel" id="tab-diagnosis"></div>
           <div class="tab-panel" id="tab-disease"></div>
+        </div>
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="history">📋 History</button>
+          <button class="tab-btn" data-tab="tests">🔬 Tests</button>
+          <button class="tab-btn" data-tab="results">📊 Results <span class="badge" id="results-badge">0</span></button>
+          <button class="tab-btn" data-tab="general">🏥 General Mgmt</button>
+          <button class="tab-btn" data-tab="diagnosis">🩺 Diagnosis</button>
+          <button class="tab-btn" data-tab="disease" id="tab-btn-disease">💊 Treatment <span class="badge badge-locked" id="treatment-lock">🔒</span></button>
         </div>
       </div>
 
