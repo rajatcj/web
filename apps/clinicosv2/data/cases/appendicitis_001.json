@@ -1,0 +1,329 @@
+{
+  "id": "appendicitis_001",
+  "title": "Acute Abdominal Pain",
+  "subtitle": "Emergency Department · Triage Level 2",
+  "difficulty": "Intern", "category": "Surgery", "system": "GI",
+  "tags": ["Abdomen","Emergency","Surgical"], "estimatedTime": "20–30 min",
+
+  "clinicalPresentation": {
+    "patientParticulars": { "age": 24, "sex": "Male", "occupation": "Student", "address": "Pokhara" },
+    "chiefComplaint": "Abdominal pain for 12 hours, started around the navel, now shifted to right lower abdomen",
+    "HOPI": {
+      "onset": "Sudden onset periumbilical colicky pain ~12 hours ago",
+      "progression": "Pain has migrated and localised to RLQ, now constant and sharp",
+      "associatedSymptoms": ["Nausea","Loss of appetite (anorexia)","One episode of vomiting","Low-grade fever"],
+      "relievingFactors": ["Lying still"], "aggravatingFactors": ["Movement","Deep breathing"]
+    },
+    "pastHistory": ["No chronic illness","No prior surgeries","No known drug allergies"],
+    "personalHistory": ["Non-smoker","Occasional alcohol","Normal bowel habits until today"],
+    "vitals": { "temp": 37.5, "pulse": 92, "bp": "120/80", "rr": 18, "spo2": 98, "weight": "68 kg" },
+    "exam": {
+      "general": ["Alert and oriented","Mild distress","Not pale, not icteric"],
+      "abdominal": ["Tenderness at McBurney's point (RLQ)","Voluntary guarding in RLQ","Rovsing's sign: Positive","Rebound tenderness: Absent (early)","Psoas sign: Equivocal","Bowel sounds present"],
+      "others": ["CVS: Normal","Chest: Clear"]
+    }
+  },
+
+  "initialState": {
+    "time": 0, "stage": "early", "budget": 3000, "cost": 0, "penalty": 0,
+    "cured": false, "outcome": null,
+    "vitals": { "hr": 92, "bp": "120/80", "temp": 37.5, "rr": 18, "spo2": 98 },
+    "activeSymptoms": ["Periumbilical pain migrating to RLQ","Nausea","Anorexia"],
+    "completedTests": [], "givenManagement": [], "pendingResults": [],
+    "selectedDiagnosis": null, "diagnosisCorrect": false, "diagnosisHistory": []
+  },
+
+  "stages": {
+    "early":       { "label": "Early Appendicitis",       "color": "yellow", "next": "localized",   "afterTime": 3 },
+    "localized":   { "label": "Localised Peritonitis",    "color": "orange", "next": "perforation", "afterTime": 8 },
+    "perforation": { "label": "Perforated Appendix",      "color": "red",    "next": "death",       "afterTime": 14 },
+    "death":       { "label": "Septic Shock / Death",     "color": "black",  "next": null,          "afterTime": null }
+  },
+
+  "progressionRules": [
+    {
+      "from": "early", "to": "localized", "condition": "no_treatment",
+      "effects": {
+        "symptoms": ["RLQ pain intensifying","Rebound tenderness appearing","Fever rising"],
+        "vitals": { "temp": 38.2, "hr": 104 }, "penalty": 0,
+        "penaltyMsg": "Disease progressed to localised peritonitis — earlier intervention would have been safer."
+      }
+    },
+    {
+      "from": "localized", "to": "perforation", "condition": "no_treatment",
+      "effects": {
+        "symptoms": ["Generalised abdominal rigidity","Patient appears toxic","High-grade fever"],
+        "vitals": { "bp": "90/60", "hr": 126, "temp": 39.3, "rr": 24 }, "penalty": 20,
+        "penaltyMsg": "Appendix has perforated! Peritonitis developing. Open surgery required immediately."
+      }
+    },
+    {
+      "from": "perforation", "to": "death", "condition": "no_treatment",
+      "effects": {
+        "symptoms": ["Multi-organ dysfunction","Unresponsive","Septic shock"],
+        "vitals": { "bp": "60/40", "hr": 140, "temp": 40.1, "rr": 32, "spo2": 86 },
+        "penalty": 50, "penaltyMsg": "Patient died from septic shock secondary to faecal peritonitis.",
+        "endGame": true, "outcome": "death"
+      }
+    }
+  ],
+
+  "tests": [
+    {
+      "id": "cbc", "name": "CBC", "fullName": "Complete Blood Count",
+      "time": 0.5, "cost": 150, "type": "useful", "category": "Blood",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "WBC 12,400/μL (mild leukocytosis). Neutrophils 78%. Hb 14.2 g/dL. Platelets normal.",
+        "localized":   "WBC 18,200/μL (significant leukocytosis). Neutrophils 85%, left shift. Bands 8%.",
+        "perforation": "WBC 26,400/μL (severe). Bands 22%. Thrombocytopenia 98k. Hb 12.8 g/dL."
+      },
+      "interpretation": {
+        "early":       "Mild leukocytosis supports an acute inflammatory process. Consistent with appendicitis.",
+        "localized":   "Significant leukocytosis with left shift — active bacterial infection spreading.",
+        "perforation": "Severe leukocytosis with band forms — meets sepsis criteria."
+      }
+    },
+    {
+      "id": "urine_re", "name": "Urine R/E", "fullName": "Urine Routine Examination",
+      "time": 0.3, "cost": 80, "type": "useful", "category": "Urine",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "Clear urine. No RBCs, no WBCs, no bacteria. Protein absent. Glucose absent.",
+        "localized":   "Trace WBCs (sterile pyuria from adjacent inflammation). No bacteria on culture.",
+        "perforation": "Concentrated urine. Trace WBCs. No organisms. Reflects dehydration in sepsis."
+      },
+      "interpretation": {
+        "early":       "Normal urine effectively rules out UTI and renal colic — important differentials.",
+        "localized":   "Sterile pyuria from adjacent peritoneal irritation, not UTI.",
+        "perforation": "Oliguria reflects poor renal perfusion in septic shock."
+      }
+    },
+    {
+      "id": "crp", "name": "CRP", "fullName": "C-Reactive Protein",
+      "time": 1, "cost": 200, "type": "useful", "category": "Blood",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "CRP: 22 mg/L (mildly elevated, NL <10). Early acute-phase response.",
+        "localized":   "CRP: 94 mg/L (significantly elevated). Active inflammatory process.",
+        "perforation": "CRP: 287 mg/L (markedly elevated). Consistent with peritonitis/sepsis."
+      },
+      "interpretation": {
+        "early":       "Mild CRP elevation is expected in early appendicitis.",
+        "localized":   "High CRP supports spreading peritoneal inflammation.",
+        "perforation": "Markedly raised CRP is a marker of severe sepsis."
+      }
+    },
+    {
+      "id": "usg", "name": "USG Abdomen", "fullName": "Ultrasound Abdomen & Pelvis",
+      "time": 1, "cost": 400, "type": "useful", "category": "Imaging",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "Appendix visualised: 9mm diameter, non-compressible. Mild periappendiceal fat stranding. Consistent with early appendicitis.",
+        "localized":   "Appendix 12mm, non-compressible with appendicolith. Periappendiceal fluid collection 5mm. Localised inflammation.",
+        "perforation": "Perforated appendix — complex heterogeneous collection in RIF. Free fluid in pelvis."
+      },
+      "interpretation": {
+        "early":       "Diameter >6mm + non-compressible is sonographically diagnostic of appendicitis.",
+        "localized":   "Appendicolith with surrounding collection — localised peritonitis confirmed.",
+        "perforation": "Perforation confirmed. CT needed to map extent of contamination."
+      }
+    },
+    {
+      "id": "ct_abdomen", "name": "CT Abdomen", "fullName": "CT Abdomen & Pelvis with IV Contrast",
+      "time": 1.5, "cost": 900, "type": "useful", "category": "Imaging",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "Appendix 9mm. Mild periappendiceal stranding. No perforation. No free gas. Uncomplicated appendicitis.",
+        "localized":   "Appendix 13mm with appendicolith. Periappendiceal fluid collection 3×2cm. Localised peritonitis. No free gas.",
+        "perforation": "Perforated appendix. Extraluminal free air. Pelvic abscess 4×5cm. Diffuse peritoneal contamination."
+      },
+      "interpretation": {
+        "early":       "Gold standard imaging confirms uncomplicated appendicitis.",
+        "localized":   "CT confirms periappendiceal abscess formation.",
+        "perforation": "Free air + pelvic collection — open laparotomy and washout required."
+      }
+    },
+    {
+      "id": "lft", "name": "LFT", "fullName": "Liver Function Tests",
+      "time": 1, "cost": 250, "type": "dummy", "category": "Blood",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "Bilirubin 0.8 mg/dL (NL). AST 28 (NL). ALT 22 (NL). ALP 88 (NL). All within normal limits.",
+        "localized":   "LFT: All parameters within normal limits.",
+        "perforation": "ALP mildly elevated (non-specific in sepsis). Other parameters normal."
+      },
+      "interpretation": {
+        "early":       "Normal LFT — hepatic/biliary pathology unlikely. Not useful in this context.",
+        "localized":   "Normal LFT — no hepatic involvement.",
+        "perforation": "Mild non-specific changes from systemic sepsis."
+      }
+    },
+    {
+      "id": "xray", "name": "X-ray Abdomen", "fullName": "X-ray Abdomen Erect + Supine",
+      "time": 0.5, "cost": 150, "type": "useful", "category": "Imaging",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "No gas under diaphragm. No bowel obstruction. Rightward scoliosis (pain splinting). Non-diagnostic.",
+        "localized":   "Sentinel loop in RLQ. Slightly dilated loops — localised ileus. No free gas.",
+        "perforation": "Free gas under right dome of diaphragm — PNEUMOPERITONEUM. Confirms perforation."
+      },
+      "interpretation": {
+        "early":       "Normal X-ray does not exclude appendicitis. Poor sensitivity in early disease.",
+        "localized":   "Sentinel loop suggests localised peritoneal irritation.",
+        "perforation": "Free gas is a surgical emergency — immediate intervention required."
+      }
+    },
+    {
+      "id": "ecg", "name": "ECG", "fullName": "12-Lead ECG",
+      "time": 0.3, "cost": 100, "type": "dummy", "category": "Cardiac",
+      "stageAvailability": ["early","localized","perforation"],
+      "results": {
+        "early":       "Sinus tachycardia 94 bpm. No ST changes. Normal QRS. Normal axis.",
+        "localized":   "Sinus tachycardia 106 bpm. No ischaemic changes. Normal.",
+        "perforation": "Sinus tachycardia 128 bpm. No specific changes."
+      },
+      "interpretation": {
+        "early":       "Tachycardia consistent with pain/anxiety. ECG not indicated for this presentation.",
+        "localized":   "Tachycardia from sepsis. No primary cardiac pathology.",
+        "perforation": "Septic tachycardia. ECG not useful here."
+      }
+    }
+  ],
+
+  "diagnosisOptions": [
+    { "id": "appendicitis",    "label": "Acute Appendicitis",                  "correct": true },
+    { "id": "gastroenteritis", "label": "Acute Gastroenteritis",               "correct": false },
+    { "id": "renal_colic",     "label": "Right-sided Renal / Ureteric Colic",  "correct": false },
+    { "id": "mesenteric_ad",   "label": "Mesenteric Adenitis",                 "correct": false },
+    { "id": "meckels",         "label": "Meckel's Diverticulitis",             "correct": false },
+    { "id": "ibd",             "label": "Crohn's Disease (Terminal Ileitis)",  "correct": false },
+    { "id": "hernia",          "label": "Strangulated Inguinal Hernia",        "correct": false },
+    { "id": "psoas_abscess",   "label": "Psoas Abscess",                       "correct": false },
+    { "id": "right_colitis",   "label": "Right-sided Colitis / Caecal Mass",   "correct": false },
+    { "id": "testicular",      "label": "Testicular Torsion / Epididymo-orchitis", "correct": false }
+  ],
+  "correctDiagnosis": "appendicitis",
+
+  "managementOptions": {
+    "general": [
+      {
+        "id": "iv_fluids", "name": "IV Fluids", "fullName": "IV Crystalloids (Normal Saline / Ringer's Lactate)",
+        "cost": 100, "type": "supportive", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "Maintains hydration. Good pre-operative preparation.", "vitalEffect": { "hr": -3 } },
+          "localized":   { "note": "Essential resuscitation. Stabilises haemodynamics.", "vitalEffect": { "hr": -5 } },
+          "perforation": { "note": "Aggressive fluid resuscitation for septic shock.", "vitalEffect": { "hr": -10 } }
+        }
+      },
+      {
+        "id": "npo", "name": "Keep NPO", "fullName": "Nil Per Oral + NG Tube Insertion",
+        "cost": 60, "type": "preop", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "Correct pre-op preparation. Patient fasted for safe anaesthesia." },
+          "localized":   { "note": "NPO maintained. NG tube to decompress distended abdomen." },
+          "perforation": { "note": "NPO + NG decompression essential in peritonitis." }
+        }
+      },
+      {
+        "id": "analgesia", "name": "IV Analgesia", "fullName": "IV Tramadol 50mg (Pain Relief)",
+        "cost": 80, "type": "supportive", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "Pain relief administered. Humane care — does not mask diagnosis at this stage." },
+          "localized":   { "note": "IV analgesia given. Important for patient comfort." },
+          "perforation": { "note": "Morphine 5mg IV given. Part of sepsis management bundle." }
+        }
+      },
+      {
+        "id": "monitoring", "name": "Monitoring", "fullName": "Continuous Vitals + Urine Output Monitoring",
+        "cost": 50, "type": "supportive", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "Monitoring initiated. Watch for deterioration." },
+          "localized":   { "note": "Hourly vitals and urine output — important in peritonitis." },
+          "perforation": { "note": "ICU-level monitoring. Central line placed." }
+        }
+      },
+      {
+        "id": "antacid", "name": "Oral Antacid", "fullName": "Tab. Pantoprazole 40mg Oral",
+        "cost": 40, "type": "dummy", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "No benefit in appendicitis. Oral route contraindicated in NPO patient.", "penalty": 2 },
+          "localized":   { "note": "Inappropriate — patient is NPO. Oral medications contraindicated.", "penalty": 3 },
+          "perforation": { "note": "Wrong and harmful — oral medications in perforated viscus.", "penalty": 3 }
+        }
+      },
+      {
+        "id": "antispasmodic", "name": "Antispasmodic", "fullName": "Inj. Hyoscine Butylbromide IV",
+        "cost": 60, "type": "wrong", "repeatable": false,
+        "stageEffect": {
+          "early":       { "note": "Antispasmodics NOT indicated for appendicitis. May mask clinical signs.", "penalty": 5 },
+          "localized":   { "note": "Dangerous — masks worsening peritoneal signs. Significantly delays surgery.", "penalty": 10 },
+          "perforation": { "note": "Critically harmful — masks signs in deteriorating patient.", "penalty": 15 }
+        }
+      }
+    ],
+    "diseaseSpecific": {
+      "appendicitis": [
+        {
+          "id": "iv_antibiotics", "name": "IV Antibiotics", "fullName": "IV Ceftriaxone 1g + Metronidazole 500mg",
+          "cost": 200, "type": "supportive", "repeatable": false,
+          "stageEffect": {
+            "early":       { "note": "Prophylactic antibiotics before surgery. Slows bacterial progression.", "delayProgression": 1 },
+            "localized":   { "note": "Broad spectrum antibiotics essential before surgery.", "delayProgression": 0.5 },
+            "perforation": { "note": "IV antibiotics for bacteraemia. Necessary but not sufficient — surgery is mandatory." }
+          }
+        },
+        {
+          "id": "lap_appendectomy", "name": "Laparoscopic Appendectomy", "fullName": "Emergency Laparoscopic Appendectomy",
+          "cost": 900, "type": "curative", "repeatable": false,
+          "stageEffect": {
+            "early":       { "cure": true, "note": "Excellent! Laparoscopic appendectomy performed successfully. Minimal blood loss. Patient recovering well." },
+            "localized":   { "cure": true, "note": "Laparoscopic appendectomy completed. Peritoneal washout performed. Patient recovering." },
+            "perforation": { "blocked": true, "note": "Laparoscopic approach not safe after perforation with peritonitis. Use open laparotomy instead." }
+          }
+        },
+        {
+          "id": "open_appendectomy", "name": "Open Appendectomy", "fullName": "Emergency Open Laparotomy + Appendectomy",
+          "cost": 1100, "type": "curative", "repeatable": false,
+          "stageEffect": {
+            "early":       { "cure": true, "note": "Open appendectomy successful. Slightly more invasive than needed but good outcome." },
+            "localized":   { "cure": true, "note": "Open appendectomy with thorough washout performed. Patient recovering." },
+            "perforation": { "cure": true, "note": "Emergency open laparotomy performed. Appendix removed, abdomen washed out, drain placed. Patient in ICU — recovering." }
+          }
+        },
+        {
+          "id": "conservative", "name": "Antibiotics Only (Conservative)", "fullName": "Conservative Management — Antibiotics Only, No Surgery",
+          "cost": 300, "type": "wrong", "repeatable": false,
+          "stageEffect": {
+            "early":       { "note": "Suboptimal — conservative management has 25% failure rate. Surgery is the standard of care.", "penalty": 8 },
+            "localized":   { "note": "Wrong — conservative management is contraindicated in localised peritonitis.", "penalty": 15 },
+            "perforation": { "note": "Catastrophic error — antibiotics alone in perforated appendicitis leads to death.", "penalty": 30 }
+          }
+        },
+        {
+          "id": "obs_wait", "name": "Observe and Wait", "fullName": "Watchful Waiting — No Active Intervention",
+          "cost": 0, "type": "blunder", "repeatable": false,
+          "stageEffect": {
+            "early":       { "note": "BLUNDER — active observation without treatment in confirmed appendicitis directly accelerates perforation.", "penalty": 20 },
+            "localized":   { "note": "BLUNDER — waiting with established peritonitis. Patient deteriorating rapidly.", "penalty": 35 },
+            "perforation": { "note": "FATAL BLUNDER — no surgery in perforated appendicitis.", "penalty": 50, "endGame": true, "outcome": "transfer" }
+          }
+        }
+      ]
+    }
+  },
+
+  "correctManagement": ["iv_fluids","npo","analgesia","monitoring","iv_antibiotics","lap_appendectomy"],
+
+  "scoringRubric": {
+    "correctDiagnosis": 25, "timelyCure": 30, "costEfficiency": 15,
+    "correctTests": 15, "correctManagement": 15, "penaltyPerPoint": -1
+  },
+
+  "endMessages": {
+    "perfect":  "Outstanding! Rapid diagnosis with minimal cost and zero complications. Theatre-ready decision making.",
+    "good":     "Good work. Patient recovered well. Minor inefficiencies in test ordering or timing — review your approach.",
+    "average":  "Patient survived but management had errors. Delayed diagnosis or excess investigations slowed you down.",
+    "poor":     "Patient suffered serious complications from delayed or incorrect management. Review appendicitis guidelines thoroughly."
+  }
+}
