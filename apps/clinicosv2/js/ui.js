@@ -92,7 +92,8 @@ class ClinicalUI {
           </div>
           <div class="tab-panel" id="tab-general"></div>
           <div class="tab-panel" id="tab-diagnosis">
-            <div id="tab-diagnosiss"></div>
+            <div id="tab-diagnosiss"></div><br> <br>
+            <div class="disease-mgmt-label">DIAGNOSIS MANAGEMENT :</strong></div>
             <div id="tab-disease"></div>
           </div>
         </div>
@@ -207,7 +208,7 @@ class ClinicalUI {
   _renderTestsTab() {
     const cats = [...new Set(this.case.tests.map(t=>t.category))];
     const stage = this.engine.state.stage;
-    document.getElementById('tab-testss').innerHTML = `<div class="tests-container">` +
+    document.getElementById('tab-testss').innerHTML = `<br><div class="disease-mgmt-label">SELECT YOUR TESTS :</strong></div><div class="tests-container">` +
       cats.map(cat => {
         const tests = this.case.tests.filter(t=>t.category===cat);
         return `<div class="test-category"><div class="category-label">${cat}</div><div class="test-grid">
@@ -244,8 +245,8 @@ class ClinicalUI {
     if (badge) badge.textContent = done.length;
     const panel = document.getElementById('tab-results');
     if (!panel) return;
-    if (!done.length && !pend.length) { panel.innerHTML=`<div class="empty-state">No investigations ordered yet.</div>`; return; }
-    let html = '';
+    if (!done.length && !pend.length) { panel.innerHTML=`<br><div class="disease-mgmt-label">TEST REPORTS :</strong></div><div class="empty-state">No investigations ordered yet.</div>`; return; }
+    let html = '<br><div class="disease-mgmt-label">TEST REPORTS :</strong></div>';
     if (pend.length) {
       html += `<div class="results-section-label">⏳ Awaiting Results</div>`;
       html += pend.map(r => {
@@ -270,7 +271,8 @@ class ClinicalUI {
   _renderGeneralTab() {
     const given = this.engine.state.givenManagement.map(g=>g.id);
     const opts  = this.case.managementOptions.general || [];
-    document.getElementById('tab-general').innerHTML = `<div class="mgmt-container"><div class="mgmt-grid">` +
+    document.getElementById('tab-general').innerHTML = `
+            <br><div class="disease-mgmt-label">GENERAL MANAGEMENT :</strong></div><br><div class="mgmt-container"><div class="mgmt-grid">` +
       opts.map(m => {
         const isGiven = given.includes(m.id);
         const eff = m.stageEffect?.[this.engine.state.stage] || {};
@@ -296,8 +298,8 @@ class ClinicalUI {
     const opts = this.case.diagnosisOptions;
     document.getElementById('tab-diagnosiss').innerHTML = `
       <div class="diagnosis-container">
-        <div class="diagnosis-prompt">Select your working diagnosis. You can change it at any time — the final selection at case end is scored.</div>
-        <div class="diagnosis-info-box">🔒 The <strong>Treatment</strong> tab unlocks after you select a diagnosis.</div>
+        <br><div class="disease-mgmt-label">SELECT YOUR DIAGNOSIS :</strong></div>
+        <div class="diagnosis-info-box">🔒 The <strong>Treatment</strong> tab unlocks after you select a diagnosis. You can change it at any time, the final selection at case end is scored.</div>
         <div class="diagnosis-options">
           ${opts.map(o=>`<div class="diagnosis-option ${cur===o.id?'selected':''}" data-did="${o.id}">
             <div class="diag-radio ${cur===o.id?'filled':''}"></div>
@@ -333,7 +335,6 @@ class ClinicalUI {
 
     panel.innerHTML = `<div class="mgmt-container">
       <div class="disease-mgmt-header">
-        <div class="disease-mgmt-label">Managing: <strong>${diagLabel}</strong></div>
         <div class="disease-mgmt-warning">⚠️ Wrong treatments and blunders incur score penalties. Blunders may end the case.</div>
       </div>
       <div class="mgmt-grid">` +
