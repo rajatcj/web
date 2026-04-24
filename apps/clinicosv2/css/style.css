@@ -201,7 +201,7 @@ button{cursor:pointer;font-family:inherit}
 .patient-avatar svg{width:26px;height:26px}
 .patient-info{flex:1;width:0}
 .patient-name{font-family:var(--mono);font-size:10px;color:var(--text-mid);letter-spacing:.04em}
-.patient-complaint{font-family:var(--display);font-size:.88rem;font-style:italic;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.patient-complaint{font-family:var(--display);font-size:.88rem;font-style:italic;color:var(--text-hi);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top: 10px;}
 .stage-glow-wrap{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .stage-glow{width:10px;height:10px;border-radius:50%;flex-shrink:0;transition:all .5s}
 .glow-yellow{background:var(--amber);box-shadow:var(--glow-y)}
