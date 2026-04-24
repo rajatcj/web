@@ -93,7 +93,6 @@ class ClinicalUI {
           <div class="tab-panel" id="tab-general"></div>
           <div class="tab-panel" id="tab-diagnosis">
             <div id="tab-diagnosiss"></div><br> <br>
-            <div class="disease-mgmt-label">DIAGNOSIS MANAGEMENT :</strong></div>
             <div id="tab-disease"></div>
           </div>
         </div>
@@ -272,7 +271,7 @@ class ClinicalUI {
     const given = this.engine.state.givenManagement.map(g=>g.id);
     const opts  = this.case.managementOptions.general || [];
     document.getElementById('tab-general').innerHTML = `
-            <br><div class="disease-mgmt-label">GENERAL MANAGEMENT :</strong></div><br><div class="mgmt-container"><div class="mgmt-grid">` +
+            <br><div class="disease-mgmt-label">GENERAL MANAGEMENT :</strong></div><br><div class="mgmt-container" style="width:100%"><div class="mgmt-grid">` +
       opts.map(m => {
         const isGiven = given.includes(m.id);
         const eff = m.stageEffect?.[this.engine.state.stage] || {};
@@ -306,7 +305,7 @@ class ClinicalUI {
             <div class="diag-label">${o.label}</div>
           </div>`).join('')}
         </div>
-        <div class="diag-current">${cur?`Working Dx: <strong>${opts.find(o=>o.id===cur)?.label}</strong>`:'No diagnosis selected'}</div>
+        <div class="diag-current">${cur?`Working Dx: <strong>${opts.find(o=>o.id===cur)?.label}</strong>`:'No diagnosis selected'}</div><br><br>
       </div>`;
 
     document.querySelectorAll('.diagnosis-option').forEach(el => el.addEventListener('click', () => {
@@ -334,6 +333,7 @@ class ClinicalUI {
     const stage = this.engine.state.stage;
 
     panel.innerHTML = `<div class="mgmt-container">
+            <div class="disease-mgmt-label">DIAGNOSIS MANAGEMENT :</strong></div>
       <div class="disease-mgmt-header">
         <div class="disease-mgmt-warning">⚠️ Wrong treatments and blunders incur score penalties. Blunders may end the case.</div>
       </div>

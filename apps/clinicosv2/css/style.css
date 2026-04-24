@@ -346,7 +346,7 @@ button{cursor:pointer;font-family:inherit}
 .lock-desc{font-size:.8rem;color:var(--text-mid);max-width:300px;line-height:1.55}
 
 /* diagnosis */
-.diagnosis-container{display:flex;flex-direction:column;gap:13px;max-width:540px}
+.diagnosis-container{display:flex;flex-direction:column;gap:13px}
 .diagnosis-prompt{font-family:var(--display);font-size:1rem;font-style:italic;color:var(--text-hi);line-height:1.45}
 .diagnosis-info-box{font-size:.77rem;color:var(--text-mid);line-height:1.55;background:var(--ibg);border:1px solid rgba(61,168,245,.2);padding:9px 12px;border-radius:var(--r2)}
 .diagnosis-options{display:flex;flex-direction:column;gap:5px}
@@ -358,6 +358,19 @@ button{cursor:pointer;font-family:inherit}
 .diag-label{font-size:.86rem;color:var(--text-hi)}
 .diag-current{font-family:var(--mono);font-size:10px;color:var(--text-lo)}
 .diag-current strong{color:var(--blue)}
+
+.diagnosis-container {
+  float: left;
+  width: 49%;
+  margin-right: 2%;
+  box-sizing: border-box;
+}
+
+.mgmt-container {
+  float: left;
+  width: 49%;
+  box-sizing: border-box;
+}
 
 /* empty state */
 .empty-state{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-align:center;padding:40px 20px;letter-spacing:.04em}
@@ -555,6 +568,11 @@ button{cursor:pointer;font-family:inherit}
     order: 999; /* 👈 pushes it to bottom */
   }
   
+  .diagnosis-container,
+  .mgmt-container {
+    float: none;
+    width: 100%;
+  }
 }
 
 
