@@ -39,14 +39,30 @@ function homeHTML(cases) {
       <div class="topbar-logo">
         <div class="logo-icon">🩺</div>
         <div>
-          <div class="logo-text">Clinical Simulation OS</div>
+          <div class="logo-text">Clinical Simulation Engine</div>
           <div class="logo-sub">Medical Decision Engine</div>
         </div>
       </div>
       <div class="topbar-right">
-        <div class="topbar-badge">● SYSTEM ONLINE</div>
+        <div class="topbar-badge" 
+          style="cursor:pointer;"
+          onclick="window.open('https://rajatcj.com?sim', '_blank')"> ● RAJATCJ.COM</div>
       </div>
     </nav>
+
+
+    <section class="home-hero">
+      <div class="hero-eyebrow">MBBS Clinical Training Platform</div>
+      <h1 class="hero-title">Make decisions.<br/><em>Watch consequences unfold.</em></h1>
+      <p class="hero-sub">Realtime patient simulation. Order investigations, prescribe treatment, and race against disease progression, every decision has consequences.</p>
+    </section>
+
+    <div class="home-stats">
+      <div class="home-stat"><div class="home-stat-value">${cases.length}</div><div class="home-stat-label">New Cases</div></div>
+      <div class="home-stat"><div class="home-stat-value">xxx</div><div class="home-stat-label">Levels Played</div></div>
+      <div class="home-stat"><div class="home-stat-value">xxx</div><div class="home-stat-label">Total Levels</div></div>
+      <div class="home-stat"><div class="home-stat-value">xxx</div><div class="home-stat-label">Total Visitors</div></div>
+    </div><br>
 
     <div class="home-filters">
       <span class="filter-label">Filter:</span>
@@ -55,19 +71,6 @@ function homeHTML(cases) {
       ${diffs.map(d => `<button class="filter-btn" data-filter="diff:${d}">${d}</button>`).join('')}
       <div class="filter-sep"></div>
       ${systems.map(s => `<button class="filter-btn" data-filter="sys:${s}">${s}</button>`).join('')}
-    </div>
-
-    <section class="home-hero">
-      <div class="hero-eyebrow">MBBS Clinical Training Platform</div>
-      <h1 class="hero-title">Make decisions.<br/><em>Watch consequences unfold.</em></h1>
-      <p class="hero-sub">Real-time patient simulation. Order investigations, prescribe treatment, and race against disease progression — every decision has consequences.</p>
-    </section>
-
-    <div class="home-stats">
-      <div class="home-stat"><div class="home-stat-value">${cases.length}</div><div class="home-stat-label">Live Cases</div></div>
-      <div class="home-stat"><div class="home-stat-value">1s = 1min</div><div class="home-stat-label">Time Ratio</div></div>
-      <div class="home-stat"><div class="home-stat-value">Dynamic</div><div class="home-stat-label">Progression</div></div>
-      <div class="home-stat"><div class="home-stat-value">Scored</div><div class="home-stat-label">Outcomes</div></div>
     </div>
 
     <section class="home-cases-section">
@@ -81,7 +84,7 @@ function homeHTML(cases) {
       </div>
     </section>
 
-    <footer class="home-footer">FOR EDUCATIONAL PURPOSES ONLY · NOT FOR CLINICAL USE · CLINICAL SIM OS v2.0 · guest_001</footer>
+    <footer class="home-footer">FOR EDUCATIONAL PURPOSES ONLY · NOT FOR CLINICAL USE · CLINICAL SIM OS v2.0 · By <a style="color:#555555; text-decoration: underline;" href="https://rajatcj.com">RAJAT CJ</a></footer>
   </div>`;
 }
 
