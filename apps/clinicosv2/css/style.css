@@ -196,7 +196,7 @@ button{cursor:pointer;font-family:inherit}
 .btn-end:hover{color:var(--text-mid);border-color:var(--border-lo)}
 
 /* patient banner */
-.patient-banner{grid-area:ban;display:flex;align-items:center;gap:13px;padding:5px 16px;background:var(--bg-panel);border-bottom:1px solid var(--border)}
+.patient-banner{grid-area:ban;display:flex;align-items:center;gap:13px;padding:5px 16px;background:#091814;border-bottom:1px solid var(--border)}
 .patient-avatar{width:38px;height:38px;flex-shrink:0;background:var(--bg-up);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-mid)}
 .patient-avatar svg{width:26px;height:26px}
 .patient-info{flex:1;width:0}
@@ -220,7 +220,10 @@ button{cursor:pointer;font-family:inherit}
 
 /* game body */
 .game-body{grid-area:body;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-base)}
+
 .tab-bar{display:flex;background:var(--bg-panel);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;}
+
+
 .tab-bar::-webkit-scrollbar{height:2px}
 .tab-btn{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.04em;padding:0 15px;height:var(--tab);background:none;border:none;border-bottom:2px solid transparent;color:var(--text-lo);white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:5px;  flex: 1;              /* 👈 each button grows equally */
   text-align: center; align-items: center;
@@ -543,7 +546,19 @@ button{cursor:pointer;font-family:inherit}
 
   .tab-label-full  { display: none; }
   .tab-label-emoji { display: inline; }
+
+  .game-body {
+    flex-direction: column;
+  }
+
+.tab-bar {
+    order: 999; /* 👈 pushes it to bottom */
+  }
+  
 }
+
+
+
 
 @media (max-width: 420px) {
   .tab-btn { padding: 0 4px; }

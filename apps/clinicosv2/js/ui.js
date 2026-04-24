@@ -73,12 +73,21 @@ class ClinicalUI {
           <div class="patient-stage-badge stage-badge-yellow" id="stage-badge"><span id="stage-badge-text">—</span></div>
         </div>
       </div>
+      
+
 
       <div class="game-body">
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="history">CASE</button>
+          <button class="tab-btn" data-tab="tests">TESTS<span class="badge" id="results-badge">0</span></button>
+          <!--<button class="tab-btn" data-tab="results">RESULTS<span class="badge" id="results-badge">0</span></button>-->
+          <button class="tab-btn" data-tab="general">MANAGEMENET</button>
+          <button class="tab-btn" data-tab="diagnosis">DIAGNOSIS</button>
+        </div>
         <div class="tab-content">
           <div class="tab-panel active" id="tab-history"></div>
           <div class="tab-panel" id="tab-tests">
-            <div id="tab-results"></div>
+            <div id="tab-results"></div> <br><br><br>
             <div id="tab-testss"></div>
           </div>
           <div class="tab-panel" id="tab-general"></div>
@@ -87,13 +96,6 @@ class ClinicalUI {
             <div id="tab-disease"></div>
           </div>
         </div>
-        <div class="tab-bar">
-          <button class="tab-btn active" data-tab="history">CASE</button>
-          <button class="tab-btn" data-tab="tests">TESTS<span class="badge" id="results-badge">0</span></button>
-          <!--<button class="tab-btn" data-tab="results">RESULTS<span class="badge" id="results-badge">0</span></button>-->
-          <button class="tab-btn" data-tab="general">MANAGEMENET</button>
-          <button class="tab-btn" data-tab="diagnosis">DIAGNOSIS</button>
-          </div>
       </div>
 
       <aside class="log-panel">
@@ -105,7 +107,7 @@ class ClinicalUI {
     <div class="modal-overlay hidden" id="modal-jump">
       <div class="modal">
         <div class="modal-title">⏩ Skip Time</div>
-        <p class="modal-desc">Advance simulation time. Disease evolves — pending results arrive if due.</p>
+        <p class="modal-desc">Advance simulation time. Pending results arrive if due, disease evolve.</p>
         <div class="jump-options">
           <button class="jump-btn" data-h="0.5">+30 min</button>
           <button class="jump-btn" data-h="1">+1 hour</button>
