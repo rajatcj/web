@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Daily Mantra Flow</title>
+<meta name="theme-color" content="#09090f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090f;--s1:#0f0f1b;--s2:#141424;--s3:#1c1c30;
+  --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.11);
+  --violet:#8b5cf6;--pink:#ec4899;--cyan:#06b6d4;
+  --green:#10b981;--red:#ef4444;
+  --text:#f0eeff;--muted:#6b6882;--muted2:#9d9ab5;
+  --radius:20px;--rsm:14px;
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100dvh;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.6;}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-box{width:100%;max-width:360px;background:var(--s1);border:1px solid var(--border2);border-radius:var(--radius);padding:32px 28px;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.8);}
+.login-om{font-size:48px;margin-bottom:14px;}
+.login-box h2{font-size:22px;font-weight:800;margin-bottom:6px;background:linear-gradient(135deg,var(--text),var(--muted2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.login-box p{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;}
+.user-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;text-align:left;}
+.user-pill{background:var(--s2);border:1px solid var(--border2);border-radius:var(--rsm);padding:11px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s;font-size:13px;font-weight:700;}
+.user-pill:hover{border-color:var(--violet);background:rgba(139,92,246,.08);}
+.up-meta{font-size:10px;color:var(--muted);font-weight:400;font-family:'JetBrains Mono',monospace;}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;margin:10px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.fi{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--rsm);padding:12px 14px;font-family:inherit;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;margin-bottom:10px;}
+.fi:focus{border-color:var(--violet);}
+
+/* ── MAIN APP ── */
+.wrap{max-width:960px;margin:0 auto;padding:20px 20px 30px;position:relative;z-index:1;}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:max(env(safe-area-inset-top),16px) 0 0;}
+.hdr-left{display:flex;flex-direction:column;gap:2px;}
+.hdr-greeting{font-size:13px;font-weight:700;color:var(--muted2);}
+.hdr-greeting span{color:var(--violet);}
+.hdr-time{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;letter-spacing:-.5px;}
+.hdr-day{font-size:11px;color:var(--muted);margin-top:1px;}
+.sim-tag{display:inline-block;margin-top:3px;padding:2px 8px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:999px;font-size:10px;font-weight:700;color:#a78bfa;letter-spacing:.04em;}
+.hdr-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.day-sel-wrap{display:flex;align-items:center;gap:7px;}
+.day-sel-wrap label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+select{background:var(--s1);color:var(--text);padding:7px 12px;border-radius:10px;border:1px solid var(--border2);font-family:inherit;font-weight:700;font-size:12px;outline:none;cursor:pointer;transition:border-color .2s;}
+select:focus{border-color:var(--violet);}
+.switch-btn{background:var(--s2);border:1px solid var(--border2);color:var(--muted2);border-radius:10px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.switch-btn:hover{border-color:var(--violet);color:var(--violet);}
+
+/* ── LAYOUT ── */
+.main{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-top:16px;}
+@media(max-width:860px){.main{grid-template-columns:1fr;}.right-col{order:2;}}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.5);overflow:hidden;position:relative;}
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);pointer-events:none;}
+.panel{padding:16px 18px;border-bottom:1px solid var(--border);position:relative;}
+.panel:last-child{border-bottom:none;}
+.section-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.section-title::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--violet);}
+
+/* ── ACTIVE PANEL ── */
+.mantra-name{font-weight:800;font-size:22px;background:linear-gradient(135deg,var(--text),var(--muted2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;}
+.mantra-full{color:var(--muted2);font-size:12px;margin-top:6px;line-height:1.6;}
+.skip-btn{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--muted2);padding:4px 11px;border-radius:999px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;}
+.skip-btn:hover{background:rgba(255,255,255,.08);color:var(--text);}
+
+/* ── COUNTER ── */
+.big-count{font-family:'JetBrains Mono',monospace;font-size:56px;font-weight:700;line-height:1;background:linear-gradient(135deg,#a78bfa,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.counter-text{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted2);margin-top:3px;}
+
+/* ── GITA CARD ── */
+.gita-card{background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(6,182,212,.04));border:1px solid rgba(139,92,246,.15);border-radius:16px;padding:16px;margin-top:10px;}
+.gita-ref{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px;}
+.gita-sanskrit{font-size:17px;line-height:1.9;color:var(--text);font-weight:600;margin-bottom:10px;}
+.gita-translit{font-family:'JetBrains Mono',monospace;font-size:12px;color:#a78bfa;line-height:1.8;margin-bottom:10px;font-style:italic;}
+.gita-meaning{font-size:13px;color:var(--muted2);line-height:1.65;border-top:1px solid var(--border);padding-top:10px;}
+.gita-loading{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+.gita-nav-row{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.verse-info{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);flex:1;}
+.edit-gita-btn{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);color:#a78bfa;border-radius:8px;padding:5px 12px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;}
+.edit-gita-btn:hover{background:rgba(139,92,246,.2);}
+
+/* ── PICKER MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(14px);z-index:400;display:none;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;animation:ovIn .2s ease;}
+@keyframes ovIn{from{opacity:0}to{opacity:1}}
+.sheet{background:var(--s1);border:1px solid var(--border2);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:16px 20px calc(env(safe-area-inset-bottom)+28px);animation:shUp .3s cubic-bezier(.34,1.15,.64,1);}
+@keyframes shUp{from{transform:translateY(100%)}to{transform:none}}
+.sh-handle{width:36px;height:4px;background:var(--s3);border-radius:2px;margin:0 auto 18px;}
+.sh-title{font-size:17px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.sh-close{width:28px;height:28px;border-radius:50%;background:var(--s2);border:none;color:var(--muted);font-size:13px;cursor:pointer;display:grid;place-items:center;}
+.picker-row{display:flex;gap:10px;margin-bottom:10px;}
+.picker-field{display:flex;flex-direction:column;gap:5px;flex:1;}
+.picker-field label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+.picker-field select{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 12px;font-family:inherit;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;}
+.picker-field select:focus{border-color:var(--violet);}
+.verse-preview{font-size:12px;color:var(--muted2);line-height:1.5;padding:10px 12px;background:rgba(139,92,246,.06);border-radius:10px;margin-bottom:12px;min-height:38px;}
+
+/* ── SIDEBAR ── */
+.sidebar-title{padding:14px 16px 2px;font-size:14px;font-weight:800;}
+.sidebar-sub{padding:2px 16px 10px;font-size:10px;color:var(--muted);}
+.list{display:flex;flex-direction:column;gap:5px;}
+.item{padding:9px 11px;border-radius:11px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:all .14s;border:1px solid transparent;}
+.item:hover{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.15);}
+.item.active-item{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.25);}
+.item .name{font-weight:700;font-size:13px;}
+.item .meta{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;}
+
+/* ── BUTTONS ── */
+button{font-family:inherit;cursor:pointer;transition:all .17s;}
+button:active{transform:scale(.94);}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;border:none;border-radius:14px;padding:13px 28px;font-size:14px;font-weight:700;box-shadow:0 4px 20px rgba(124,58,237,.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5);}
+.btn-counter{background:var(--s2);border:1px solid var(--border2);color:var(--text);border-radius:14px;padding:12px 28px;font-size:20px;font-weight:800;}
+.btn-counter:hover{background:var(--s3);border-color:rgba(139,92,246,.4);}
+.btn-next{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;border:none;border-radius:14px;padding:12px 28px;font-size:14px;font-weight:700;box-shadow:0 4px 16px rgba(124,58,237,.3);}
+.btn-choice{background:var(--s2);border:1px solid rgba(139,92,246,.3);border-radius:12px;padding:12px 24px;font-size:15px;font-weight:800;color:#a78bfa;}
+.btn-choice:hover{background:rgba(139,92,246,.15);}
+.big-btn{width:100%;border:none;border-radius:var(--rsm);padding:14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:10px;color:#fff;background:linear-gradient(135deg,#7c3aed,#ec4899);box-shadow:0 4px 16px rgba(124,58,237,.3);}
+.big-btn:hover{transform:translateY(-1px);}
+
+/* ── PROGRESS ── */
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.progress-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+.progress-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);}
+.progress{height:5px;background:rgba(255,255,255,.04);border-radius:999px;overflow:hidden;}
+.progress>i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:999px;transition:width .3s ease;}
+
+/* ── MISC ── */
+.prefix-note{padding:9px 13px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:11px;font-size:11px;color:#a78bfa;line-height:1.5;}
+.all-done-msg{text-align:center;padding:24px 0;}
+.done-emoji{font-size:44px;margin-bottom:10px;}
+.done-title{font-size:20px;font-weight:800;margin-bottom:5px;}
+.done-sub{font-size:12px;color:var(--muted2);margin-bottom:16px;}
+.next-wrap{display:flex;justify-content:center;margin-top:12px;}
+</style>
+</head>
+<body>
+
+<!-- ════════════ LOGIN SCREEN ════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-om">🕉️</div>
+    <h2>Daily Mantra Flow</h2>
+    <p>Who is chanting today?</p>
+    <div class="user-list" id="savedUsers"></div>
+    <div class="divider" id="newUserDiv">or add new</div>
+    <input class="fi" id="nameInput" type="text" placeholder="Enter your name…" autocomplete="off" maxlength="30">
+    <button class="big-btn" id="loginBtn">Begin →</button>
+  </div>
+</div>
+
+<!-- ════════════ MAIN APP ════════════ -->
+<div id="appRoot" style="display:none">
+<div class="wrap">
+  <header>
+    <div class="hdr-left">
+      <div class="hdr-greeting">Jai Shree Krishna, <span id="greetName">–</span> 🙏</div>
+      <div class="hdr-time" id="hdrTime">--:--:--</div>
+      <div class="hdr-day" id="hdrDay">Loading…</div>
+      <div id="simTag" class="sim-tag" style="display:none"></div>
+    </div>
+    <div class="hdr-right">
+      <div class="day-sel-wrap">
+        <label for="daySelect">Day</label>
+        <select id="daySelect">
+          <option value="sun">Sunday</option>
+          <option value="mon">Monday</option>
+          <option value="tue">Tuesday</option>
+          <option value="wed">Wednesday</option>
+          <option value="thu">Thursday</option>
+          <option value="fri">Friday</option>
+          <option value="sat">Saturday</option>
+        </select>
+      </div>
+      <button class="switch-btn" id="switchBtn">⇄ Switch</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- LEFT: active flow -->
+    <div>
+      <div class="card">
+        <div class="panel" id="activePanel">
+          <button class="skip-btn" id="skipBtn" style="display:none">Skip ›</button>
+          <div class="mantra-name" id="activeName">Ready to begin?</div>
+          <div class="mantra-full" id="activeFull">Press Start when ready.</div>
+          <div id="activityArea" style="margin-top:12px"></div>
+          <div class="next-wrap">
+            <button id="startFlow" class="btn-primary">▶ Start Flow</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="progress-row">
+            <div class="progress-label">Session progress</div>
+            <div class="progress-count" id="progressText">–</div>
+          </div>
+          <div class="progress"><i id="bar" style="width:0%"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: sidebar -->
+    <div class="right-col">
+      <div class="card">
+        <div class="sidebar-title">Today's Mantras</div>
+        <div class="sidebar-sub" id="sidebarSub">Daily list</div>
+        <div style="padding:0 10px 14px">
+          <div class="list" id="listSidebar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════ GITA PICKER MODAL ════════════ -->
+<div class="overlay" id="gitaOverlay">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <div class="sh-title">
+      Set Gita Position
+      <button class="sh-close" id="gitaClose">✕</button>
+    </div>
+    <div class="picker-row">
+      <div class="picker-field">
+        <label>Chapter (1–18)</label>
+        <select id="pickerCh"></select>
+      </div>
+      <div class="picker-field">
+        <label>Verse</label>
+        <select id="pickerVs"></select>
+      </div>
+    </div>
+    <div class="verse-preview" id="versePreview">Select a chapter to preview.</div>
+    <button class="big-btn" id="saveGitaBtn">Save Position</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════
+const CHAPTER_VERSES = [47,72,43,42,29,47,30,28,34,42,55,20,35,27,20,24,28,78];
+
+const BASE_MANTRAS = [
+  {id:'sai',        name:'Sai Baba',              type:'activity', full:'Om Shri Sai Nathaya Namah'},
+  {id:'gayatri',    name:'Gayatri',               type:'chant',    full:'Om Bhur Bhuva Swaha.. Tat Savitur Varenyam.. Bhargo Devasya Dheemahi.. Dhiyo Yo Nah Prachodayat..', count:{default:3,sat:11}},
+  {id:'shiv',       name:'Shiva',                 type:'chant',    full:'Om Namah Shivaya',               count:{default:11,mon:108}},
+  {id:'shani',      name:'Saturn / Shani',        type:'chant',    full:'Om Sham Shanicharaya Namah',     count:{default:11,sat:21}},
+  {id:'budha',      name:'Mercury / Budha',       type:'chant',    full:'Om Braam Brim Broum Sah Budhaya Namah', count:{default:11}},
+  {id:'chandra',    name:'Moon / Chandra',        type:'chant',    full:'Om Chandraya Namah',             count:{default:21}, days:['mon']},
+  {id:'gan',        name:'Ganesh',                type:'chant',    full:'Om Gan Ganapataye Namah',        count:{default:21}, days:['tue']},
+  {id:'rahu',       name:'Rahu',                  type:'chant',    full:'Om Rahave Namah',                count:{default:11}, days:['wed','sat']},
+  {id:'brihaspati', name:'Jupiter / Brihaspati',  type:'chant',    full:'Om Brim Brihaspataye Namah',     count:{default:21}, days:['thu']},
+  {id:'gita',       name:'Bhagavad Gita',         type:'gita'},
+  {id:'hare',       name:'Hare Krishna',          type:'chant',    full:'Hare Kṛṣṇa Hare Kṛṣṇa Kṛṣṇa Kṛṣṇa Hare Hare.. Hare Rāma Hare Rāma Rāma Rāma Hare Hare', count:{default:216}, isHare:true}
+];
+
+// ═══════════════════════════════════════
+// USER STORAGE (per-user namespace)
+// ═══════════════════════════════════════
+const userListKey = () => 'mantra_users';
+const userKey     = n  => 'mantra_user_' + n;
+
+function allUsers(){ return JSON.parse(localStorage.getItem(userListKey()) || '[]'); }
+function saveUserList(arr){ localStorage.setItem(userListKey(), JSON.stringify(arr)); }
+function getUser(name){ return JSON.parse(localStorage.getItem(userKey(name)) || 'null'); }
+function saveUser(name, data){
+  localStorage.setItem(userKey(name), JSON.stringify(data));
+  const list = allUsers();
+  if(!list.includes(name)){ list.push(name); saveUserList(list); }
+}
+function defaultUserData(name){
+  return { name, gita:{ chapter:1, verse:1, lastRead:null } };
+}
+
+// ═══════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════
+let currentUser   = null;
+let todays        = [];
+let idx           = 0;
+let sessionStarted= false;
+let currentDayKey = weekdayKey(nowKTM());
+let session       = { count:0, goal:0 };
+let clockInterval = null;
+
+// ═══════════════════════════════════════
+// TIME HELPERS
+// ═══════════════════════════════════════
+const TZ = 'Asia/Kathmandu';
+function nowKTM(){ return new Date(new Date().toLocaleString('en-US',{timeZone:TZ})); }
+function weekdayKey(d){ return ['sun','mon','tue','wed','thu','fri','sat'][d.getDay()]; }
+const DAY_NAMES = {sun:'Sunday',mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday'};
+
+// ═══════════════════════════════════════
+// LOGIN UI
+// ═══════════════════════════════════════
+const loginScreen = document.getElementById('loginScreen');
+const appRoot     = document.getElementById('appRoot');
+
+function renderLoginScreen(){
+  const users = allUsers();
+  const savedUsersEl = document.getElementById('savedUsers');
+  const newUserDiv   = document.getElementById('newUserDiv');
+  savedUsersEl.innerHTML = '';
+  if(users.length === 0){ newUserDiv.style.display = 'none'; return; }
+  newUserDiv.style.display = '';
+  users.forEach(name => {
+    const u = getUser(name);
+    const g = u?.gita;
+    const pill = document.createElement('div');
+    pill.className = 'user-pill';
+    pill.innerHTML = `<span>${name}</span><span class="up-meta">Gita ${g ? g.chapter+'.'+g.verse : '1.1'}</span>`;
+    pill.onclick = () => loginAs(name);
+    savedUsersEl.appendChild(pill);
+  });
+}
+
+document.getElementById('loginBtn').onclick = () => {
+  const name = document.getElementById('nameInput').value.trim();
+  if(!name) return;
+  if(!getUser(name)) saveUser(name, defaultUserData(name));
+  loginAs(name);
+};
+document.getElementById('nameInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('loginBtn').click();
+});
+
+function loginAs(name){
+  let u = getUser(name);
+  if(!u){ u = defaultUserData(name); saveUser(name, u); }
+  currentUser = u;
+  loginScreen.style.display = 'none';
+  appRoot.style.display = 'block';
+  document.getElementById('greetName').textContent = name;
+  initApp();
+}
+
+document.getElementById('switchBtn').onclick = () => {
+  // stop clock before switching
+  if(clockInterval){ clearInterval(clockInterval); clockInterval = null; }
+  appRoot.style.display = 'none';
+  loginScreen.style.display = 'flex';
+  document.getElementById('nameInput').value = '';
+  renderLoginScreen();
+};
+
+// ═══════════════════════════════════════
+// APP INIT
+// ═══════════════════════════════════════
+function initApp(){
+  currentDayKey = weekdayKey(nowKTM());
+  document.getElementById('daySelect').value = currentDayKey;
+  buildTodays(currentDayKey);
+  refreshClock();
+  clockInterval = setInterval(refreshClock, 1000);
+}
+
+function refreshClock(){
+  const d = nowKTM();
+  document.getElementById('hdrTime').textContent = d.toLocaleTimeString('en-US',{hour12:false,timeZone:TZ});
+  document.getElementById('hdrDay').textContent  = d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',year:'numeric',timeZone:TZ});
+}
+
+// ═══════════════════════════════════════
+// BUILD DAY / SIDEBAR
+// ═══════════════════════════════════════
+function effectiveCount(m, key){
+  if(!m.count) return null;
+  if(m.count[key] !== undefined) return m.count[key];
+  return m.count.default ?? null;
+}
+
+function buildTodays(key){
+  currentDayKey = key;
+  todays = BASE_MANTRAS.filter(m => !m.days || m.days.includes(key));
+  renderSidebar();
+  updateSimTag();
+}
+
+function updateSimTag(){
+  const real = weekdayKey(nowKTM());
+  const tag  = document.getElementById('simTag');
+  if(currentDayKey !== real){
+    tag.style.display = 'inline-block';
+    tag.textContent   = 'Simulating ' + DAY_NAMES[currentDayKey];
+  } else {
+    tag.style.display = 'none';
+  }
+  document.getElementById('sidebarSub').textContent =
+    currentDayKey === real ? 'Daily mantra schedule' : 'Schedule for ' + DAY_NAMES[currentDayKey];
+}
+
+function renderSidebar(){
+  const sb = document.getElementById('listSidebar');
+  sb.innerHTML = '';
+  todays.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'item' + (sessionStarted && i===idx ? ' active-item' : '');
+    let metaStr;
+    if(m.type === 'gita'){
+      const g = currentUser?.gita;
+      metaStr = g ? `Ch.${g.chapter} v.${g.verse}` : '1.1';
+    } else if(m.type === 'chant'){
+      metaStr = effectiveCount(m, currentDayKey) + '×';
+    } else {
+      metaStr = 'Activity';
+    }
+    div.innerHTML = `<div class="name">${m.name}</div><div class="meta" id="meta-${m.id}">${metaStr}</div>`;
+    div.onclick = () => { if(sessionStarted){ idx=i; showActive(); } };
+    sb.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════
+// ACTIVE PANEL
+// ═══════════════════════════════════════
+const activeName   = document.getElementById('activeName');
+const activeFull   = document.getElementById('activeFull');
+const activityArea = document.getElementById('activityArea');
+const startFlow    = document.getElementById('startFlow');
+const skipBtn      = document.getElementById('skipBtn');
+const progressText = document.getElementById('progressText');
+const bar          = document.getElementById('bar');
+
+function showActive(){
+  const m = todays[idx];
+  if(!m) return;
+
+  activeName.textContent = m.name;
+  activeFull.textContent = m.type === 'gita'
+    ? 'Bhagavad Gita — today\'s shloka'
+    : (m.full || '');
+  activityArea.innerHTML = '';
+  session.count = 0; session.goal = 0;
+  skipBtn.style.display = 'block';
+  skipBtn.onclick = advance;
+
+  if(m.type === 'gita')         renderGitaPanel();
+  else if(m.type === 'activity') advanceButton();
+  else if(m.type === 'chant'){
+    session.goal = effectiveCount(m, currentDayKey);
+    if(m.isHare) renderHareChoice(m);
+    else          renderCounter(m);
+  }
+  highlightActive();
+  updateProgress();
+}
+
+// ─── GITA PANEL ───────────────────────
+function renderGitaPanel(){
+  const g   = currentUser.gita;
+  const div = document.createElement('div');
+  div.innerHTML = `<div class="gita-loading">Loading ${g.chapter}.${g.verse}…</div>`;
+  activityArea.appendChild(div);
+
+  fetchGitaVerse(g.chapter, g.verse).then(data => {
+    if(!data){
+      div.innerHTML = '<div class="gita-loading" style="color:var(--red)">Could not load verse. Check connection.</div>';
+      advanceButtonInto(div); return;
+    }
+    // pick best English translation available in the response
+    const transl = (
+      data.siva?.et || data.tej?.et || data.purohit?.et ||
+      data.rams?.et || data.san?.et || '(Translation not available)'
+    ).replace(/\n/g,'<br>');
+
+    div.innerHTML = `
+      <div class="gita-card">
+        <div class="gita-ref">Bhagavad Gita · Chapter ${g.chapter}, Verse ${g.verse}</div>
+        <div class="gita-sanskrit">${data.slok.replace(/\|+/g,'।').replace(/\n/g,'<br>')}</div>
+        <div class="gita-translit">${data.transliteration.replace(/\n/g,'<br>')}</div>
+        <div class="gita-meaning">${transl}</div>
+        <div class="gita-nav-row">
+          <span class="verse-info">${g.chapter}.${g.verse} of ${CHAPTER_VERSES[g.chapter-1]} in ch.${g.chapter}</span>
+          <button class="edit-gita-btn" id="editGitaBtn">✏ Change position</button>
+        </div>
+      </div>`;
+
+    document.getElementById('editGitaBtn').onclick = openGitaPicker;
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-next';
+    btn.style.cssText = 'margin-top:12px;display:block;';
+    btn.textContent = 'Done reading · Next ›';
+    btn.onclick = () => { advanceGitaPosition(); advance(); };
+    div.appendChild(btn);
+  });
+
+  // skip also advances position
+  skipBtn.onclick = () => { advanceGitaPosition(); advance(); };
+}
+
+async function fetchGitaVerse(ch, verse){
+  try{
+    const r = await fetch(`https://vedicscriptures.github.io/slok/${ch}/${verse}`);
+    if(!r.ok) return null;
+    return await r.json();
+  } catch(e){ return null; }
+}
+
+function advanceGitaPosition(){
+  const g = currentUser.gita;
+  const max = CHAPTER_VERSES[g.chapter-1];
+  g.verse++;
+  if(g.verse > max){
+    g.verse = 1;
+    g.chapter++;
+    if(g.chapter > 18) g.chapter = 1; // full cycle
+  }
+  g.lastRead = new Date().toISOString();
+  saveUser(currentUser.name, currentUser);
+  renderSidebar();
+}
+
+// ─── GITA PICKER ──────────────────────
+const gitaOverlay  = document.getElementById('gitaOverlay');
+const pickerCh     = document.getElementById('pickerCh');
+const pickerVs     = document.getElementById('pickerVs');
+const versePreview = document.getElementById('versePreview');
+
+// populate chapter selector once
+for(let i=1;i<=18;i++){
+  const o=document.createElement('option');
+  o.value=i; o.textContent=`Chapter ${i}  (${CHAPTER_VERSES[i-1]}v)`;
+  pickerCh.appendChild(o);
+}
+
+pickerCh.addEventListener('change', () => { populateVerse(+pickerCh.value); previewVerse(); });
+pickerVs.addEventListener('change', previewVerse);
+
+function populateVerse(ch){
+  pickerVs.innerHTML = '';
+  for(let i=1;i<=CHAPTER_VERSES[ch-1];i++){
+    const o=document.createElement('option'); o.value=i; o.textContent='Verse '+i; pickerVs.appendChild(o);
+  }
+}
+
+let prevTimer;
+function previewVerse(){
+  clearTimeout(prevTimer);
+  versePreview.textContent = 'Loading preview…';
+  prevTimer = setTimeout(async () => {
+    const data = await fetchGitaVerse(+pickerCh.value, +pickerVs.value);
+    versePreview.innerHTML = data
+      ? `<span style="color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:11px">${data.transliteration.split('\n')[0]}</span>`
+      : 'Could not load preview.';
+  }, 450);
+}
+
+function openGitaPicker(){
+  const g = currentUser.gita;
+  pickerCh.value = g.chapter;
+  populateVerse(g.chapter);
+  pickerVs.value = g.verse;
+  previewVerse();
+  gitaOverlay.classList.add('open');
+}
+
+document.getElementById('gitaClose').onclick = () => gitaOverlay.classList.remove('open');
+gitaOverlay.addEventListener('click', e => { if(e.target===gitaOverlay) gitaOverlay.classList.remove('open'); });
+
+document.getElementById('saveGitaBtn').onclick = () => {
+  currentUser.gita.chapter  = +pickerCh.value;
+  currentUser.gita.verse    = +pickerVs.value;
+  currentUser.gita.lastRead = null;
+  saveUser(currentUser.name, currentUser);
+  gitaOverlay.classList.remove('open');
+  renderSidebar();
+  if(sessionStarted && todays[idx]?.type === 'gita') showActive();
+};
+
+// ─── CHANT COUNTER ────────────────────
+function renderCounter(m){
+  const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:7px;';
+  const big=document.createElement('div'); big.className='big-count'; big.id='bigCount'; big.textContent='0';
+  const sub=document.createElement('div'); sub.className='counter-text'; sub.id='counterText'; sub.textContent=`0 / ${session.goal}`;
+  const btn=document.createElement('button'); btn.className='btn-counter'; btn.textContent='+1';
+  btn.onclick=()=>{
+    session.count++;
+    if(session.count>=session.goal){ session.count=session.goal; btn.textContent='Next ›'; btn.className='btn-next'; btn.onclick=advance; }
+    updateCounterUI(); updateProgress(); updateSidebarMeta(m.id,session.count,session.goal);
+  };
+  wrap.append(big,sub,btn); activityArea.appendChild(wrap);
+}
+
+function renderHareChoice(m){
+  const div=document.createElement('div'); div.style.cssText='display:flex;gap:10px;';
+  [108,216].forEach(n=>{
+    const btn=document.createElement('button'); btn.textContent=n; btn.className='btn-choice';
+    btn.onclick=()=>{
+      session.goal=n; div.remove();
+      const pre=document.createElement('div'); pre.className='prefix-note'; pre.style.marginBottom='10px';
+      pre.textContent='Prefix: Jai Shree Krishna, Chaitanya Prabhu Nityananda…';
+      activityArea.insertBefore(pre, activityArea.firstChild);
+      renderHareCounter(m);
+    };
+    div.appendChild(btn);
+  });
+  activityArea.appendChild(div);
+}
+
+function renderHareCounter(m){
+  const wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:7px;';
+  const big=document.createElement('div'); big.className='big-count'; big.id='bigCount'; big.textContent='0';
+  const sub=document.createElement('div'); sub.className='counter-text'; sub.id='counterText'; sub.textContent=`0 / ${session.goal}`;
+  const btn=document.createElement('button'); btn.className='btn-counter'; btn.textContent='+1';
+  btn.onclick=()=>{
+    session.count++;
+    if(session.count>=session.goal){
+      session.count=session.goal; btn.textContent='Suffix ›'; btn.className='btn-next';
+      btn.onclick=()=>{ const suf=document.createElement('div'); suf.className='prefix-note'; suf.style.marginTop='8px'; suf.textContent='Suffix: Jai Shree Krishna, Chaitanya Prabhu Nityananda (End)'; wrap.appendChild(suf); btn.textContent='Next ›'; btn.onclick=advance; };
+    }
+    updateCounterUI(); updateProgress(); updateSidebarMeta(m.id,session.count,session.goal);
+  };
+  wrap.append(big,sub,btn); activityArea.appendChild(wrap);
+}
+
+function updateCounterUI(){
+  const bc=document.getElementById('bigCount'), ct=document.getElementById('counterText');
+  if(bc) bc.textContent=session.count;
+  if(ct) ct.textContent=`${session.count} / ${session.goal}`;
+}
+
+function updateProgress(){
+  const pct = session.goal ? Math.min(100,Math.round(session.count/session.goal*100)) : 0;
+  bar.style.width = pct+'%';
+  progressText.textContent = session.goal ? `${session.count} / ${session.goal}` : '–';
+}
+
+function updateSidebarMeta(id,count,goal){
+  const el=document.getElementById('meta-'+id);
+  if(!el) return;
+  if(count>=goal) el.innerHTML='<span style="color:var(--green);font-weight:700">✓ Done</span>';
+  else el.textContent=`${count} / ${goal}`;
+}
+
+function advanceButton(){
+  const btn=document.createElement('button'); btn.className='btn-next'; btn.style.marginTop='10px'; btn.textContent='Next ›'; btn.onclick=advance; activityArea.appendChild(btn);
+}
+
+function advanceButtonInto(container){
+  const btn=document.createElement('button'); btn.className='btn-next'; btn.style.marginTop='10px'; btn.textContent='Next ›'; btn.onclick=advance; container.appendChild(btn);
+}
+
+function advance(){
+  idx++;
+  if(idx>=todays.length){
+    activeName.textContent=''; activeFull.textContent='';
+    skipBtn.style.display='none';
+    activityArea.innerHTML=`<div class="all-done-msg"><div class="done-emoji">🙏</div><div class="done-title">All done!</div><div class="done-sub">Your practice for today is complete.</div><button class="btn-primary" onclick="resetSession()">Start over</button></div>`;
+    progressText.textContent='Complete'; bar.style.width='100%'; return;
+  }
+  showActive();
+}
+
+function highlightActive(){
+  Array.from(document.getElementById('listSidebar').children).forEach((el,i)=>el.classList.toggle('active-item',i===idx));
+}
+
+// ═══════════════════════════════════════
+// SESSION CONTROL
+// ═══════════════════════════════════════
+startFlow.onclick = ()=>{
+  sessionStarted=true; startFlow.style.display='none'; idx=0; showActive();
+};
+
+function resetSession(){
+  idx=0; sessionStarted=false; session={count:0,goal:0};
+  activeName.textContent='Ready to begin?'; activeFull.textContent='Press Start when ready.';
+  activityArea.innerHTML=''; skipBtn.style.display='none';
+  startFlow.style.display='block';
+  progressText.textContent='–'; bar.style.width='0%';
+  renderSidebar();
+}
+
+document.getElementById('daySelect').addEventListener('change', e=>{
+  buildTodays(e.target.value); resetSession();
+});
+
+// ═══════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════
+renderLoginScreen();
+</script>
+</body>
+</html>
