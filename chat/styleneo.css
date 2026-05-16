@@ -27,6 +27,30 @@ Mixins
 --msg-self-tail: #257287;
 }
 
+[data-theme="violet"] {
+  --border: transparent;
+  --title: #0f0f1b;
+  --title-text: #f0eeff;
+  --bg: #09090f;
+  --msg-text: #f0eeff;
+  --chatbubble: rgba(28, 28, 48, 0.85);
+  --scrollbar: rgba(139, 92, 246, 0.4);
+  --avatar-border: rgba(139, 92, 246, 0.35);
+  --my-message: linear-gradient(120deg, #248A52, #257287);
+  --repliedtomsg: #1c1c30;
+  --linkcolor: #a78bfa;
+  --loadingrotatebg: #0f0f1b;
+  --loadingtext: #f0eeff;
+  --replyingtobg: linear-gradient(120deg, #1c1c30, #8b5cf6);
+  --textbox-bg: #141424;
+  --textbox-bo: #8b5cf6;
+  --textbox-text: #f0eeff;
+  --timestamp: rgba(240, 238, 255, 0.3);
+  --msg-self: linear-gradient(135deg, #7c3aed, #ec4899);
+  --msg-self-tail: #ec4899;
+  --violet: #8b5cf6;
+}
+
 [data-theme="light"] {
   --border: #43192d;
   --title : #43192d;
