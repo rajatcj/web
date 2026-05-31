@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Meet the dental team at Crystal Dental Pokhara — Dr. Deepa Sharma, MDS Oral Medicine & Maxillofacial Radiology (BPKIHS Dharan), NMC No. 13488.">
+  <title>Our Doctors | Crystal Dental and Oral Medicine Centre</title>
+  <link rel="canonical" href="https://crystaldental.com.np/team.html">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .doctor-profile {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 4rem;
+      align-items: start;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 3rem;
+      margin-bottom: 3rem;
+    }
+    .doctor-photo {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--pearl), var(--pearl-dk));
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .doctor-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .doctor-placeholder { font-size: 7rem; color: var(--grey-lt); }
+    .doctor-tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
+    .doctor-tag {
+      background: rgba(192,25,44,0.08);
+      color: var(--crimson);
+      border: 1px solid rgba(192,25,44,0.15);
+      border-radius: var(--radius-xl);
+      padding: 0.25rem 0.85rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .doctor-meta { list-style: none; margin: 1.5rem 0; }
+    .doctor-meta li {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .doctor-meta li:last-child { border-bottom: none; }
+    .doctor-meta li i { color: var(--crimson); width: 16px; margin-top: 3px; }
+    .doctor-meta li strong { min-width: 100px; color: var(--navy); }
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .staff-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .staff-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .staff-icon {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, rgba(192,25,44,0.1), rgba(192,25,44,0.05));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: var(--crimson);
+    }
+    @media(max-width:768px) {
+      .doctor-profile { grid-template-columns: 1fr; }
+      .doctor-photo { max-width: 280px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<header>
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Crystal Dental Home">
+        <img src="./assets/logo.png"
+             alt="Crystal Dental logo" width="44" height="44">
+        <div class="nav-logo-text">Crystal Dental <span>& Oral Medicine Centre</span></div>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="services.html" class="nav-link">Services</a></li>
+        <li><a href="team.html" class="nav-link active">Doctors</a></li>
+        <li><a href="testimonials.html" class="nav-link">Testimonials</a></li>
+        <li><a href="contact.html" class="nav-link nav-cta btn btn-primary">Book Appointment</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Our Doctors</span>
+      </nav>
+      <span class="section-label">Expert Team</span>
+      <h1>Meet Our Doctors</h1>
+      <p>Qualified, experienced, and genuinely passionate about your oral health — our team is here to provide the best care possible.</p>
+    </div>
+  </section>
+
+  <!-- Doctor Profile -->
+  <section class="section">
+    <div class="container">
+      <div class="doctor-profile fade-in">
+        <div class="doctor-photo">
+          <!-- Replace src with actual doctor photo: <img src="images/dr-deepa-sharma.jpg" alt="Dr. Deepa Sharma - Oral Medicine Specialist Pokhara"> -->
+          <div class="doctor-placeholder"><i class="fas fa-user-md"></i></div>
+        </div>
+        <div>
+          <span class="section-label">Lead Consultant</span>
+          <h2 style="font-size:2.4rem;margin-bottom:0.3rem;">Dr. Deepa Sharma</h2>
+          <div class="doctor-tag-row">
+            <span class="doctor-tag">BDS</span>
+            <span class="doctor-tag">MDS – Oral Medicine & Maxillofacial Radiology</span>
+            <span class="doctor-tag">BPKIHS Dharan</span>
+          </div>
+          <p>Dr. Deepa Sharma is the founder and lead consultant at Crystal Dental and Oral Medicine Centre. With a Master of Dental Surgery specialising in Oral Medicine and Maxillofacial Radiology from B.P. Koirala Institute of Health Sciences (BPKIHS) Dharan — one of Nepal's most prestigious health institutions — she brings specialist-level expertise to every patient she treats.</p>
+          <p style="margin-top:1rem;">Known for her gentle, patient-centred approach, Dr. Deepa takes the time to thoroughly explain diagnoses and treatment plans. Her ability to put even the most anxious patients at ease has earned her glowing reviews from patients across Nepal and internationally.</p>
+          <p style="margin-top:1rem;">She is particularly skilled in the diagnosis and management of complex oral mucosal diseases, TMJ disorders, and maxillofacial radiology interpretation — services rarely available at general dental clinics.</p>
+          <ul class="doctor-meta">
+            <li><i class="fas fa-graduation-cap"></i><strong>Qualification:</strong> BDS; MDS – Oral Medicine & Maxillofacial Radiology</li>
+            <li><i class="fas fa-university"></i><strong>Institution:</strong> BPKIHS Dharan, Nepal</li>
+            <li><i class="fas fa-id-card"></i><strong>NMC Registration:</strong> No. 13488</li>
+            <li><i class="fas fa-stethoscope"></i><strong>Speciality:</strong> Oral Medicine, Maxillofacial Radiology, Oral Mucosal Diseases</li>
+            <li><i class="fas fa-map-marker-alt"></i><strong>Clinic:</strong> Crystal Dental, Nagdhunga, Pokhara</li>
+          </ul>
+          <a href="contact.html" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Book with Dr. Deepa</a>
+        </div>
+      </div>
+
+      <!-- Supporting Staff -->
+      <div class="text-center fade-in" style="margin-top:4rem;">
+        <span class="section-label">Support Team</span>
+        <h2 class="section-title">Our Supporting Staff</h2>
+        <p class="section-subtitle">A skilled, caring team that ensures every visit is smooth, comfortable, and professional.</p>
+      </div>
+      <div class="staff-grid">
+        <div class="staff-card fade-in delay-1">
+          <div class="staff-icon"><i class="fas fa-user-nurse"></i></div>
+          <h4>Anisa</h4>
+          <p class="role" style="color:var(--crimson);font-size:0.82rem;font-weight:500;">Dental Assistant</p>
+          <p style="font-size:0.875rem;margin-top:0.5rem;">Praised by patients for her warmth and genuine care for patient wellbeing. Anisa ensures every procedure runs smoothly and patients feel at ease.</p>
+        </div>
+        <div class="staff-card fade-in delay-2">
+          <div class="staff-icon"><i class="fas fa-user-tie"></i></div>
+          <h4>Reception Staff</h4>
+          <p class="role" style="color:var(--crimson);font-size:0.82rem;font-weight:500;">Front Desk</p>
+          <p style="font-size:0.875rem;margin-top:0.5rem;">Our welcoming reception team handles appointments, queries, and ensures your visit begins and ends on a positive note.</p>
+        </div>
+        <div class="staff-card fade-in delay-3">
+          <div class="staff-icon"><i class="fas fa-flask"></i></div>
+          <h4>Dental Technician</h4>
+          <p class="role" style="color:var(--crimson);font-size:0.82rem;font-weight:500;">Lab & Prosthetics</p>
+          <p style="font-size:0.875rem;margin-top:0.5rem;">Precision fabrication of crowns, bridges, dentures, and other dental prosthetics to exact specifications.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <div class="container">
+      <h2>Ready to Meet Our Team?</h2>
+      <p>Book your appointment today and experience care that truly makes a difference.</p>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Book Appointment</a>
+        <a href="services.html" class="btn btn-outline-white">View Services</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+<script src="footerloader.js"></script>
+</body>
+</html>

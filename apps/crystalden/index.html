@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Crystal Dental and Oral Medicine Centre — Pokhara's trusted dental clinic since 2021. Expert dental care by Dr. Deepa Sharma (BDS, MDS). Book your appointment today.">
+  <meta name="keywords" content="dental clinic Pokhara, Crystal Dental, dentist Pokhara, oral medicine, Dr Deepa Sharma, teeth whitening, dental implants">
+  <meta property="og:title" content="Crystal Dental and Oral Medicine Centre | Pokhara">
+  <meta property="og:description" content="Premium dental care in Pokhara since 2021. Expert team, advanced technology, gentle care.">
+  <meta property="og:image" content="./assets/logo.png">
+  <meta property="og:type" content="website">
+  <title>Crystal Dental and Oral Medicine Centre | Pokhara, Nepal</title>
+  <link rel="canonical" href="https://crystaldental.com.np/">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Dentist",
+    "name": "Crystal Dental and Oral Medicine Centre",
+    "description": "Established in 2021, Crystal Dental and Oral Medicine Centre provides premium dental and oral medicine services in Pokhara, Nepal.",
+    "url": "https://crystaldental.com.np",
+    "telephone": "061-571436",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Nagdhunga Main Road, opposite Charak Hospital",
+      "addressLocality": "Pokhara",
+      "postalCode": "33700",
+      "addressCountry": "NP"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 28.2096,
+      "longitude": 83.9856
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "3"
+    },
+    "openingHours": "Mo-Fr 09:00-18:00",
+    "sameAs": ["https://www.facebook.com/crystaldentalpokhara/"]
+  }
+  </script>
+</head>
+<body>
+
+<!-- ── Notification Popup ── -->
+<div class="notif-popup" id="notifPopup" role="alert" aria-live="polite">
+  <i class="fas fa-calendar-check notif-icon"></i>
+  <div class="notif-body">
+    <strong>Book an Appointment</strong>
+    <span>WhatsApp us for same-day slots!</span>
+  </div>
+  <button class="notif-close" id="notifClose" aria-label="Close notification"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- ── Back to Top ── -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<!-- ── Navigation ── -->
+<header>
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="container navbar-inner">
+      <a href="index.html" class="nav-logo" aria-label="Crystal Dental Home">
+        <img src="./assets/logo.png"
+             alt="Crystal Dental logo" width="44" height="44">
+        <div class="nav-logo-text">
+          Crystal Dental
+          <span>& Oral Medicine Centre</span>
+        </div>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="services.html" class="nav-link">Services</a></li>
+        <li><a href="team.html" class="nav-link">Doctors</a></li>
+        <li><a href="testimonials.html" class="nav-link">Testimonials</a></li>
+        <li><a href="contact.html" class="nav-link nav-cta btn btn-primary">Book Appointment</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ── Hero ── -->
+  <section class="hero" aria-label="Hero section">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern" aria-hidden="true"></div>
+    <div class="hero-visual" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?w=900&auto=format&fit=crop&q=60" alt="">
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-star"></i> 5.0 Rating · Est. 2021</div>
+        <h1>Your Smile Deserves <em>Crystal</em> Care</h1>
+        <p>Pokhara's trusted dental clinic offering comprehensive oral health services — from preventive care to advanced oral medicine, guided by our expert team.</p>
+        <div class="hero-actions">
+          <a href="contact.html" class="btn btn-primary"><i class="fab fa-whatsapp"></i> Book Appointment</a>
+          <a href="services.html" class="btn btn-outline-white">Explore Services</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat"><strong>5★</strong><span>Google Rating</span></div>
+          <div class="hero-stat"><strong>2021</strong><span>Established</span></div>
+          <div class="hero-stat"><strong>MDS</strong><span>Specialist Care</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Carousel ── -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-label">Our Clinic</span>
+        <h2 class="section-title">A Welcoming Space for Your Dental Health</h2>
+        <p class="section-subtitle">Modern facilities, gentle care, and a team that truly listens — every visit at Crystal Dental is designed around your comfort.</p>
+      </div>
+      <div class="carousel fade-in">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1629909615957-be38d48fbbe4?w=1200&auto=format&fit=crop&q=70" alt="Modern dental treatment room at Crystal Dental Pokhara" loading="lazy">
+            <div class="carousel-caption"><h3>State-of-the-Art Treatment Rooms</h3><p>Advanced equipment for precise, comfortable procedures</p></div>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&auto=format&fit=crop&q=70" alt="Friendly dental consultation at Crystal Dental" loading="lazy">
+            <div class="carousel-caption"><h3>Personalised Consultations</h3><p>Every treatment plan tailored to your unique needs</p></div>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?w=1200&auto=format&fit=crop&q=70" alt="Dental X-ray and diagnostics at Crystal Dental" loading="lazy">
+            <div class="carousel-caption"><h3>Advanced Oral Diagnostics</h3><p>Digital X-rays and maxillofacial radiology for accurate diagnosis</p></div>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1609840114035-3c981b782dfe?w=1200&auto=format&fit=crop&q=70" alt="Cosmetic dentistry results at Crystal Dental Pokhara" loading="lazy">
+            <div class="carousel-caption"><h3>Beautiful, Lasting Results</h3><p>Cosmetic and restorative dentistry that transforms smiles</p></div>
+          </div>
+        </div>
+        <button class="carousel-btn carousel-prev" id="carouselPrev" aria-label="Previous slide"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-btn carousel-next" id="carouselNext" aria-label="Next slide"><i class="fas fa-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Why Choose Us ── -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-label">Why Crystal Dental</span>
+        <h2 class="section-title">Care That Goes Beyond the Chair</h2>
+        <p class="section-subtitle">We combine specialist expertise with genuine compassion — because great dental care should never feel rushed or impersonal.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card fade-in delay-1">
+          <div class="why-icon"><i class="fas fa-user-md"></i></div>
+          <h4>Specialist Expertise</h4>
+          <p>Led by Dr. Deepa Sharma, MDS in Oral Medicine & Maxillofacial Radiology from BPKIHS Dharan — one of Nepal's top dental institutions.</p>
+        </div>
+        <div class="why-card fade-in delay-2">
+          <div class="why-icon"><i class="fas fa-heart"></i></div>
+          <h4>Gentle, Phobia-Friendly Care</h4>
+          <p>Our team understands dental anxiety. We take time, explain every step, and ensure you're fully comfortable before proceeding.</p>
+        </div>
+        <div class="why-card fade-in delay-3">
+          <div class="why-icon"><i class="fas fa-microscope"></i></div>
+          <h4>Advanced Diagnostics</h4>
+          <p>Digital radiography and oral medicine expertise deliver accurate diagnoses that ensure the right treatment from day one.</p>
+        </div>
+        <div class="why-card fade-in delay-4">
+          <div class="why-icon"><i class="fas fa-comments"></i></div>
+          <h4>Clear Communication</h4>
+          <p>We explain every procedure thoroughly so you understand your treatment, costs, and expected outcomes — no surprises.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Featured Services ── -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-label">Our Services</span>
+        <h2 class="section-title">Comprehensive Dental Solutions</h2>
+        <p class="section-subtitle">From routine check-ups to complex oral medicine — we offer a full spectrum of dental services under one roof.</p>
+      </div>
+      <div class="services-grid">
+        <article class="service-card fade-in delay-1">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1606811971618-4486d14f3f99?w=600&auto=format&fit=crop&q=70" alt="General dentistry consultation at Crystal Dental" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-tag">Preventive</span>
+            <h3>General Dentistry</h3>
+            <p>Routine exams, professional cleanings, fillings, and preventive treatments to keep your teeth healthy for life.</p>
+            <a href="services.html#general" class="service-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+        <article class="service-card fade-in delay-2">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1598256989800-fe5f95da9787?w=600&auto=format&fit=crop&q=70" alt="Oral medicine specialist consultation" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-tag">Specialist</span>
+            <h3>Oral Medicine</h3>
+            <p>Expert diagnosis and management of oral diseases, mucosal conditions, and maxillofacial disorders by our MDS specialist.</p>
+            <a href="services.html#oral-medicine" class="service-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+        <article class="service-card fade-in delay-3">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1581594549595-35f6edc7b762?w=600&auto=format&fit=crop&q=70" alt="Cosmetic dentistry teeth whitening" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-tag">Cosmetic</span>
+            <h3>Cosmetic Dentistry</h3>
+            <p>Teeth whitening, veneers, smile makeovers, and aesthetic restorations to give you the confident smile you deserve.</p>
+            <a href="services.html#cosmetic" class="service-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+      </div>
+      <div class="text-center" style="margin-top:2.5rem;">
+        <a href="services.html" class="btn btn-secondary">View All Services</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Testimonials Slider ── -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center fade-in">
+        <span class="section-label">Patient Stories</span>
+        <h2 class="section-title">What Our Patients Say</h2>
+        <p class="section-subtitle">Real words from real patients. A 5-star experience, every time.</p>
+      </div>
+      <div class="testi-slider fade-in" style="margin-top:2.5rem;">
+        <div class="testi-track" id="testiTrack">
+          <div class="testi-slide">
+            <div class="testi-card">
+              <div class="testi-quote">"</div>
+              <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p>The best dentist I have ever had. I usually have a phobia of going to the dentist because of so many bad experiences in the past, but I definitely recommend Doctor Deepa Sharma — professional, gentle, takes time to explain things, makes sure the work is properly done and doesn't rush. And another 5 stars for Anisa, her wonderful assistant who really cares about the well-being of patients. I'll definitely go back!</p>
+              <div class="testi-author">
+                <div class="testi-avatar">KN</div>
+                <div>
+                  <strong>Karim Nasri</strong>
+                  <span>Verified Google & Facebook Review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testi-slide">
+            <div class="testi-card">
+              <div class="testi-quote">"</div>
+              <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p>Had a great experience here. Dr. Deepa was very professional and explained all the things clearly during the procedure. The clinic environment is clean and welcoming. Highly recommend Crystal Dental to anyone looking for quality dental care in Pokhara!</p>
+              <div class="testi-author">
+                <div class="testi-avatar">AC</div>
+                <div>
+                  <strong>Ananta Raj Chalise</strong>
+                  <span>Local Guide · Verified Google Review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testi-slide">
+            <div class="testi-card">
+              <div class="testi-quote">"</div>
+              <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p>Excellent dental clinic with a caring team. The atmosphere is relaxing and the doctor takes her time with each patient. I felt genuinely looked after. The clinic is well-equipped and the staff are very friendly. I wouldn't go anywhere else in Pokhara.</p>
+              <div class="testi-author">
+                <div class="testi-avatar">AB</div>
+                <div>
+                  <strong>Ananda Baral</strong>
+                  <span>Verified Google Review</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-nav">
+        <button class="testi-nav-btn" id="testiPrev" aria-label="Previous testimonial"><i class="fas fa-chevron-left"></i></button>
+        <button class="testi-nav-btn" id="testiNext" aria-label="Next testimonial"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="text-center" style="margin-top:1.5rem;">
+        <a href="testimonials.html" class="btn btn-secondary">Read All Reviews</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Banner ── -->
+  <section class="cta-banner">
+    <div class="container">
+      <span class="section-label" style="color:rgba(255,255,255,0.5);">Ready to Visit?</span>
+      <h2>Book Your Appointment Today</h2>
+      <p>Located opposite Charak Hospital on Nagdhunga Main Road, Pokhara. Sunday through Friday, 9 AM–6 PM.</p>
+      <div class="cta-actions">
+        <a href="contact.html" class="btn btn-primary"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+        <a href="tel:061571436" class="btn btn-outline-white"><i class="fas fa-phone"></i> 061-571436</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer (Inline for SEO on index page) ── -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" aria-label="Crystal Dental">
+          <img src="./assets/logo.png"
+               alt="Crystal Dental logo" width="44" height="44">
+          <div class="nav-logo-text">Crystal Dental <span>& Oral Medicine Centre</span></div>
+        </a>
+        <p>Established in 2021, Crystal Dental and Oral Medicine Centre is committed to providing world-class dental care in the heart of Pokhara. Your smile is our mission.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/crystaldentalpokhara/" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/977061571436" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="tel:061571436" aria-label="Call us"><i class="fas fa-phone"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="team.html">Our Doctors</a></li>
+          <li><a href="testimonials.html">Testimonials</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="services.html#general">General Dentistry</a></li>
+          <li><a href="services.html#cosmetic">Cosmetic Dentistry</a></li>
+          <li><a href="services.html#orthodontics">Orthodontics</a></li>
+          <li><a href="services.html#oral-medicine">Oral Medicine</a></li>
+          <li><a href="services.html#surgery">Oral Surgery</a></li>
+          <li><a href="services.html#implants">Dental Implants</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Nagdhunga Main Road, opposite Charak Hospital, Pokhara 33700</span></div>
+        <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:061571436">061-571436</a></div>
+        <div class="footer-contact-item"><i class="fab fa-whatsapp"></i><a href="https://wa.me/977061571436" target="_blank" rel="noopener">WhatsApp Us</a></div>
+        <div class="footer-contact-item"><i class="fas fa-clock"></i><span>Sun–Fri: 9:00 AM – 6:00 PM</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;width:100%;">
+      <p>&copy; 2025 Crystal Dental and Oral Medicine Centre. All rights reserved.</p>
+      <p>Designed with <i class="fas fa-heart" style="color:var(--crimson-lt);"></i> in Pokhara, Nepal</p>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
