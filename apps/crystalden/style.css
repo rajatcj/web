@@ -148,7 +148,6 @@ p  { font-size: 0.975rem; color: var(--grey); line-height: 1.75; }
   box-shadow: var(--shadow-md);
 }
 .navbar.scrolled .nav-logo-text { color: var(--navy); }
-.navbar.scrolled .nav-link { color: var(--charcoal); }
 .navbar.scrolled .nav-link:hover { color: var(--crimson); }
 .navbar.scrolled .hamburger span { background: var(--navy); }
 
