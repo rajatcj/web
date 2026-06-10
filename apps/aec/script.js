@@ -1,4 +1,4 @@
-/* Astak Eng. & Constructions, vanilla JS */
+/* AEC, vanilla JS */
 (function () {
   'use strict';
 
@@ -141,7 +141,7 @@
       if (!name || !phone) { toast('Please enter your name and phone.'); return; }
 
       const lines = [
-        '*New Enquiry, Astak Eng. & Constructions*',
+        '*New Enquiry, AEC*',
         `• Name: ${name}`,
         `• Phone: ${phone}`,
         email && `• Email: ${email}`,
