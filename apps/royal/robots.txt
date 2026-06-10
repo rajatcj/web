@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# AI / GEO crawlers, allowed for citation visibility
+User-agent: GPTBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+
+Sitemap: https://royalinteriorpokhara.com/sitemap.xml
